@@ -1,3 +1,7 @@
 {
-    "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "dart.flutterSdkPath": "/Users/gustaman/fvm/versions/3.10.5",
+  "dart.lineLength": 120,
+  "dart.warnWhenEditingFilesOutsideWorkspace": false,
+  "dart.warnWhenEditingFilesInPubCache": false
 }

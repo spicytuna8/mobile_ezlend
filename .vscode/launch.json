@@ -7,33 +7,39 @@
     {
       "name": "loan_project",
       "request": "launch",
-      "type": "dart"
+      "type": "dart",
+      "toolArgs": ["--flavor", "dev"],
+      "program": "lib/main_dev.dart"
     },
     {
       "name": "loan_project (profile mode)",
       "request": "launch",
       "type": "dart",
-      "flutterMode": "profile"
+      "flutterMode": "profile",
+      "toolArgs": ["--flavor", "dev"],
+      "program": "lib/main_dev.dart"
     },
     {
       "name": "loan_project (release mode)",
       "request": "launch",
       "type": "dart",
-      "flutterMode": "release"
+      "flutterMode": "release",
+      "toolArgs": ["--flavor", "dev"],
+      "program": "lib/main_dev.dart"
     },
     {
       "name": "dev",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_dev.dart",
-      "args": ["--flavor", "dev"]
+      "toolArgs": ["--flavor", "dev"]
     },
     {
       "name": "prod",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_prod.dart",
-      "args": ["--flavor", "prod"]
+      "toolArgs": ["--flavor", "prod"]
     }
   ]
 }
