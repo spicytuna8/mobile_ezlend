@@ -1,0 +1,45 @@
+===============================================================================
+                              EzLend Mobile App
+===============================================================================
+
+=== AUTHENTICATION APIs (ApiServiceAuth) ===
+[POST] v1/member/auth/login
+[POST] v1/member/auth/register
+[GET] v1/member/auth/mail-confirmation
+
+=== MEMBER APIs (ApiServiceMember) ===
+[GET] v1/member/profile/member-kyc
+[GET] v1/member/relationship
+[GET] v1/member/service
+
+=== KYC APIs (ApiServiceKyc) ===
+[POST] v1/member/profile/kycnew
+
+=== TRANSACTION APIs (ApiServiceTransaction) ===
+[POST] v1/member/loan/calculate-loan
+[GET] v1/member/loan/cek-loan
+[POST] v1/member/loan/paid-loan-without-login
+[POST] v1/member/loan/paid-loan
+[POST] v1/member/topup
+[GET] v1/member/loan/loan-package
+[GET] v1/member/reference/payment-account
+[GET] v1/member/topup/gettopup
+[GET] v1/member/loan/cek-due-date
+
+=== PACKAGE APIs (ApiServicePackage) ===
+[GET] v1/member/package
+[POST] v1/member/package/view
+
+=== PACKAGE RATE APIs (ApiServicePackageRate) ===
+[GET] v1/member/package-rate
+[POST] v1/member/package-rate/view
+
+=== LOG DATA APIs (ApiServiceLogData) ===
+[POST] v1/member/logdata/logfile
+[POST] v1/member/profile/actual-number
+[POST] v1/member/logdata/createcallogs
+[POST] v1/member/logdata/create
+
+=== APP RELEASE APIs (ApiServiceAppRelease) ===
+[POST] v1/member/profile/app-release
+[POST] v1/member/reference/version
