@@ -14,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api_logger.dart';
 
 class NetworkHelper {
-  static const String divider = "\n------------------------------------";
+  static const String divider = "\n------------";
   static final Dio _dio = Dio();
   final context = navigatorKey.currentContext;
 

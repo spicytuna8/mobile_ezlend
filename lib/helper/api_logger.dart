@@ -5,8 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:loan_project/helper/constants.dart';
 
 class ApiLogger {
-  static const String _separator = '================================================================================';
-  static const String _divider = '----------------------------------------';
+  static const String _separator = '============';
+  static const String _divider = '------------';
 
   /// Pretty print JSON dengan indentasi
   static String _prettyJson(dynamic data) {
