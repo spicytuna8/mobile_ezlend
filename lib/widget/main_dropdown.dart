@@ -4,7 +4,6 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:loan_project/helper/color_helper.dart';
 
 class MainDropdown extends StatelessWidget {
   final double? width;
@@ -49,7 +48,7 @@ class MainDropdown extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: titleFontSize ?? 14,
                     // fontWeight: FontWeight.bold,
-                    color: titleColor ?? Color(0xFF7D8998),
+                    color: titleColor ?? const Color(0xFF7D8998),
                   ),
                   // overflow: TextOverflow.ellipsis,
                 )
