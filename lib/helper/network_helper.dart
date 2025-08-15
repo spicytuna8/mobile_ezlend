@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loan_project/flavor.dart';
-import 'package:loan_project/helper/constants.dart';
 import 'package:loan_project/helper/preference_helper.dart';
 import 'package:loan_project/helper/router.dart';
 import 'package:loan_project/helper/router_name.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// Import API Logger
+import 'api_logger.dart';
 
 class NetworkHelper {
   static const String divider = "\n------------------------------------";
@@ -54,19 +57,13 @@ class NetworkHelper {
   }
 
   Future<Response> get(String endpoint,
-      {bool isUseToken = true,
-      Map<String, dynamic>? params,
-      Function(int, int)? progress,
-      Options? options}) async {
-    PreferencesHelper preferencesHelper =
-        PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+      {bool isUseToken = true, Map<String, dynamic>? params, Function(int, int)? progress, Options? options}) async {
+    PreferencesHelper preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
     log('get');
     final dio = await client(isUseToken: isUseToken);
 
-    dio.options.headers['Authorization'] =
-        'Bearer ${await preferencesHelper.getToken}';
-    return await dio.get(baseApi + endpoint,
-        queryParameters: params, onReceiveProgress: progress, options: options);
+    dio.options.headers['Authorization'] = 'Bearer ${await preferencesHelper.getToken}';
+    return await dio.get(baseApi + endpoint, queryParameters: params, onReceiveProgress: progress, options: options);
   }
 
   Future<Response> post(String endpoint,
@@ -76,8 +73,7 @@ class NetworkHelper {
       Function(int, int)? progress,
       Options? options,
       dynamic data}) async {
-    PreferencesHelper preferencesHelper =
-        PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+    PreferencesHelper preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
 
     String token = await preferencesHelper.getToken;
     final dio = await client(isUseToken: isUseToken);
@@ -99,8 +95,7 @@ class NetworkHelper {
       Function(int, int)? progress,
       Options? options,
       dynamic data}) async {
-    PreferencesHelper preferencesHelper =
-        PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+    PreferencesHelper preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
 
     String token = await preferencesHelper.getToken;
     log("token $token");
@@ -121,11 +116,9 @@ class NetworkHelper {
       Function(int, int)? progress,
       Options? options,
       dynamic data}) async {
-    PreferencesHelper preferencesHelper =
-        PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+    PreferencesHelper preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
 
-    _dio.options.headers['Authorization'] =
-        'Bearer ${await preferencesHelper.getToken}';
+    _dio.options.headers['Authorization'] = 'Bearer ${await preferencesHelper.getToken}';
     return await _dio.put(baseApi + endpoint,
         queryParameters: params,
         onReceiveProgress: receiveProgress,
@@ -141,11 +134,9 @@ class NetworkHelper {
       Function(int, int)? progress,
       Options? options,
       dynamic data}) async {
-    PreferencesHelper preferencesHelper =
-        PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+    PreferencesHelper preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
 
-    _dio.options.headers['Authorization'] =
-        'Bearer ${await preferencesHelper.getToken}';
+    _dio.options.headers['Authorization'] = 'Bearer ${await preferencesHelper.getToken}';
     return await _dio.patch(baseApi + endpoint,
         queryParameters: params,
         onReceiveProgress: receiveProgress,
@@ -155,17 +146,11 @@ class NetworkHelper {
   }
 
   Future<Response> delete(String endpoint,
-      {bool isUseToken = true,
-      Map<String, dynamic>? params,
-      Options? options,
-      dynamic data}) async {
-    PreferencesHelper preferencesHelper =
-        PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+      {bool isUseToken = true, Map<String, dynamic>? params, Options? options, dynamic data}) async {
+    PreferencesHelper preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
 
-    _dio.options.headers['Authorization'] =
-        'Bearer ${await preferencesHelper.getToken}';
-    return await _dio.delete(baseApi + endpoint,
-        queryParameters: params, options: options, data: data);
+    _dio.options.headers['Authorization'] = 'Bearer ${await preferencesHelper.getToken}';
+    return await _dio.delete(baseApi + endpoint, queryParameters: params, options: options, data: data);
   }
 
   Future<Response> download(String endpoint,
@@ -175,26 +160,17 @@ class NetworkHelper {
       Options? options,
       Function(int, int)? progress,
       Map<String, dynamic>? params}) async {
-    PreferencesHelper preferencesHelper =
-        PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+    PreferencesHelper preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
 
-    _dio.options.headers['Authorization'] =
-        'Bearer ${await preferencesHelper.getToken}';
+    _dio.options.headers['Authorization'] = 'Bearer ${await preferencesHelper.getToken}';
     return await _dio.download(endpoint, savePath,
-        data: data,
-        options: options,
-        onReceiveProgress: progress,
-        queryParameters: params);
+        data: data, options: options, onReceiveProgress: progress, queryParameters: params);
   }
 
   Future<Dio> client(
-      {isUseToken = true,
-      Duration? connectTimeout,
-      Duration? receiveTimeout,
-      Duration? sendTimeout}) async {
+      {isUseToken = true, Duration? connectTimeout, Duration? receiveTimeout, Duration? sendTimeout}) async {
     // final client = Dio();
-    PreferencesHelper preferencesHelper =
-        PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+    PreferencesHelper preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
     String token;
     if (isUseToken) {
       token = await preferencesHelper.getToken;
@@ -228,28 +204,29 @@ class NetworkHelper {
       Duration sendTimeout = _sendTimeoutDefault}) {
     return InterceptorsWrapper(
       onRequest: (options, handler) async {
-        log('message request ${options.data} params : ${options.queryParameters}');
+        // Log request dengan format yang rapi
+        ApiLogger.logRequest(options);
 
         // String? token = await StorageService().readAccessToken();
         // options.headers['Authorization'] = 'Bearer $token';
         return handler.next(options);
       },
       onResponse: (options, handler) {
-        if (kDebugMode) {
-          log('message response ${options.requestOptions.path}: ${jsonEncode(options.data)}');
-        }
+        // Log response dengan format yang rapi
+        ApiLogger.logResponse(options);
 
         return handler.next(options);
       },
       onError: (DioException e, handler) async {
         EasyLoading.dismiss();
-        if (kDebugMode) {
-          log('message onError ${e.requestOptions.path}: ${jsonEncode(e.response?.data)} ${jsonEncode(e.response?.statusCode)}');
-        }
+
+        // Log error dengan format yang rapi
+        ApiLogger.logError(e);
+
         // log(e.response!.data.toString());
         if (e.response != null) {
-          final PreferencesHelper preferencesHelper = PreferencesHelper(
-              sharedPreferences: SharedPreferences.getInstance());
+          final PreferencesHelper preferencesHelper =
+              PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
           // ApiServiceAuth apiServiceAuth = ApiServiceAuth();
           // log('masuk error dio ga? ${e.response?.statusCode}');
           if (e.response?.statusCode == 401) {
@@ -259,10 +236,8 @@ class NetworkHelper {
             context!.pushNamed(login);
 
             // Navigation.pushNoData(loginRoute);
-            RequestOptions requestOptions = e.requestOptions;
           } else {
             // log('message else 2');
-
             handler.next(e);
           }
         }
@@ -426,20 +401,15 @@ Future<Response> refreshToken() async {
   // Response? response;
   // Repository repository = Repository();
   var dio = Dio();
-  final Uri apiUrl = Uri.parse(
-      "https://dev.api.alhikmah.capioteknologi.xyz/merchants/auth/token/refresh");
+  final Uri apiUrl = Uri.parse("https://dev.api.alhikmah.capioteknologi.xyz/merchants/auth/token/refresh");
 
   // try {
   var response = await dio.postUri(apiUrl);
-  PreferencesHelper preferencesHelper =
-      PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+  PreferencesHelper preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
   if (response.statusCode == 200 || response.statusCode == 201) {
-    preferencesHelper.setStringSharedPref(
-        'access_token', response.data['data']['access_token'].toString());
-    preferencesHelper.setStringSharedPref(
-        'refresh_token', response.data['data']['refresh_token'].toString());
-    preferencesHelper.setStringSharedPref(
-        'expires_at', response.data['data']['expires_at'].toString());
+    preferencesHelper.setStringSharedPref('access_token', response.data['data']['access_token'].toString());
+    preferencesHelper.setStringSharedPref('refresh_token', response.data['data']['refresh_token'].toString());
+    preferencesHelper.setStringSharedPref('expires_at', response.data['data']['expires_at'].toString());
   } else {
     log('berhasil else?');
     print(response.toString()); //TODO: logout
