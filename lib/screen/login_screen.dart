@@ -1,7 +1,5 @@
 // ignore_for_file: camel_case_types, prefer_typing_uninitialized_variables
 
-import 'dart:developer';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,8 +28,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final PreferencesHelper _preferencesHelper =
-      PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+  final PreferencesHelper _preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
 
   final AuthBloc _authBloc = AuthBloc();
   TextEditingController idNumber = TextEditingController();
@@ -53,8 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> getLanguage() async {
-    value =
-        await _preferencesHelper.getStringSharedPref(prefSelectedLanguageCode);
+    value = await _preferencesHelper.getStringSharedPref(prefSelectedLanguageCode);
     int index = language.indexWhere((element) => value == element['id']);
     if (index == -1) {
       indexSelected = indexSelected;
@@ -78,6 +74,13 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     getLanguage();
     getLatest();
+
+    // Prefilled credentials for debugging only
+    if (kDebugMode) {
+      idNumber.text = 'A1234567';
+      phoneNumber.text = '1234567890';
+    }
+
     // TODO: implement initState
     super.initState();
   }
@@ -89,9 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('assets/images/bg_login.png'),
-                fit: BoxFit.cover)),
+            image: DecorationImage(image: AssetImage('assets/images/bg_login.png'), fit: BoxFit.cover)),
         child: Stack(
           children: [
             Positioned(
@@ -100,8 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Center(
                   child: Text(
                     _packageInfo?.version ?? '',
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 )),
             Positioned(
@@ -133,12 +133,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ClipPath(
                           clipper: RoundedDiagonalClipper(),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 30),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                             decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(50.0),
-                                  topRight: Radius.circular(50.0)),
+                              borderRadius:
+                                  BorderRadius.only(topLeft: Radius.circular(50.0), topRight: Radius.circular(50.0)),
                               color: Color(0xff252422),
                             ),
                             child: Column(
@@ -154,27 +152,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                     if (state is PostLoginError) {
                                       EasyLoading.dismiss();
                                     } else if (state is PostLoginSuccess) {
-                                      _preferencesHelper.setStringSharedPref(
-                                          'token', state.data.token ?? '');
-                                      _preferencesHelper.setStringSharedPref(
-                                          'id', idNumber.text);
-                                      _preferencesHelper.setStringSharedPref(
-                                          'phone', phone);
+                                      _preferencesHelper.setStringSharedPref('token', state.data.token ?? '');
+                                      _preferencesHelper.setStringSharedPref('id', idNumber.text);
+                                      _preferencesHelper.setStringSharedPref('phone', phone);
                                       EasyLoading.dismiss();
-                                      context.pushNamed(bottomNavigation,
-                                          extra: 0);
+                                      context.pushNamed(bottomNavigation, extra: 0);
                                     }
                                     // TODO: implement listener
                                   },
                                   builder: (context, state) {
-                                    final errors = (state is PostLoginError)
-                                        ? state.errors
-                                        : {};
+                                    final errors = (state is PostLoginError) ? state.errors : {};
 
                                     return Form(
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             Languages.of(context).idCardNumber,
@@ -191,27 +182,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                             controller: idNumber,
                                             focusNode: idNumberFcs,
                                             inputFormatters: [
-                                              FilteringTextInputFormatter.deny(
-                                                  RegExp(r'[^\w\s]')),
+                                              FilteringTextInputFormatter.deny(RegExp(r'[^\w\s]')),
                                             ],
-                                            errorText: errors?['ic'] != null
-                                                ? errors!['ic'][0]
-                                                : null,
+                                            errorText: errors?['ic'] != null ? errors!['ic'][0] : null,
                                             // label: const Text('ID number'),
-                                            hintText: Languages.of(context)
-                                                .idCardNumber,
+                                            hintText: Languages.of(context).idCardNumber,
                                             onChanged: (value) {
                                               // Filter input to remove spaces, special characters, and underscores
-                                              String filteredValue =
-                                                  value.replaceAll(
-                                                      RegExp(r'[^\w]|_'), '');
+                                              String filteredValue = value.replaceAll(RegExp(r'[^\w]|_'), '');
                                               if (value != filteredValue) {
                                                 idNumber.text = filteredValue;
-                                                idNumber.selection =
-                                                    TextSelection.fromPosition(
-                                                  TextPosition(
-                                                      offset:
-                                                          filteredValue.length),
+                                                idNumber.selection = TextSelection.fromPosition(
+                                                  TextPosition(offset: filteredValue.length),
                                                 );
                                               }
                                             },
@@ -237,9 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             height: 8.0,
                                           ),
                                           MainTextFormField(
-                                            errorText: errors?['phone'] != null
-                                                ? errors!['phone'][0]
-                                                : null,
+                                            errorText: errors?['phone'] != null ? errors!['phone'][0] : null,
                                             controller: phoneNumber,
                                             focusNode: phoneFcs,
                                             keyboardType: TextInputType.phone,
@@ -258,20 +238,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                               }
                                               return null;
                                             },
-                                            hintText: Languages.of(context)
-                                                .phoneNumber,
+                                            hintText: Languages.of(context).phoneNumber,
                                             onChanged: (value) {
                                               // Filter input to remove spaces, special characters, and underscores
-                                              String filteredValue =
-                                                  value.replaceAll(
-                                                      RegExp(r'[^\w]|_'), '');
+                                              String filteredValue = value.replaceAll(RegExp(r'[^\w]|_'), '');
                                               if (value != filteredValue) {
                                                 idNumber.text = filteredValue;
-                                                idNumber.selection =
-                                                    TextSelection.fromPosition(
-                                                  TextPosition(
-                                                      offset:
-                                                          filteredValue.length),
+                                                idNumber.selection = TextSelection.fromPosition(
+                                                  TextPosition(offset: filteredValue.length),
                                                 );
                                               }
                                             },
@@ -293,14 +267,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 ? null
                                                 : () {
                                                     setState(() {
-                                                      isContainerVisible =
-                                                          false;
+                                                      isContainerVisible = false;
                                                     });
 
-                                                    EasyLoading.show(
-                                                        maskType:
-                                                            EasyLoadingMaskType
-                                                                .black);
+                                                    EasyLoading.show(maskType: EasyLoadingMaskType.black);
                                                     // if (phoneNumber.text.startsWith('0')) {
                                                     //   setState(() {
                                                     //     phone = phoneNumber.text.substring(1);
@@ -310,10 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     // phone = phoneNumber.text;
                                                     // }
                                                     _authBloc.add(
-                                                        PostLoginEvent(
-                                                            ic: idNumber.text,
-                                                            phone: phoneNumber
-                                                                .text));
+                                                        PostLoginEvent(ic: idNumber.text, phone: phoneNumber.text));
                                                   },
                                           ),
                                           const SizedBox(height: 16.0),
@@ -322,45 +289,34 @@ class _LoginScreenState extends State<LoginScreen> {
                                               TextSpan(
                                                 children: [
                                                   TextSpan(
-                                                    text: Languages.of(context)
-                                                        .dontHaveAccount,
+                                                    text: Languages.of(context).dontHaveAccount,
                                                     style: GoogleFonts.inter(
-                                                      color: const Color(
-                                                          0xFF7D8998),
+                                                      color: const Color(0xFF7D8998),
                                                       fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
+                                                      fontWeight: FontWeight.w400,
                                                     ),
                                                   ),
                                                   TextSpan(
                                                     text: ' ',
                                                     style: GoogleFonts.inter(
-                                                      color: const Color(
-                                                          0xFF1F2A37),
+                                                      color: const Color(0xFF1F2A37),
                                                       fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
+                                                      fontWeight: FontWeight.w400,
                                                     ),
                                                   ),
                                                   TextSpan(
-                                                    text: Languages.of(context)
-                                                        .signUpNow,
-                                                    recognizer:
-                                                        TapGestureRecognizer()
-                                                          ..onTap = () {
-                                                            setState(() {
-                                                              isContainerVisible =
-                                                                  false;
-                                                            });
-                                                            context.pushNamed(
-                                                                register);
-                                                          },
+                                                    text: Languages.of(context).signUpNow,
+                                                    recognizer: TapGestureRecognizer()
+                                                      ..onTap = () {
+                                                        setState(() {
+                                                          isContainerVisible = false;
+                                                        });
+                                                        context.pushNamed(register);
+                                                      },
                                                     style: GoogleFonts.inter(
-                                                      color: const Color(
-                                                          0xFF0972D3),
+                                                      color: const Color(0xFF0972D3),
                                                       fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                      fontWeight: FontWeight.w600,
                                                     ),
                                                   ),
                                                 ],
@@ -457,10 +413,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     (index) => GestureDetector(
                                           onTap: () => setState(() {
                                             indexSelected = index;
-                                            isContainerVisible =
-                                                !isContainerVisible;
-                                            changeLanguage(
-                                                context, language[index]['id']);
+                                            isContainerVisible = !isContainerVisible;
+                                            changeLanguage(context, language[index]['id']);
                                           }),
                                           child: _cardSorting(
                                             index: index,
@@ -487,12 +441,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ClipPath(
                   clipper: RoundedDiagonalClipper(),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 30),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                     decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(50.0),
-                          topRight: Radius.circular(50.0)),
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(50.0), topRight: Radius.circular(50.0)),
                       color: Color(0xff252422),
                     ),
                     child: Column(
@@ -508,20 +459,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (state is PostLoginError) {
                               EasyLoading.dismiss();
                             } else if (state is PostLoginSuccess) {
-                              _preferencesHelper.setStringSharedPref(
-                                  'token', state.data.token ?? '');
-                              _preferencesHelper.setStringSharedPref(
-                                  'id', idNumber.text);
-                              _preferencesHelper.setStringSharedPref(
-                                  'phone', phone);
+                              _preferencesHelper.setStringSharedPref('token', state.data.token ?? '');
+                              _preferencesHelper.setStringSharedPref('id', idNumber.text);
+                              _preferencesHelper.setStringSharedPref('phone', phone);
                               EasyLoading.dismiss();
                               context.pushNamed(bottomNavigation, extra: 0);
                             }
                             // TODO: implement listener
                           },
                           builder: (context, state) {
-                            final errors =
-                                (state is PostLoginError) ? state.errors : {};
+                            final errors = (state is PostLoginError) ? state.errors : {};
 
                             return Form(
                               child: Column(
@@ -542,26 +489,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                     controller: idNumber,
                                     focusNode: idNumberFcs,
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.deny(
-                                          RegExp(r'[^\w\s]')),
+                                      FilteringTextInputFormatter.deny(RegExp(r'[^\w\s]')),
                                     ],
-                                    errorText: errors?['ic'] != null
-                                        ? errors!['ic'][0]
-                                        : null,
+                                    errorText: errors?['ic'] != null ? errors!['ic'][0] : null,
                                     // label: const Text('ID number'),
-                                    hintText:
-                                        Languages.of(context).idCardNumber,
+                                    hintText: Languages.of(context).idCardNumber,
 
                                     onChanged: (value) {
                                       // Filter input to remove spaces, special characters, and underscores
-                                      String filteredValue = value.replaceAll(
-                                          RegExp(r'[^\w]|_'), '');
+                                      String filteredValue = value.replaceAll(RegExp(r'[^\w]|_'), '');
                                       if (value != filteredValue) {
                                         idNumber.text = filteredValue;
-                                        idNumber.selection =
-                                            TextSelection.fromPosition(
-                                          TextPosition(
-                                              offset: filteredValue.length),
+                                        idNumber.selection = TextSelection.fromPosition(
+                                          TextPosition(offset: filteredValue.length),
                                         );
                                       }
                                     },
@@ -587,9 +527,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     height: 8.0,
                                   ),
                                   MainTextFormField(
-                                    errorText: errors?['phone'] != null
-                                        ? errors!['phone'][0]
-                                        : null,
+                                    errorText: errors?['phone'] != null ? errors!['phone'][0] : null,
                                     controller: phoneNumber,
                                     focusNode: phoneFcs,
                                     keyboardType: TextInputType.phone,
@@ -613,14 +551,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     hintText: Languages.of(context).phoneNumber,
                                     onChanged: (value) {
                                       // Filter input untuk hanya angka
-                                      String filteredValue = value.replaceAll(
-                                          RegExp(r'[^\d]'), '');
+                                      String filteredValue = value.replaceAll(RegExp(r'[^\d]'), '');
                                       if (value != filteredValue) {
                                         phoneNumber.text = filteredValue;
-                                        phoneNumber.selection =
-                                            TextSelection.fromPosition(
-                                          TextPosition(
-                                              offset: filteredValue.length),
+                                        phoneNumber.selection = TextSelection.fromPosition(
+                                          TextPosition(offset: filteredValue.length),
                                         );
                                       }
                                     },
@@ -644,9 +579,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               isContainerVisible = false;
                                             });
 
-                                            EasyLoading.show(
-                                                maskType:
-                                                    EasyLoadingMaskType.black);
+                                            EasyLoading.show(maskType: EasyLoadingMaskType.black);
                                             // if (phoneNumber.text.startsWith('0')) {
                                             //   setState(() {
                                             //     phone = phoneNumber.text.substring(1);
@@ -655,9 +588,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             // } else {
                                             // phone = phoneNumber.text;
                                             // }
-                                            _authBloc.add(PostLoginEvent(
-                                                ic: idNumber.text,
-                                                phone: phoneNumber.text));
+                                            _authBloc.add(PostLoginEvent(ic: idNumber.text, phone: phoneNumber.text));
                                           },
                                   ),
                                   const SizedBox(height: 16.0),
@@ -666,8 +597,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       TextSpan(
                                         children: [
                                           TextSpan(
-                                            text: Languages.of(context)
-                                                .dontHaveAccount,
+                                            text: Languages.of(context).dontHaveAccount,
                                             style: GoogleFonts.inter(
                                               color: const Color(0xFF7D8998),
                                               fontSize: 12,
@@ -683,8 +613,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             ),
                                           ),
                                           TextSpan(
-                                            text:
-                                                Languages.of(context).signUpNow,
+                                            text: Languages.of(context).signUpNow,
                                             recognizer: TapGestureRecognizer()
                                               ..onTap = () {
                                                 setState(() {
@@ -717,11 +646,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Container _cardSorting(
-      {String? title,
-      String? image,
-      void Function()? onPressed,
-      required int index}) {
+  Container _cardSorting({String? title, String? image, void Function()? onPressed, required int index}) {
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 24),

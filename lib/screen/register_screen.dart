@@ -1,7 +1,6 @@
 // ignore_for_file: camel_case_types, prefer_typing_uninitialized_variables
 
-import 'dart:developer';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,6 +30,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final AuthBloc _authBloc = AuthBloc();
 
   @override
+  void initState() {
+    // Prefilled credentials for debugging only
+    if (kDebugMode) {
+      idNumber.text = 'A1234567';
+      phoneNumber.text = '1234567890';
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF000000),
@@ -49,7 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Languages.of(context).signUp,
             style: GoogleFonts.signika(color: Colors.white),
           )),
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         height: double.infinity,
         // decoration: const BoxDecoration(color: Color(0xFF000000)),
@@ -99,10 +108,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         EasyLoading.dismiss();
                         GlobalFunction().allDialog(context,
                             title: Languages.of(context).congratulations,
-                            subtitle:
-                                Languages.of(context).accountCreationSuccess,
-                            titleButton: Languages.of(context).continueText,
-                            onTap: () {
+                            subtitle: Languages.of(context).accountCreationSuccess,
+                            titleButton: Languages.of(context).continueText, onTap: () {
                           context.pushNamed(login);
                         });
                       }
@@ -115,8 +122,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // TODO: implement listener
                     },
                     builder: (context, state) {
-                      final errors =
-                          (state is PostRegisterError) ? state.errors : {};
+                      final errors = (state is PostRegisterError) ? state.errors : {};
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,16 +153,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           MainTextFormField(
                             controller: idNumber,
                             inputFormatters: [
-                              FilteringTextInputFormatter.deny(
-                                  RegExp(r'[^\w\s]')),
+                              FilteringTextInputFormatter.deny(RegExp(r'[^\w\s]')),
                             ],
-                            errorText:
-                                errors?['ic'] != null ? errors!['ic'][0] : null,
+                            errorText: errors?['ic'] != null ? errors!['ic'][0] : null,
                             hintText: Languages.of(context).idCardNumber,
                             onChanged: (value) {
                               // Filter input to remove spaces, special characters, and underscores
-                              String filteredValue =
-                                  value.replaceAll(RegExp(r'[^\w]|_'), '');
+                              String filteredValue = value.replaceAll(RegExp(r'[^\w]|_'), '');
                               if (value != filteredValue) {
                                 idNumber.text = filteredValue;
                                 idNumber.selection = TextSelection.fromPosition(
@@ -184,23 +187,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: phoneNumber,
                             validator: (value) {
                               if (value!.length < 8) {
-                                return Languages.of(context)
-                                    .passwordLengthRequirement;
+                                return Languages.of(context).passwordLengthRequirement;
                               }
                               return null;
                             },
-                            errorText: errors?['phone'] != null
-                                ? errors!['phone'][0]
-                                : null,
+                            errorText: errors?['phone'] != null ? errors!['phone'][0] : null,
                             hintText: Languages.of(context).phoneNumber,
                             onChanged: (value) {
                               // Filter input untuk hanya angka
-                              String filteredValue =
-                                  value.replaceAll(RegExp(r'[^\d]'), '');
+                              String filteredValue = value.replaceAll(RegExp(r'[^\d]'), '');
                               if (value != filteredValue) {
                                 phoneNumber.text = filteredValue;
-                                phoneNumber.selection =
-                                    TextSelection.fromPosition(
+                                phoneNumber.selection = TextSelection.fromPosition(
                                   TextPosition(offset: filteredValue.length),
                                 );
                               }
@@ -210,22 +208,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 16.0,
                           ),
                           MainButtonGradient(
-                            title: state is PostRegisterLoading ||
-                                    state is GetEmailVerificationLoading
+                            title: state is PostRegisterLoading || state is GetEmailVerificationLoading
                                 ? '${Languages.of(context).loading}...'
                                 : Languages.of(context).register,
-                            onTap: state is PostRegisterLoading ||
-                                    state is GetEmailVerificationLoading
+                            onTap: state is PostRegisterLoading || state is GetEmailVerificationLoading
                                 ? null
                                 : () {
                                     if (formKey.currentState!.validate()) {
                                       formKey.currentState!.save();
-                                      EasyLoading.show(
-                                          maskType: EasyLoadingMaskType.black);
+                                      EasyLoading.show(maskType: EasyLoadingMaskType.black);
 
-                                      _authBloc.add(PostRegisterEvent(
-                                          ic: idNumber.text,
-                                          phone: phoneNumber.text));
+                                      _authBloc.add(PostRegisterEvent(ic: idNumber.text, phone: phoneNumber.text));
                                     }
                                   },
                           ),
@@ -235,8 +228,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: Languages.of(context)
-                                        .alreadyHaveAccount,
+                                    text: Languages.of(context).alreadyHaveAccount,
                                     style: GoogleFonts.inter(
                                       color: const Color(0xFF7D8998),
                                       fontSize: 12,
@@ -253,8 +245,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                   TextSpan(
                                     text: Languages.of(context).login,
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => context.pushNamed(login),
+                                    recognizer: TapGestureRecognizer()..onTap = () => context.pushNamed(login),
                                     style: GoogleFonts.inter(
                                       color: const Color(0xFF0972D3),
                                       fontSize: 12,
