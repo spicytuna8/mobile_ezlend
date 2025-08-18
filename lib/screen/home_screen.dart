@@ -504,7 +504,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       element.status == 10 && element.statusloan == 4) {
                     setState(() {
                       dataLoan = element;
-                      isPending = true;
+                      isPending = false; // true, // XXX: Multi-loan
                       isOverdue = false;
                     });
                   } else {
@@ -987,7 +987,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                           itemBuilder: (BuildContext context, int index) {
                                             ItemPackageIndex data = state.data.data.items[index];
                                             return GestureDetector(
-                                              onTap: dataLoan != null
+                                              /* XXX: Multi-loan
+                                                                                            onTap: dataLoan != null
                                                   ? null
                                                   : () {
                                                       setState(() {
@@ -996,6 +997,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                                         selectedNominal = index;
                                                       });
                                                     },
+                                                    */
+
+                                              onTap: () {
+                                                setState(() {
+                                                  indexSelected = index;
+                                                  selectedPackage = data;
+                                                  selectedNominal = index;
+                                                });
+                                              },
                                               child: Container(
                                                 padding: const EdgeInsets.all(16),
                                                 decoration: BoxDecoration(
