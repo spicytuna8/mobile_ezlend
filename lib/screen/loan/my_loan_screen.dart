@@ -35,8 +35,7 @@ class MyLoanScreen extends StatefulWidget {
 }
 
 class _MyLoanScreenState extends State<MyLoanScreen> {
-  PreferencesHelper preferencesHelper =
-      PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+  PreferencesHelper preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
 
   final PackageBloc _packageBloc = PackageBloc();
   final MemberBloc _memberBloc = MemberBloc();
@@ -105,12 +104,12 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                 preferencesHelper.setStringSharedPref('kyc_status2', '');
                 preferencesHelper.setStringSharedPref('kyc_status3', '');
               } else {
-                preferencesHelper.setStringSharedPref('kyc_status1',
-                    state.data.data?.kyc?['1']['status'].toString() ?? '');
-                preferencesHelper.setStringSharedPref('kyc_status2',
-                    state.data.data?.kyc?['2']['status'].toString() ?? '');
-                preferencesHelper.setStringSharedPref('kyc_status3',
-                    state.data.data?.kyc?['3']['status'].toString() ?? '');
+                preferencesHelper.setStringSharedPref(
+                    'kyc_status1', state.data.data?.kyc?['1']['status'].toString() ?? '');
+                preferencesHelper.setStringSharedPref(
+                    'kyc_status2', state.data.data?.kyc?['2']['status'].toString() ?? '');
+                preferencesHelper.setStringSharedPref(
+                    'kyc_status3', state.data.data?.kyc?['3']['status'].toString() ?? '');
               }
             } else if (state is GetMemberError) {
               log('statuss error ${state.message}');
@@ -135,23 +134,19 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                       isPending = false;
                       isOverdue = false;
 
-                      transactionBloc.add(
-                          CheckLoanEvent(packageId: dataLoan!.id.toString()));
+                      transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
 
                       isHaveData = false;
                     });
                   } else if (element.status == 3 && element.statusloan == 7 ||
                       element.status == 3 && element.statusloan == 6 ||
                       element.status == 3 && element.statusloan == 8 ||
-                      element.status == 3 &&
-                          element.statusloan == 4 &&
-                          element.blacklist == 9) {
+                      element.status == 3 && element.statusloan == 4 && element.blacklist == 9) {
                     setState(() {
                       dataLoan = element;
                       isPending = false;
                       isOverdue = true;
-                      transactionBloc.add(
-                          CheckLoanEvent(packageId: dataLoan!.id.toString()));
+                      transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
 
                       isHaveData = false;
                     });
@@ -174,10 +169,10 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                     setState(() {
                       dataLoan = element;
                       // isHaveData = false;
-                      isPending = true;
+
+                      isPending = false; // true; XXX: Multi-loan
                       isOverdue = false;
-                      transactionBloc.add(
-                          CheckLoanEvent(packageId: dataLoan!.id.toString()));
+                      transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
                     });
                   } else {
                     setState(() {
@@ -239,7 +234,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                 ? const CardBlacklist()
                 : isPending
                     ? SingleChildScrollView(
-                        child: Container(
+                        child: SizedBox(
                         height: MediaQuery.of(context).size.height,
                         width: MediaQuery.of(context).size.width,
                         child: Column(
@@ -302,13 +297,11 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                   // mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    BlocConsumer<TransactionBloc,
-                                        TransactionState>(
+                                    BlocConsumer<TransactionBloc, TransactionState>(
                                       listener: (context, state) {
                                         if (state is CheckLoanSuccess) {
                                           setState(() {
-                                            totalmustbepaid = state
-                                                .data.data?.totalmustbepaid;
+                                            totalmustbepaid = state.data.data?.totalmustbepaid;
                                           });
                                         }
                                       },
@@ -316,134 +309,76 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                       builder: (context, state) {
                                         if (state is CheckLoanSuccess) {
                                           return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Container(
-                                                padding:
-                                                    const EdgeInsets.all(16),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
+                                                padding: const EdgeInsets.all(16),
+                                                width: MediaQuery.of(context).size.width,
                                                 // height: 145,
                                                 decoration: BoxDecoration(
                                                     color: secondaryColor,
-                                                    borderRadius:
-                                                        const BorderRadius.only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    12),
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    12)),
+                                                    borderRadius: const BorderRadius.only(
+                                                        topLeft: Radius.circular(12), topRight: Radius.circular(12)),
                                                     image: const DecorationImage(
-                                                        image: AssetImage(
-                                                            'assets/images/promo2.png'),
+                                                        image: AssetImage('assets/images/promo2.png'),
                                                         fit: BoxFit.cover)),
                                                 child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
                                                         Text(
-                                                          Languages.of(context)
-                                                              .loanBalance,
+                                                          Languages.of(context).loanBalance,
                                                           style: white12w400,
                                                         ),
                                                         isOverdue
                                                             ? Container(
                                                                 width: 69,
                                                                 height: 22,
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        10,
-                                                                    vertical:
-                                                                        2),
-                                                                decoration:
-                                                                    ShapeDecoration(
-                                                                  color: const Color(
-                                                                      0xFFE02424),
-                                                                  shape:
-                                                                      RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            20),
+                                                                padding: const EdgeInsets.symmetric(
+                                                                    horizontal: 10, vertical: 2),
+                                                                decoration: ShapeDecoration(
+                                                                  color: const Color(0xFFE02424),
+                                                                  shape: RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.circular(20),
                                                                   ),
                                                                 ),
                                                                 child: Center(
                                                                   child: Text(
-                                                                    Languages.of(
-                                                                            context)
-                                                                        .overdue,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: GoogleFonts
-                                                                        .inter(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
+                                                                    Languages.of(context).overdue,
+                                                                    textAlign: TextAlign.center,
+                                                                    style: GoogleFonts.inter(
+                                                                      color: Colors.white,
+                                                                      fontSize: 12,
+                                                                      fontWeight: FontWeight.w500,
                                                                     ),
                                                                   ),
                                                                 ),
                                                               )
                                                             : Container(
                                                                 height: 22,
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        10,
-                                                                    vertical:
-                                                                        2),
-                                                                decoration:
-                                                                    ShapeDecoration(
-                                                                  shape:
-                                                                      RoundedRectangleBorder(
-                                                                    side: const BorderSide(
-                                                                        width:
-                                                                            1,
-                                                                        color: Colors
-                                                                            .white),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            20),
+                                                                padding: const EdgeInsets.symmetric(
+                                                                    horizontal: 10, vertical: 2),
+                                                                decoration: ShapeDecoration(
+                                                                  shape: RoundedRectangleBorder(
+                                                                    side:
+                                                                        const BorderSide(width: 1, color: Colors.white),
+                                                                    borderRadius: BorderRadius.circular(20),
                                                                   ),
                                                                 ),
                                                                 child: Text(
-                                                                  dataLoan ==
-                                                                          null
-                                                                      ? Languages.of(
-                                                                              context)
-                                                                          .noActive
+                                                                  dataLoan == null
+                                                                      ? Languages.of(context).noActive
                                                                       : isPending
-                                                                          ? Languages.of(context)
-                                                                              .pending
-                                                                          : Languages.of(context)
-                                                                              .active,
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style:
-                                                                      GoogleFonts
-                                                                          .inter(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
+                                                                          ? Languages.of(context).pending
+                                                                          : Languages.of(context).active,
+                                                                  textAlign: TextAlign.center,
+                                                                  style: GoogleFonts.inter(
+                                                                    color: Colors.white,
+                                                                    fontSize: 12,
+                                                                    fontWeight: FontWeight.w500,
                                                                   ),
                                                                 ),
                                                               )
@@ -458,8 +393,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                         color: Colors.white,
                                                         fontSize: 36,
                                                         fontFamily: 'Gabarito',
-                                                        fontWeight:
-                                                            FontWeight.w500,
+                                                        fontWeight: FontWeight.w500,
                                                         height: 0,
                                                       ),
                                                     ),
@@ -468,12 +402,8 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                     ),
                                                     Text(
                                                       dataLoan == null
-                                                          ? Languages.of(
-                                                                  context)
-                                                              .dontHaveActiveLoan
-                                                          : dataLoan
-                                                                  ?.packageName ??
-                                                              '',
+                                                          ? Languages.of(context).dontHaveActiveLoan
+                                                          : dataLoan?.packageName ?? '',
                                                       style: white12w400,
                                                     ),
                                                     const SizedBox(
@@ -483,63 +413,43 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                 ),
                                               ),
                                               Container(
-                                                padding:
-                                                    const EdgeInsets.all(16),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
+                                                padding: const EdgeInsets.all(16),
+                                                width: MediaQuery.of(context).size.width,
                                                 decoration: const BoxDecoration(
                                                   color: Color(0xFF252422),
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                          bottomLeft:
-                                                              Radius.circular(
-                                                                  12),
-                                                          bottomRight:
-                                                              Radius.circular(
-                                                                  12)),
+                                                  borderRadius: BorderRadius.only(
+                                                      bottomLeft: Radius.circular(12),
+                                                      bottomRight: Radius.circular(12)),
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Text(
                                                       //// TODO: minta payment due
                                                       '${Languages.of(context).paymentDue} ',
                                                       style: white12w400,
                                                     ),
-                                                    BlocConsumer<PaymentDueBloc,
-                                                        PaymentDueState>(
+                                                    BlocConsumer<PaymentDueBloc, PaymentDueState>(
                                                       bloc: paymentDueBloc,
-                                                      listener:
-                                                          (context, state) {
+                                                      listener: (context, state) {
                                                         // TODO: implement listener
                                                       },
-                                                      builder:
-                                                          (context, state) {
-                                                        if (state
-                                                            is CheckDueDateLoading) {
+                                                      builder: (context, state) {
+                                                        if (state is CheckDueDateLoading) {
                                                           return const SizedBox(
                                                             height: 30,
                                                             width: 30,
                                                             child: Center(
-                                                              child:
-                                                                  CircularProgressIndicator(),
+                                                              child: CircularProgressIndicator(),
                                                             ),
                                                           );
-                                                        } else if (state
-                                                            is CheckDueDateSuccess) {
+                                                        } else if (state is CheckDueDateSuccess) {
                                                           return Text(
                                                             //// TODO: minta payment due
                                                             dataLoan == null
                                                                 ? '--/--/--'
-                                                                : DateFormat(
-                                                                        'yyyy-MM-dd')
-                                                                    .format(state
-                                                                        .data
-                                                                        .data!
-                                                                        .duedate!),
+                                                                : DateFormat('yyyy-MM-dd')
+                                                                    .format(state.data.data!.duedate!),
                                                             style: white12w400,
                                                           );
                                                         } else {
@@ -554,90 +464,51 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                           );
                                         } else {
                                           return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Container(
-                                                padding:
-                                                    const EdgeInsets.all(16),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
+                                                padding: const EdgeInsets.all(16),
+                                                width: MediaQuery.of(context).size.width,
                                                 // height: 145,
                                                 decoration: BoxDecoration(
                                                     color: secondaryColor,
-                                                    borderRadius:
-                                                        const BorderRadius.only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    12),
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    12)),
+                                                    borderRadius: const BorderRadius.only(
+                                                        topLeft: Radius.circular(12), topRight: Radius.circular(12)),
                                                     image: const DecorationImage(
-                                                        image: AssetImage(
-                                                            'assets/images/promo2.png'),
+                                                        image: AssetImage('assets/images/promo2.png'),
                                                         fit: BoxFit.cover)),
                                                 child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
                                                         Text(
-                                                          Languages.of(context)
-                                                              .loanBalance,
+                                                          Languages.of(context).loanBalance,
                                                           style: white12w400,
                                                         ),
                                                         Container(
                                                           height: 22,
                                                           padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      10,
-                                                                  vertical: 2),
-                                                          decoration:
-                                                              ShapeDecoration(
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              side: const BorderSide(
-                                                                  width: 1,
-                                                                  color: Colors
-                                                                      .white),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20),
+                                                              const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                                          decoration: ShapeDecoration(
+                                                            shape: RoundedRectangleBorder(
+                                                              side: const BorderSide(width: 1, color: Colors.white),
+                                                              borderRadius: BorderRadius.circular(20),
                                                             ),
                                                           ),
                                                           child: Text(
                                                             dataLoan == null
-                                                                ? Languages.of(
-                                                                        context)
-                                                                    .noActive
+                                                                ? Languages.of(context).noActive
                                                                 : isPending
-                                                                    ? Languages.of(
-                                                                            context)
-                                                                        .pending
-                                                                    : Languages.of(
-                                                                            context)
-                                                                        .active,
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: GoogleFonts
-                                                                .inter(
-                                                              color:
-                                                                  Colors.white,
+                                                                    ? Languages.of(context).pending
+                                                                    : Languages.of(context).active,
+                                                            textAlign: TextAlign.center,
+                                                            style: GoogleFonts.inter(
+                                                              color: Colors.white,
                                                               fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
+                                                              fontWeight: FontWeight.w500,
                                                             ),
                                                           ),
                                                         )
@@ -652,8 +523,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                         color: Colors.white,
                                                         fontSize: 36,
                                                         fontFamily: 'Gabarito',
-                                                        fontWeight:
-                                                            FontWeight.w500,
+                                                        fontWeight: FontWeight.w500,
                                                         height: 0,
                                                       ),
                                                     ),
@@ -662,12 +532,8 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                     ),
                                                     Text(
                                                       dataLoan == null
-                                                          ? Languages.of(
-                                                                  context)
-                                                              .dontHaveActiveLoan
-                                                          : dataLoan
-                                                                  ?.packageName ??
-                                                              '',
+                                                          ? Languages.of(context).dontHaveActiveLoan
+                                                          : dataLoan?.packageName ?? '',
                                                       style: white12w400,
                                                     ),
                                                     const SizedBox(
@@ -677,64 +543,43 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                 ),
                                               ),
                                               Container(
-                                                padding:
-                                                    const EdgeInsets.all(16),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
+                                                padding: const EdgeInsets.all(16),
+                                                width: MediaQuery.of(context).size.width,
                                                 decoration: const BoxDecoration(
                                                   color: Color(0xFF252422),
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                          bottomLeft:
-                                                              Radius.circular(
-                                                                  12),
-                                                          bottomRight:
-                                                              Radius.circular(
-                                                                  12)),
+                                                  borderRadius: BorderRadius.only(
+                                                      bottomLeft: Radius.circular(12),
+                                                      bottomRight: Radius.circular(12)),
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Text(
                                                       //// TODO: minta payment due
-                                                      Languages.of(context)
-                                                          .paymentDue,
+                                                      Languages.of(context).paymentDue,
                                                       style: white12w400,
                                                     ),
-                                                    BlocConsumer<PaymentDueBloc,
-                                                        PaymentDueState>(
+                                                    BlocConsumer<PaymentDueBloc, PaymentDueState>(
                                                       bloc: paymentDueBloc,
-                                                      listener:
-                                                          (context, state) {
+                                                      listener: (context, state) {
                                                         // TODO: implement listener
                                                       },
-                                                      builder:
-                                                          (context, state) {
-                                                        if (state
-                                                            is CheckDueDateLoading) {
+                                                      builder: (context, state) {
+                                                        if (state is CheckDueDateLoading) {
                                                           return const SizedBox(
                                                             height: 30,
                                                             width: 30,
                                                             child: Center(
-                                                              child:
-                                                                  CircularProgressIndicator(),
+                                                              child: CircularProgressIndicator(),
                                                             ),
                                                           );
-                                                        } else if (state
-                                                            is CheckDueDateSuccess) {
+                                                        } else if (state is CheckDueDateSuccess) {
                                                           return Text(
                                                             //// TODO: minta payment due
                                                             dataLoan == null
                                                                 ? '--/--/--'
-                                                                : DateFormat(
-                                                                        'yyyy-MM-dd')
-                                                                    .format(state
-                                                                        .data
-                                                                        .data!
-                                                                        .duedate!),
+                                                                : DateFormat('yyyy-MM-dd')
+                                                                    .format(state.data.data!.duedate!),
                                                             style: white12w400,
                                                           );
                                                         } else {
@@ -759,27 +604,18 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                             ? Container(
                                                 width: 350,
                                                 height: 58,
-                                                padding:
-                                                    const EdgeInsets.all(12),
+                                                padding: const EdgeInsets.all(12),
                                                 clipBehavior: Clip.antiAlias,
                                                 decoration: ShapeDecoration(
-                                                  color:
-                                                      const Color(0xFF261616),
+                                                  color: const Color(0xFF261616),
                                                   shape: RoundedRectangleBorder(
-                                                    side: const BorderSide(
-                                                        width: 1,
-                                                        color:
-                                                            Color(0xFFF46C7C)),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
+                                                    side: const BorderSide(width: 1, color: Color(0xFFF46C7C)),
+                                                    borderRadius: BorderRadius.circular(12),
                                                   ),
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Image.asset(
                                                       'assets/icons/ic_info_danger.png',
@@ -791,44 +627,35 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                     SizedBox(
                                                       width: 290,
                                                       child: Text(
-                                                        Languages.of(context)
-                                                            .overdueLoanMessage,
-                                                        style:
-                                                            GoogleFonts.roboto(
+                                                        Languages.of(context).overdueLoanMessage,
+                                                        style: GoogleFonts.roboto(
                                                           color: Colors.white,
                                                           fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w400,
+                                                          fontWeight: FontWeight.w400,
                                                         ),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                               )
-                                            : Container(
+                                            : const SizedBox(),
+                                    /* XXX: Multi-loan
+                                    
+                                    Container(
                                                 width: 350,
                                                 height: 60,
-                                                padding:
-                                                    const EdgeInsets.all(12),
+                                                padding: const EdgeInsets.all(12),
                                                 clipBehavior: Clip.antiAlias,
                                                 decoration: ShapeDecoration(
-                                                  color:
-                                                      const Color(0xFF1F2A37),
+                                                  color: const Color(0xFF1F2A37),
                                                   shape: RoundedRectangleBorder(
-                                                    side: const BorderSide(
-                                                        width: 1,
-                                                        color:
-                                                            Color(0xFFA4CAFE)),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
+                                                    side: const BorderSide(width: 1, color: Color(0xFFA4CAFE)),
+                                                    borderRadius: BorderRadius.circular(12),
                                                   ),
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Image.asset(
                                                       'assets/icons/ic_info.png',
@@ -840,23 +667,19 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                     SizedBox(
                                                       width: 290,
                                                       child: Text(
-                                                        Languages.of(context)
-                                                            .clearLoanBeforeApplying,
-                                                        style:
-                                                            GoogleFonts.roboto(
+                                                        Languages.of(context).clearLoanBeforeApplying,
+                                                        style: GoogleFonts.roboto(
                                                           color: Colors.white,
                                                           fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w400,
+                                                          fontWeight: FontWeight.w400,
                                                         ),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
-                                              ),
+                                              ), */
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           Languages.of(context).ourPackages,
@@ -866,8 +689,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                           onPressed: () {
                                             setState(() {
                                               // Menampilkan semua item saat tombol "See More" diklik
-                                              _visibleItemCount =
-                                                  listPackage.length;
+                                              _visibleItemCount = listPackage.length;
                                             });
                                           },
                                           child: Text(
@@ -890,12 +712,10 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                       listener: (context, state) {
                                         if (state is GetIndexPackageError) {
                                           EasyLoading.dismiss();
-                                        } else if (state
-                                            is GetIndexPackageSuccess) {
+                                        } else if (state is GetIndexPackageSuccess) {
                                           EasyLoading.dismiss();
                                           setState(() {
-                                            listPackage =
-                                                state.data.data?.items ?? [];
+                                            listPackage = state.data.data.items ?? [];
                                             if (listPackage.isNotEmpty) {
                                               selectedPackage = listPackage[0];
                                             }
@@ -909,110 +729,65 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                             children: [
                                               GridView.builder(
                                                 padding: EdgeInsets.zero,
-                                                gridDelegate:
-                                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                                   childAspectRatio: 1.5,
                                                   crossAxisCount: 2,
                                                   mainAxisSpacing: 16,
                                                   crossAxisSpacing: 16,
                                                 ),
-                                                itemCount: state.data.data!
-                                                            .items!.length >
-                                                        4
+                                                itemCount: state.data.data.items.length > 4
                                                     ? _visibleItemCount
-                                                    : state.data.data!.items!
-                                                        .length,
+                                                    : state.data.data.items.length,
                                                 shrinkWrap: true,
                                                 physics: const ScrollPhysics(),
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  ItemPackageIndex data = state
-                                                      .data.data!.items![index];
+                                                itemBuilder: (BuildContext context, int index) {
+                                                  ItemPackageIndex data = state.data.data.items[index];
                                                   return GestureDetector(
                                                     onTap: dataLoan != null
                                                         ? null
                                                         : () {
                                                             setState(() {
-                                                              indexSelected =
-                                                                  index;
-                                                              selectedPackage =
-                                                                  data;
-                                                              selectedNominal =
-                                                                  index;
+                                                              indexSelected = index;
+                                                              selectedPackage = data;
+                                                              selectedNominal = index;
                                                             });
                                                           },
                                                     child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              16),
+                                                      padding: const EdgeInsets.all(16),
                                                       decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(12),
+                                                        borderRadius: BorderRadius.circular(12),
                                                         border: Border.all(
                                                             width: 1,
-                                                            color: indexSelected ==
-                                                                    index
-                                                                ? const Color(
-                                                                    0xFFFED607)
-                                                                : const Color(
-                                                                        0xFF252422)
-                                                                    .withOpacity(
-                                                                        0.4)),
-                                                        color: indexSelected ==
-                                                                index
-                                                            ? Colors.amber
-                                                                .withOpacity(
-                                                                    0.4)
-                                                            : const Color(
-                                                                    0xFF252422)
-                                                                .withOpacity(
-                                                                    0.9),
+                                                            color: indexSelected == index
+                                                                ? const Color(0xFFFED607)
+                                                                : const Color(0xFF252422).withOpacity(0.4)),
+                                                        color: indexSelected == index
+                                                            ? Colors.amber.withOpacity(0.4)
+                                                            : const Color(0xFF252422).withOpacity(0.9),
                                                       ),
                                                       child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Text(
-                                                            "${data.name}",
-                                                            style: GoogleFonts
-                                                                .inter(
-                                                              color: indexSelected ==
-                                                                      index
-                                                                  ? const Color(
-                                                                      0xFFD1D5DB)
-                                                                  : const Color(
-                                                                          0xFFD1D5DB)
-                                                                      .withOpacity(
-                                                                          0.4),
+                                                            data.name,
+                                                            style: GoogleFonts.inter(
+                                                              color: indexSelected == index
+                                                                  ? const Color(0xFFD1D5DB)
+                                                                  : const Color(0xFFD1D5DB).withOpacity(0.4),
                                                               fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
+                                                              fontWeight: FontWeight.w600,
                                                             ),
                                                           ),
                                                           Text(
                                                             GlobalFunction()
-                                                                .formattedMoney(
-                                                                    double.parse(
-                                                                        data.amount ??
-                                                                            '0'))
+                                                                .formattedMoney(double.parse(data.amount ?? '0'))
                                                                 .toString(),
-                                                            style: GoogleFonts
-                                                                .inter(
-                                                              color: indexSelected ==
-                                                                      index
+                                                            style: GoogleFonts.inter(
+                                                              color: indexSelected == index
                                                                   ? Colors.white
-                                                                  : const Color(
-                                                                          0xFFD1D5DB)
-                                                                      .withOpacity(
-                                                                          0.4),
+                                                                  : const Color(0xFFD1D5DB).withOpacity(0.4),
                                                               fontSize: 24,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700,
+                                                              fontWeight: FontWeight.w700,
                                                             ),
                                                           ),
                                                           const SizedBox(
@@ -1045,24 +820,16 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                               const SizedBox(
                                                 height: 16.0,
                                               ),
-                                              BlocConsumer<TransactionBloc,
-                                                  TransactionState>(
+                                              BlocConsumer<TransactionBloc, TransactionState>(
                                                 bloc: transactionBloc,
                                                 listener: (context, state) {
-                                                  if (state
-                                                      is PostLoanSuccess) {
-                                                    GlobalFunction().allDialog(
-                                                        context,
-                                                        title: Languages.of(
-                                                                context)
-                                                            .successSubmitLoanRequest,
+                                                  if (state is PostLoanSuccess) {
+                                                    GlobalFunction().allDialog(context,
+                                                        title: Languages.of(context).successSubmitLoanRequest,
                                                         onTap: () {
-                                                      context.pushNamed(
-                                                          bottomNavigation,
-                                                          extra: 0);
+                                                      context.pushNamed(bottomNavigation, extra: 0);
                                                     });
-                                                  } else if (state
-                                                      is PostLoanError) {
+                                                  } else if (state is PostLoanError) {
                                                     GlobalFunction().allDialog(
                                                       context,
                                                       title: state.message,
@@ -1072,80 +839,43 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                 },
                                                 builder: (context, state) {
                                                   return MainButtonGradient(
-                                                    title: state
-                                                            is PostLoanLoading
+                                                    title: state is PostLoanLoading
                                                         ? '${Languages.of(context).loading}...'
-                                                        : '${Languages.of(context).continueText}',
-                                                    onTap: indexSelected ==
-                                                                -1 ||
-                                                            state
-                                                                is PostLoanLoading
+                                                        : Languages.of(context).continueText,
+                                                    onTap: indexSelected == -1 || state is PostLoanLoading
                                                         ? null
                                                         : () async {
-                                                            String statusKyc1 =
-                                                                await preferencesHelper
-                                                                    .getStringSharedPref(
-                                                                        'kyc_status1');
-                                                            String statusKyc2 =
-                                                                await preferencesHelper
-                                                                    .getStringSharedPref(
-                                                                        'kyc_status2');
-                                                            String statusKyc3 =
-                                                                await preferencesHelper
-                                                                    .getStringSharedPref(
-                                                                        'kyc_status3');
+                                                            String statusKyc1 = await preferencesHelper
+                                                                .getStringSharedPref('kyc_status1');
+                                                            String statusKyc2 = await preferencesHelper
+                                                                .getStringSharedPref('kyc_status2');
+                                                            String statusKyc3 = await preferencesHelper
+                                                                .getStringSharedPref('kyc_status3');
                                                             log("status kyc $statusKyc1");
 
                                                             if (statusKyc1 == '0' ||
-                                                                statusKyc2 ==
-                                                                    '0' ||
-                                                                statusKyc3 ==
-                                                                    '0') {
-                                                              GlobalFunction().allDialog(
-                                                                  context,
-                                                                  title: Languages.of(
-                                                                          context)
-                                                                      .kycLoanPendingApproval);
-                                                            } else if (statusKyc1 ==
-                                                                    '2' ||
-                                                                statusKyc2 ==
-                                                                    '2' ||
-                                                                statusKyc3 ==
-                                                                    '2') {
-                                                              GlobalFunction().allDialog(
-                                                                  context,
-                                                                  title: Languages.of(
-                                                                          context)
-                                                                      .kycRejected,
-                                                                  onTap: () {
-                                                                context.pushNamed(
-                                                                    kyc1Input,
-                                                                    extra:
-                                                                        selectedPackage);
+                                                                statusKyc2 == '0' ||
+                                                                statusKyc3 == '0') {
+                                                              GlobalFunction().allDialog(context,
+                                                                  title: Languages.of(context).kycLoanPendingApproval);
+                                                            } else if (statusKyc1 == '2' ||
+                                                                statusKyc2 == '2' ||
+                                                                statusKyc3 == '2') {
+                                                              GlobalFunction().allDialog(context,
+                                                                  title: Languages.of(context).kycRejected, onTap: () {
+                                                                context.pushNamed(kyc1Input, extra: selectedPackage);
                                                               });
-                                                            } else if (statusKyc1 ==
-                                                                    '1' &&
-                                                                statusKyc1 ==
-                                                                    '1' &&
-                                                                statusKyc3 ==
-                                                                    '1') {
+                                                            } else if (statusKyc1 == '1' &&
+                                                                statusKyc1 == '1' &&
+                                                                statusKyc3 == '1') {
                                                               log('masuk submit loan');
-                                                              transactionBloc.add(
-                                                                  PostLoanEvent(
-                                                                packageId:
-                                                                    selectedPackage!
-                                                                        .id
-                                                                        .toString(),
-                                                                dateLoan: DateFormat(
-                                                                        'yyyy-MM-dd')
-                                                                    .format(DateTime
-                                                                        .now()),
+                                                              transactionBloc.add(PostLoanEvent(
+                                                                packageId: selectedPackage!.id.toString(),
+                                                                dateLoan:
+                                                                    DateFormat('yyyy-MM-dd').format(DateTime.now()),
                                                               ));
                                                             } else {
-                                                              context.pushNamed(
-                                                                  kyc1Input,
-                                                                  extra:
-                                                                      selectedPackage);
+                                                              context.pushNamed(kyc1Input, extra: selectedPackage);
                                                             }
                                                           },
                                                   );
@@ -1153,17 +883,13 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                               )
                                             ],
                                           );
-                                        } else if (state
-                                            is GetIndexPackageError) {
+                                        } else if (state is GetIndexPackageError) {
                                           return Padding(
                                             padding: const EdgeInsets.all(16.0),
                                             child: MainButton(
-                                              title: Languages.of(context)
-                                                  .tryAgain,
+                                              title: Languages.of(context).tryAgain,
                                               onTap: () {
-                                                _packageBloc.add(
-                                                    const GetIndexPackageEvent(
-                                                        page: 1, perPage: 10));
+                                                _packageBloc.add(const GetIndexPackageEvent(page: 1, perPage: 10));
                                               },
                                             ),
                                           );
@@ -1176,11 +902,10 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                       height: 24.0,
                                     ),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          '${Languages.of(context).historyLoan}',
+                                          Languages.of(context).historyLoan,
                                           style: white16w600,
                                         ),
                                         Text(

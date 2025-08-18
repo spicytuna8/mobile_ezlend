@@ -30,8 +30,7 @@ class RepaymentScreen extends StatefulWidget {
 }
 
 class _RepaymentScreenState extends State<RepaymentScreen> {
-  PreferencesHelper preferencesHelper =
-      PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+  PreferencesHelper preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
   final TransactionBloc _transactionBloc = TransactionBloc();
   final RepaymentBloc _repaymentBloc = RepaymentBloc();
   final PaymentDueBloc paymentDueBloc = PaymentDueBloc();
@@ -71,35 +70,29 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                 setState(() {
                   idloan = element.id;
                 });
-                log('test 3-4 id loan ${idloan}');
+                log('test 3-4 id loan $idloan');
 
-                _repaymentBloc
-                    .add(GetListPaymentEvent(loanpackageid: idloan.toString()));
+                _repaymentBloc.add(GetListPaymentEvent(loanpackageid: idloan.toString()));
                 setState(() {
                   dataLoan = element;
                   isOverdue = false;
 
                   // if (dataLoan != null) {
-                  _transactionBloc
-                      .add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
+                  _transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
                   // }
                   isHaveData = false;
                 });
               } else if (element.status == 3 && element.statusloan == 7 ||
                   element.status == 3 && element.statusloan == 6 ||
                   element.status == 3 && element.statusloan == 8 ||
-                  element.status == 3 &&
-                      element.statusloan == 4 &&
-                      element.blacklist == 9) {
+                  element.status == 3 && element.statusloan == 4 && element.blacklist == 9) {
                 log('test 3-7');
-                _repaymentBloc.add(
-                    GetListPaymentEvent(loanpackageid: element.id.toString()));
+                _repaymentBloc.add(GetListPaymentEvent(loanpackageid: element.id.toString()));
                 setState(() {
                   dataLoan = element;
                   isOverdue = true;
                   // if (dataLoan != null) {
-                  _transactionBloc
-                      .add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
+                  _transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
                   // }
                   isHaveData = false;
                 });
@@ -169,7 +162,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
           appBar: AppBar(
             centerTitle: true,
             bottom: PreferredSize(
-              preferredSize: Size.fromHeight(10.0),
+              preferredSize: const Size.fromHeight(10.0),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
@@ -193,14 +186,13 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                         log('ini check loan sukses ${state.data.toJson().toString()}');
                         setState(() {
                           if (state.data.data?.totalmustbepaid != null) {
-                            totalmustbepaid = double.parse(state
-                                    .data.data?.totalmustbepaid is int
+                            totalmustbepaid = double.parse(state.data.data?.totalmustbepaid is int
                                 ? state.data.data?.totalmustbepaid.toString()
                                 : state.data.data?.totalmustbepaid);
                           }
                         });
                       } else if (state is CheckLoanError) {
-                        log('errror cek loan' + state.message.toString());
+                        log('errror cek loan${state.message}');
                       }
                       // TODO: implement listener
                     },
@@ -223,20 +215,15 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                   decoration: BoxDecoration(
                                       color: secondaryColor,
                                       borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(12),
-                                          topRight: Radius.circular(12)),
+                                          topLeft: Radius.circular(12), topRight: Radius.circular(12)),
                                       image: const DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/promo2.png'),
-                                          fit: BoxFit.cover)),
+                                          image: AssetImage('assets/images/promo2.png'), fit: BoxFit.cover)),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             Languages.of(context).loanBalance,
@@ -246,46 +233,32 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                               ? Container(
                                                   width: 69,
                                                   height: 22,
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 2),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                                                   decoration: ShapeDecoration(
-                                                    color:
-                                                        const Color(0xFFE02424),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
+                                                    color: const Color(0xFFE02424),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(20),
                                                     ),
                                                   ),
                                                   child: Center(
                                                     child: Text(
                                                       '${Languages.of(context).overdue} ',
-                                                      textAlign:
-                                                          TextAlign.center,
+                                                      textAlign: TextAlign.center,
                                                       style: GoogleFonts.inter(
                                                         color: Colors.white,
                                                         fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w500,
+                                                        fontWeight: FontWeight.w500,
                                                       ),
                                                     ),
                                                   ),
                                                 )
                                               : Container(
                                                   decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.white),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              16)),
-                                                  padding:
-                                                      const EdgeInsets.all(8),
+                                                      border: Border.all(color: Colors.white),
+                                                      borderRadius: BorderRadius.circular(16)),
+                                                  padding: const EdgeInsets.all(8),
                                                   child: Text(
-                                                    Languages.of(context)
-                                                        .active,
+                                                    Languages.of(context).active,
                                                     style: white12w400,
                                                   ),
                                                 )
@@ -323,20 +296,17 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                   decoration: const BoxDecoration(
                                     color: Color(0xFF252422),
                                     borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(12),
-                                        bottomRight: Radius.circular(12)),
+                                        bottomLeft: Radius.circular(12), bottomRight: Radius.circular(12)),
                                   ),
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         //// TODO: minta payment due
                                         '${Languages.of(context).paymentDue} ',
                                         style: white12w400,
                                       ),
-                                      BlocConsumer<PaymentDueBloc,
-                                          PaymentDueState>(
+                                      BlocConsumer<PaymentDueBloc, PaymentDueState>(
                                         bloc: paymentDueBloc,
                                         listener: (context, state) {
                                           // TODO: implement listener
@@ -347,19 +317,15 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                               height: 30,
                                               width: 30,
                                               child: Center(
-                                                child:
-                                                    CircularProgressIndicator(),
+                                                child: CircularProgressIndicator(),
                                               ),
                                             );
-                                          } else if (state
-                                              is CheckDueDateSuccess) {
+                                          } else if (state is CheckDueDateSuccess) {
                                             return Text(
                                               //// TODO: minta payment due
                                               dataLoan == null
                                                   ? '--/--/--'
-                                                  : DateFormat('yyyy-MM-dd')
-                                                      .format(state
-                                                          .data.data!.duedate!),
+                                                  : DateFormat('yyyy-MM-dd').format(state.data.data!.duedate!),
                                               style: white12w400,
                                             );
                                           } else {
@@ -384,18 +350,13 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                             decoration: ShapeDecoration(
                                               color: const Color(0xFF261616),
                                               shape: RoundedRectangleBorder(
-                                                side: const BorderSide(
-                                                    width: 1,
-                                                    color: Color(0xFFF46C7C)),
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
+                                                side: const BorderSide(width: 1, color: Color(0xFFF46C7C)),
+                                                borderRadius: BorderRadius.circular(12),
                                               ),
                                             ),
                                             child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Image.asset(
                                                   'assets/icons/ic_info_danger.png',
@@ -407,21 +368,25 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                                 SizedBox(
                                                   width: 290,
                                                   child: Text(
-                                                    Languages.of(context)
-                                                        .overdueLoanMessage,
+                                                    Languages.of(context).overdueLoanMessage,
                                                     style: const TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 12,
                                                       fontFamily: 'Roboto',
-                                                      fontWeight:
-                                                          FontWeight.w400,
+                                                      fontWeight: FontWeight.w400,
                                                     ),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           )
-                                        : Container(
+                                        : const SizedBox(),
+
+                                /* 
+
+                                        XXX: Multi-loan
+                                        
+                                        Container(
                                             width: 350,
                                             height: 60,
                                             padding: const EdgeInsets.all(12),
@@ -465,7 +430,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                                 ),
                                               ],
                                             ),
-                                          ),
+                                          ), */
                                 const SizedBox(
                                   height: 32.0,
                                 ),
@@ -475,8 +440,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                     right: 16,
                                   ),
                                   decoration: BoxDecoration(
-                                      color: const Color(0xFF252422),
-                                      borderRadius: BorderRadius.circular(12)),
+                                      color: const Color(0xFF252422), borderRadius: BorderRadius.circular(12)),
                                   child: ListTile(
                                       contentPadding: EdgeInsets.zero,
                                       title: Text(
@@ -493,7 +457,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                           height: 0,
                                         ),
                                       ),
-                                      trailing: Container(
+                                      trailing: SizedBox(
                                         width: 100,
                                         child: MainButtonGradient(
                                           title: Languages.of(context).payNow,
@@ -501,13 +465,8 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                             context.pushNamed(repaymentInput,
                                                 extra: RepaymentInputParam(
                                                     idLoan: dataLoan?.id,
-                                                    idLoanDetail: dataLoan!
-                                                            .loanPackageDetails!
-                                                            .isNotEmpty
-                                                        ? dataLoan
-                                                            ?.loanPackageDetails
-                                                            ?.last
-                                                            .id
+                                                    idLoanDetail: dataLoan!.loanPackageDetails!.isNotEmpty
+                                                        ? dataLoan?.loanPackageDetails?.last.id
                                                         : 0));
                                           },
                                         ),
@@ -574,17 +533,13 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                       color: secondaryColor,
                                       borderRadius: BorderRadius.circular(12),
                                       image: const DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/promo2.png'),
-                                          fit: BoxFit.cover)),
+                                          image: AssetImage('assets/images/promo2.png'), fit: BoxFit.cover)),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             Languages.of(context).loanBalance,
@@ -592,17 +547,13 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                           ),
                                           Container(
                                             decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.white),
-                                                borderRadius:
-                                                    BorderRadius.circular(16)),
+                                                border: Border.all(color: Colors.white),
+                                                borderRadius: BorderRadius.circular(16)),
                                             padding: const EdgeInsets.all(8),
                                             child: Text(
                                                 dataLoan == null
-                                                    ? Languages.of(context)
-                                                        .noActive
-                                                    : Languages.of(context)
-                                                        .pending,
+                                                    ? Languages.of(context).noActive
+                                                    : Languages.of(context).pending,
                                                 style: white12w400),
                                           )
                                         ],
@@ -648,8 +599,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .2,
+                                  height: MediaQuery.of(context).size.height * .2,
                                 ),
                                 Center(
                                   child: Text(

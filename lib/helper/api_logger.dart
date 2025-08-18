@@ -73,26 +73,26 @@ class ApiLogger {
 
     final buffer = StringBuffer();
     buffer.writeln(_separator);
-    buffer.writeln('📤 API REQUEST');
+    buffer.writeln('API REQUEST');
     buffer.writeln(_divider);
-    buffer.writeln('🌐 Method: ${options.method}');
-    buffer.writeln('🔗 URL: ${options.baseUrl}${options.path}');
+    buffer.writeln('Method: ${options.method}');
+    buffer.writeln('URL: ${options.baseUrl}${options.path}');
 
     // Query Parameters
     if (options.queryParameters.isNotEmpty) {
-      buffer.writeln('📝 Query Params:');
+      buffer.writeln('Query Params:');
       options.queryParameters.forEach((key, value) {
         buffer.writeln('    $key: $value');
       });
     }
 
     // Headers
-    buffer.writeln('📋 Headers:');
+    buffer.writeln('Headers:');
     buffer.writeln(_formatHeaders(options.headers));
 
     // Request Body
     if (options.data != null) {
-      buffer.writeln('📦 Request Body:');
+      buffer.writeln('Request Body:');
       if (options.data is FormData) {
         final formData = options.data as FormData;
         buffer.writeln('    [FormData]');
@@ -120,21 +120,21 @@ class ApiLogger {
 
     final buffer = StringBuffer();
     buffer.writeln(_separator);
-    buffer.writeln('📥 API RESPONSE');
+    buffer.writeln('API RESPONSE');
     buffer.writeln(_divider);
-    buffer.writeln('🌐 Method: ${response.requestOptions.method}');
-    buffer.writeln('🔗 URL: ${response.requestOptions.baseUrl}${response.requestOptions.path}');
-    buffer.writeln('📊 Status: ${response.statusCode} ${response.statusMessage ?? ''}');
-    buffer.writeln('⏱️  Duration: ${duration}ms');
+    buffer.writeln('Method: ${response.requestOptions.method}');
+    buffer.writeln('URL: ${response.requestOptions.baseUrl}${response.requestOptions.path}');
+    buffer.writeln('Status: ${response.statusCode} ${response.statusMessage ?? ''}');
+    buffer.writeln('Duration: ${duration}ms');
 
     // Response Headers
     if (response.headers.map.isNotEmpty) {
-      buffer.writeln('📋 Response Headers:');
+      buffer.writeln('Response Headers:');
       buffer.writeln(_formatDioHeaders(response.headers));
     }
 
     // Response Body
-    buffer.writeln('📦 Response Body:');
+    buffer.writeln('Response Body:');
     buffer.writeln(_prettyJson(response.data));
 
     buffer.writeln(_separator);
@@ -147,31 +147,31 @@ class ApiLogger {
 
     final buffer = StringBuffer();
     buffer.writeln(_separator);
-    buffer.writeln('❌ API ERROR');
+    buffer.writeln('API ERROR');
     buffer.writeln(_divider);
-    buffer.writeln('🌐 Method: ${error.requestOptions.method}');
-    buffer.writeln('🔗 URL: ${error.requestOptions.baseUrl}${error.requestOptions.path}');
-    buffer.writeln('🚨 Error Type: ${error.type}');
-    buffer.writeln('💬 Message: ${error.message}');
+    buffer.writeln('Method: ${error.requestOptions.method}');
+    buffer.writeln('URL: ${error.requestOptions.baseUrl}${error.requestOptions.path}');
+    buffer.writeln('Error Type: ${error.type}');
+    buffer.writeln('Message: ${error.message}');
 
     if (error.response != null) {
-      buffer.writeln('📊 Status: ${error.response!.statusCode} ${error.response!.statusMessage ?? ''}');
+      buffer.writeln('Status: ${error.response!.statusCode} ${error.response!.statusMessage ?? ''}');
 
       // Error Response Headers
       if (error.response!.headers.map.isNotEmpty) {
-        buffer.writeln('📋 Error Headers:');
+        buffer.writeln('Error Headers:');
         buffer.writeln(_formatDioHeaders(error.response!.headers));
       }
 
       // Error Response Body
       if (error.response!.data != null) {
-        buffer.writeln('📦 Error Response:');
+        buffer.writeln('Error Response:');
         buffer.writeln(_prettyJson(error.response!.data));
       }
     }
 
     // Stack trace untuk debugging lebih detail (hanya 10 baris pertama)
-    buffer.writeln('📚 Stack Trace (first 10 lines):');
+    buffer.writeln('Stack Trace (first 10 lines):');
     final stackLines = error.stackTrace.toString().split('\n');
     for (int i = 0; i < 10 && i < stackLines.length; i++) {
       buffer.writeln('    ${stackLines[i]}');
@@ -187,7 +187,7 @@ class ApiLogger {
 
     final buffer = StringBuffer();
     buffer.writeln(_divider);
-    buffer.writeln('📝 ${tag ?? 'DEBUG'}: $message');
+    buffer.writeln('${tag ?? 'DEBUG'}: $message');
     buffer.writeln(_divider);
     dev.log(buffer.toString(), name: tag ?? 'DEBUG');
   }
