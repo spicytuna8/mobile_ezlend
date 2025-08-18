@@ -77,8 +77,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Prefilled credentials for debugging only
     if (kDebugMode) {
-      idNumber.text = 'A1234567';
-      phoneNumber.text = '1234567890';
+      //idNumber.text = 'A1234567';
+      //phoneNumber.text = '1234567890';
     }
 
     // TODO: implement initState

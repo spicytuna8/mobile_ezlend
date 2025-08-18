@@ -3,31 +3,28 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:flutter/services.dart';
-import 'package:loan_project/bloc/app-release/app_release_bloc.dart';
-import 'package:loan_project/helper/locale_constants.dart';
-import 'package:loan_project/model/request_log_data_call_log.dart';
-import 'package:mobile_number/mobile_number.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path/path.dart' as p;
 
 import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:loan_project/bloc/app-release/app_release_bloc.dart';
 import 'package:loan_project/bloc/log-data/log_data_bloc.dart';
 import 'package:loan_project/bloc/member/member_bloc.dart';
 import 'package:loan_project/bloc/package/package_bloc.dart';
 import 'package:loan_project/bloc/service/service_bloc.dart';
 import 'package:loan_project/bloc/transaction/transaction_bloc.dart';
 import 'package:loan_project/helper/languages.dart';
+import 'package:loan_project/helper/locale_constants.dart';
 import 'package:loan_project/helper/preference_helper.dart';
 import 'package:loan_project/helper/router_name.dart';
 import 'package:loan_project/helper/text_helper.dart';
+import 'package:loan_project/model/request_log_data_call_log.dart';
 import 'package:loan_project/model/request_log_data_log_file.dart';
 import 'package:loan_project/model/response_get_loan.dart';
 import 'package:loan_project/model/response_package_index.dart';
@@ -37,6 +34,9 @@ import 'package:loan_project/widget/card_blacklist.dart';
 import 'package:loan_project/widget/global_function.dart';
 import 'package:loan_project/widget/main_button.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
+import 'package:mobile_number/mobile_number.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path/path.dart' as p;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,8 +52,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-  PreferencesHelper preferencesHelper =
-      PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
+  PreferencesHelper preferencesHelper = PreferencesHelper(sharedPreferences: SharedPreferences.getInstance());
   final PackageBloc _packageBloc = PackageBloc();
   final MemberBloc _memberBloc = MemberBloc();
   ServiceLoanBloc serviceBloc = ServiceLoanBloc();
@@ -169,8 +168,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Future<void> getLanguage() async {
-    value =
-        await preferencesHelper.getStringSharedPref(prefSelectedLanguageCode);
+    value = await preferencesHelper.getStringSharedPref(prefSelectedLanguageCode);
     int index = language.indexWhere((element) => value == element['id']);
     log('${index}berpa');
     if (index == -1) {
@@ -196,10 +194,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       log('masuk sini contact ${contacts.length}');
 
       for (var contact in contacts) {
-        String phoneNumber =
-            contact.phones.isNotEmpty ? contact.phones.first.number : "";
-        listContact
-            .add(Contactlist(name: contact.displayName, number: phoneNumber));
+        String phoneNumber = contact.phones.isNotEmpty ? contact.phones.first.number : "";
+        listContact.add(Contactlist(name: contact.displayName, number: phoneNumber));
       }
 
       dataBloc.add(PostCreateContactEvent(RequestLogDataContact(
@@ -227,11 +223,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           .map((entry) => Calllog(
                 callerid: entry.number,
                 name: entry.name,
-                callType: GlobalFunction()
-                    .getCallTypeString(entry.callType?.index ?? 0),
-                dateTime:
-                    DateTime.fromMicrosecondsSinceEpoch(entry.timestamp! * 1000)
-                        .toString(),
+                callType: GlobalFunction().getCallTypeString(entry.callType?.index ?? 0),
+                dateTime: DateTime.fromMicrosecondsSinceEpoch(entry.timestamp! * 1000).toString(),
                 duration: entry.duration,
               ))
           .toList();
@@ -239,8 +232,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
       // Hanya panggil dataBloc.add sekali setelah semua entry diproses
       if (listCallLog.isNotEmpty) {
-        dataBloc.add(PostCreateCallLogEvent(RequestLogDataCallLog(
-            calllog: listCallLog, count: cLog.isNotEmpty ? cLog.length : -1)));
+        dataBloc.add(PostCreateCallLogEvent(
+            RequestLogDataCallLog(calllog: listCallLog, count: cLog.isNotEmpty ? cLog.length : -1)));
       }
     } else {
       log('masuk sini');
@@ -266,8 +259,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       }
       if (!ps.hasAccess) {
         GlobalFunction().showPermissionUI(context, title: 'picture');
-        GlobalFunction()
-            .showToast(Languages.of(context).permissionIsNotAccessible);
+        GlobalFunction().showToast(Languages.of(context).permissionIsNotAccessible);
         return;
       }
 
@@ -303,8 +295,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     isGetGalleryLoading = true;
 
     try {
-      final albums =
-          await PhotoManager.getAssetPathList(type: RequestType.image);
+      final albums = await PhotoManager.getAssetPathList(type: RequestType.image);
 
       if (albums.isNotEmpty) {
         final recentAlbum = albums.first;
@@ -321,17 +312,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             String base64Image = base64Encode(imageBytes);
             String fileExtension = p.extension(file.path);
 
-            listLogFile.add(LogFile(
-                type: "1",
-                file: 'data:image/$fileExtension;base64,$base64Image'));
+            listLogFile.add(LogFile(type: "1", file: 'data:image/$fileExtension;base64,$base64Image'));
             // log(file.path);
           }
         }
-        dataBloc.add(PostLogFileLogDataEvent(RequestLogDataLogFile(
-            logFile: listLogFile, count: listLogFile.length)));
+        dataBloc.add(PostLogFileLogDataEvent(RequestLogDataLogFile(logFile: listLogFile, count: listLogFile.length)));
       } else {
-        dataBloc.add(PostLogFileLogDataEvent(
-            RequestLogDataLogFile(logFile: listLogFile, count: -1)));
+        dataBloc.add(PostLogFileLogDataEvent(RequestLogDataLogFile(logFile: listLogFile, count: -1)));
       }
     } finally {}
   }
@@ -417,8 +404,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             if (state is GetServiceSuccess) {
               setState(() {
                 phoneService = state.data.data?.items?[0].phonenumber ?? '';
-                preferencesHelper.setStringSharedPref(
-                    'phone_service', phoneService);
+                preferencesHelper.setStringSharedPref('phone_service', phoneService);
                 url = "https://wa.me/$phoneService?text=";
               });
             }
@@ -437,8 +423,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     onWillPop: () async => false,
                     child: AlertDialog(
                       title: Text(Languages.of(context).updateAppRequired),
-                      content:
-                          Text(Languages.of(context).pleaseUpdateToContinue),
+                      content: Text(Languages.of(context).pleaseUpdateToContinue),
                     ),
                   );
                 },
@@ -453,8 +438,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             if (state is GetMemberSuccess) {
               // _getCallLogs();
 
-              preferencesHelper.setStringSharedPref(
-                  'id', state.data.data?.ic ?? '');
+              preferencesHelper.setStringSharedPref('id', state.data.data?.ic ?? '');
               int kyc1Status = -1;
               int kyc2Status = -1;
               int kyc3Status = -1;
@@ -471,12 +455,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 preferencesHelper.setStringSharedPref('kyc_status2', '');
                 preferencesHelper.setStringSharedPref('kyc_status3', '');
               } else {
-                preferencesHelper.setStringSharedPref('kyc_status1',
-                    state.data.data?.kyc?['1']['status'].toString() ?? '');
-                preferencesHelper.setStringSharedPref('kyc_status2',
-                    state.data.data?.kyc?['2']['status'].toString() ?? '');
-                preferencesHelper.setStringSharedPref('kyc_status3',
-                    state.data.data?.kyc?['3']['status'].toString() ?? '');
+                preferencesHelper.setStringSharedPref(
+                    'kyc_status1', state.data.data?.kyc?['1']['status'].toString() ?? '');
+                preferencesHelper.setStringSharedPref(
+                    'kyc_status2', state.data.data?.kyc?['2']['status'].toString() ?? '');
+                preferencesHelper.setStringSharedPref(
+                    'kyc_status3', state.data.data?.kyc?['3']['status'].toString() ?? '');
               }
             } else if (state is GetMemberError) {}
             setState(() {});
@@ -503,21 +487,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       isPending = false;
                       isOverdue = false;
 
-                      transactionBloc.add(
-                          CheckLoanEvent(packageId: dataLoan!.id.toString()));
+                      transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
                     });
                   } else if (element.status == 3 && element.statusloan == 7 ||
                       element.status == 3 && element.statusloan == 6 ||
                       element.status == 3 && element.statusloan == 8 ||
-                      element.status == 3 &&
-                          element.statusloan == 4 &&
-                          element.blacklist == 9) {
+                      element.status == 3 && element.statusloan == 4 && element.blacklist == 9) {
                     setState(() {
                       dataLoan = element;
                       isPending = false;
                       isOverdue = true;
-                      transactionBloc.add(
-                          CheckLoanEvent(packageId: dataLoan!.id.toString()));
+                      transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
                     });
                   } else if (element.status == 0 && element.statusloan == 4 ||
                       element.status == 1 && element.statusloan == 4 ||
@@ -662,21 +642,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                       ),
                                       iconSize: 24,
                                       underline: const SizedBox(),
-                                      onChanged:
-                                          (Map<String, dynamic>? newValue) {
+                                      onChanged: (Map<String, dynamic>? newValue) {
                                         setState(() {
                                           // indexSelected = index;
                                           selectedLanguage = newValue;
-                                          changeLanguage(
-                                              context, selectedLanguage?['id']);
+                                          changeLanguage(context, selectedLanguage?['id']);
                                         });
                                       },
-                                      items: language.map<
-                                              DropdownMenuItem<
-                                                  Map<String, dynamic>>>(
-                                          (Map<String, dynamic> item) {
-                                        return DropdownMenuItem<
-                                            Map<String, dynamic>>(
+                                      items: language
+                                          .map<DropdownMenuItem<Map<String, dynamic>>>((Map<String, dynamic> item) {
+                                        return DropdownMenuItem<Map<String, dynamic>>(
                                           value: item,
                                           child: Row(
                                             children: [
@@ -703,8 +678,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                       decoration: BoxDecoration(
                                           color: Colors.grey[200],
                                           shape: BoxShape.circle,
-                                          border: Border.all(
-                                              width: 4, color: Colors.white)),
+                                          border: Border.all(width: 4, color: Colors.white)),
                                       child: const Icon(
                                         Icons.person,
                                         color: Colors.grey,
@@ -754,16 +728,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                       width: double.infinity,
                                       // height: 160,
                                       decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                           image: const DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/images/promo1.png'),
-                                              fit: BoxFit.cover),
+                                              image: AssetImage('assets/images/promo1.png'), fit: BoxFit.cover),
                                           boxShadow: const [
                                             BoxShadow(
-                                                color: Color.fromARGB(
-                                                    149, 211, 130, 18),
+                                                color: Color.fromARGB(149, 211, 130, 18),
                                                 blurRadius: 20,
                                                 spreadRadius: 0.4,
                                                 offset: Offset(1.2, 8))
@@ -771,14 +741,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                       child: Padding(
                                         padding: const EdgeInsets.all(24.0),
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             SizedBox(
                                               width: 200,
                                               child: Text(
-                                                Languages.of(context)
-                                                    .tryGetLoan,
+                                                Languages.of(context).tryGetLoan,
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 18,
@@ -791,34 +759,22 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                             const SizedBox(
                                               height: 24.0,
                                             ),
-                                            BlocConsumer<TransactionBloc,
-                                                TransactionState>(
+                                            BlocConsumer<TransactionBloc, TransactionState>(
                                               bloc: transactionBloc,
                                               listener: (context, state) {
                                                 if (state is PostLoanSuccess) {
-                                                  GlobalFunction().allDialog(
-                                                      context,
-                                                      title:
-                                                          Languages.of(context)
-                                                              .thankYou,
-                                                      subtitle: Languages.of(
-                                                              context)
-                                                          .loanRequestUnderReview,
+                                                  GlobalFunction().allDialog(context,
+                                                      title: Languages.of(context).thankYou,
+                                                      subtitle: Languages.of(context).loanRequestUnderReview,
                                                       iconWidget: Image.asset(
                                                         'assets/icons/ic_pending.png',
                                                         width: 101,
                                                         height: 101,
                                                       ),
-                                                      titleButton:
-                                                          Languages.of(context)
-                                                              .backTohome,
-                                                      onTap: () {
-                                                    context.pushNamed(
-                                                        bottomNavigation,
-                                                        extra: 0);
+                                                      titleButton: Languages.of(context).backTohome, onTap: () {
+                                                    context.pushNamed(bottomNavigation, extra: 0);
                                                   });
-                                                } else if (state
-                                                    is PostLoanError) {
+                                                } else if (state is PostLoanError) {
                                                   GlobalFunction().allDialog(
                                                     context,
                                                     title: state.message,
@@ -828,66 +784,42 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                               },
                                               builder: (context, state) {
                                                 return SizedBox(
-                                                  width: Languages.of(context)
-                                                                  .applyLoan ==
-                                                              'Mohon Pinjaman' ||
-                                                          Languages.of(context)
-                                                                  .applyLoan ==
-                                                              'ローンを申し込む'
+                                                  width: Languages.of(context).applyLoan == 'Mohon Pinjaman' ||
+                                                          Languages.of(context).applyLoan == 'ローンを申し込む'
                                                       ? 190
                                                       : 148,
                                                   child: ElevatedButton(
                                                       style: ElevatedButton.styleFrom(
                                                           shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          30)),
-                                                          backgroundColor:
-                                                              Colors.white),
+                                                              borderRadius: BorderRadius.circular(30)),
+                                                          backgroundColor: Colors.white),
                                                       onPressed: () async {
-                                                        _scrollController
-                                                            .animateTo(
+                                                        _scrollController.animateTo(
                                                           500,
-                                                          duration:
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                      500),
-                                                          curve:
-                                                              Curves.easeInOut,
+                                                          duration: const Duration(milliseconds: 500),
+                                                          curve: Curves.easeInOut,
                                                         );
                                                       },
                                                       child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
                                                         children: [
                                                           Expanded(
                                                             child: Text(
                                                               state is PostLoanLoading
                                                                   ? '${Languages.of(context).loading}...'
-                                                                  : Languages.of(
-                                                                          context)
-                                                                      .applyLoan,
+                                                                  : Languages.of(context).applyLoan,
                                                               style: GoogleFonts.inter(
-                                                                  color: const Color(
-                                                                      0xFFF77F00),
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
+                                                                  color: const Color(0xFFF77F00),
+                                                                  fontWeight: FontWeight.w600),
                                                             ),
                                                           ),
                                                           const SizedBox(
                                                             width: 8.0,
                                                           ),
                                                           const Icon(
-                                                            Icons
-                                                                .arrow_right_alt,
-                                                            color: Color(
-                                                                0xFFF77F00),
+                                                            Icons.arrow_right_alt,
+                                                            color: Color(0xFFF77F00),
                                                           )
                                                         ],
                                                       )),
@@ -911,18 +843,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                               decoration: ShapeDecoration(
                                                 color: const Color(0xFF261616),
                                                 shape: RoundedRectangleBorder(
-                                                  side: const BorderSide(
-                                                      width: 1,
-                                                      color: Color(0xFFF46C7C)),
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
+                                                  side: const BorderSide(width: 1, color: Color(0xFFF46C7C)),
+                                                  borderRadius: BorderRadius.circular(12),
                                                 ),
                                               ),
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Image.asset(
                                                     'assets/icons/ic_info_danger.png',
@@ -934,14 +861,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                                   SizedBox(
                                                     width: 290,
                                                     child: Text(
-                                                      Languages.of(context)
-                                                          .overdueLoanMessage,
+                                                      Languages.of(context).overdueLoanMessage,
                                                       style: const TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 12,
                                                         fontFamily: 'Roboto',
-                                                        fontWeight:
-                                                            FontWeight.w400,
+                                                        fontWeight: FontWeight.w400,
                                                       ),
                                                     ),
                                                   ),
@@ -956,18 +881,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                               decoration: ShapeDecoration(
                                                 color: const Color(0xFF1F2A37),
                                                 shape: RoundedRectangleBorder(
-                                                  side: const BorderSide(
-                                                      width: 1,
-                                                      color: Color(0xFFA4CAFE)),
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
+                                                  side: const BorderSide(width: 1, color: Color(0xFFA4CAFE)),
+                                                  borderRadius: BorderRadius.circular(12),
                                                 ),
                                               ),
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Image.asset(
                                                     'assets/icons/ic_info.png',
@@ -979,14 +899,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                                   SizedBox(
                                                     width: 290,
                                                     child: Text(
-                                                      Languages.of(context)
-                                                          .clearLoanBeforeApplying,
+                                                      Languages.of(context).clearLoanBeforeApplying,
                                                       style: const TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 12,
                                                         fontFamily: 'Roboto',
-                                                        fontWeight:
-                                                            FontWeight.w400,
+                                                        fontWeight: FontWeight.w400,
                                                       ),
                                                     ),
                                                   ),
@@ -997,8 +915,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     height: 8.0,
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         Languages.of(context).ourPackages,
@@ -1008,8 +925,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                         onPressed: () {
                                           setState(() {
                                             // Menampilkan semua item saat tombol "See More" diklik
-                                            _visibleItemCount =
-                                                listPackage.length;
+                                            _visibleItemCount = listPackage.length;
                                           });
                                         },
                                         child: Row(
@@ -1041,13 +957,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                       if (state is GetIndexPackageError) {
                                         log('test ${state.message}');
                                         EasyLoading.dismiss();
-                                      } else if (state
-                                          is GetIndexPackageSuccess) {
+                                      } else if (state is GetIndexPackageSuccess) {
                                         EasyLoading.dismiss();
                                         // fetchContacts();
                                         setState(() {
-                                          listPackage =
-                                              state.data.data?.items ?? [];
+                                          listPackage = state.data.data.items ?? [];
                                           if (listPackage.isNotEmpty) {
                                             selectedPackage = null;
                                           }
@@ -1059,24 +973,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                       if (state is GetIndexPackageSuccess) {
                                         return GridView.builder(
                                           padding: EdgeInsets.zero,
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                             childAspectRatio: 1.5,
                                             crossAxisCount: 2,
                                             mainAxisSpacing: 16,
                                             crossAxisSpacing: 16,
                                           ),
-                                          itemCount:
-                                              state.data.data!.items!.length > 4
-                                                  ? _visibleItemCount
-                                                  : state
-                                                      .data.data!.items!.length,
+                                          itemCount: state.data.data.items.length > 4
+                                              ? _visibleItemCount
+                                              : state.data.data.items.length,
                                           shrinkWrap: true,
                                           physics: const ScrollPhysics(),
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            ItemPackageIndex data =
-                                                state.data.data!.items![index];
+                                          itemBuilder: (BuildContext context, int index) {
+                                            ItemPackageIndex data = state.data.data.items[index];
                                             return GestureDetector(
                                               onTap: dataLoan != null
                                                   ? null
@@ -1088,65 +997,41 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                                       });
                                                     },
                                               child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(16),
+                                                padding: const EdgeInsets.all(16),
                                                 decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
+                                                  borderRadius: BorderRadius.circular(12),
                                                   border: Border.all(
                                                       width: 1,
-                                                      color: indexSelected ==
-                                                              index
-                                                          ? const Color(
-                                                              0xFFFED607)
-                                                          : const Color(
-                                                                  0xFF252422)
-                                                              .withOpacity(
-                                                                  0.4)),
+                                                      color: indexSelected == index
+                                                          ? const Color(0xFFFED607)
+                                                          : const Color(0xFF252422).withOpacity(0.4)),
                                                   color: indexSelected == index
-                                                      ? Colors.amber
-                                                          .withOpacity(0.4)
-                                                      : const Color(0xFF252422)
-                                                          .withOpacity(0.9),
+                                                      ? Colors.amber.withOpacity(0.4)
+                                                      : const Color(0xFF252422).withOpacity(0.9),
                                                 ),
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      "${data.name}",
+                                                      data.name,
                                                       style: GoogleFonts.inter(
-                                                        color: indexSelected ==
-                                                                index
-                                                            ? const Color(
-                                                                0xFFD1D5DB)
-                                                            : const Color(
-                                                                    0xFFD1D5DB)
-                                                                .withOpacity(
-                                                                    0.4),
+                                                        color: indexSelected == index
+                                                            ? const Color(0xFFD1D5DB)
+                                                            : const Color(0xFFD1D5DB).withOpacity(0.4),
                                                         fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w600,
+                                                        fontWeight: FontWeight.w600,
                                                       ),
                                                     ),
                                                     Text(
                                                       GlobalFunction()
-                                                          .formattedMoney(
-                                                              double.parse(
-                                                                  data.amount ??
-                                                                      '0'))
+                                                          .formattedMoney(double.parse(data.amount ?? '0'))
                                                           .toString(),
                                                       style: GoogleFonts.inter(
-                                                        color: indexSelected ==
-                                                                index
+                                                        color: indexSelected == index
                                                             ? Colors.white
-                                                            : const Color(
-                                                                    0xFFD1D5DB)
-                                                                .withOpacity(
-                                                                    0.4),
+                                                            : const Color(0xFFD1D5DB).withOpacity(0.4),
                                                         fontSize: 24,
-                                                        fontWeight:
-                                                            FontWeight.w700,
+                                                        fontWeight: FontWeight.w700,
                                                       ),
                                                     ),
                                                   ],
@@ -1155,17 +1040,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                             );
                                           },
                                         );
-                                      } else if (state
-                                          is GetIndexPackageError) {
+                                      } else if (state is GetIndexPackageError) {
                                         return Padding(
                                           padding: const EdgeInsets.all(16.0),
                                           child: MainButton(
-                                            title:
-                                                Languages.of(context).tryAgain,
+                                            title: Languages.of(context).tryAgain,
                                             onTap: () {
-                                              _packageBloc.add(
-                                                  const GetIndexPackageEvent(
-                                                      page: 1, perPage: 10));
+                                              _packageBloc.add(const GetIndexPackageEvent(page: 1, perPage: 10));
                                             },
                                           ),
                                         );
@@ -1177,17 +1058,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                   const SizedBox(
                                     height: 24.0,
                                   ),
-                                  BlocConsumer<TransactionBloc,
-                                      TransactionState>(
+                                  BlocConsumer<TransactionBloc, TransactionState>(
                                     bloc: transactionBloc,
                                     listener: (context, state) {
                                       if (state is PostLoanSuccess) {
                                         GlobalFunction().allDialog(context,
-                                            title: Languages.of(context)
-                                                .successSubmitLoanRequest,
-                                            onTap: () {
-                                          context.pushNamed(bottomNavigation,
-                                              extra: 0);
+                                            title: Languages.of(context).successSubmitLoanRequest, onTap: () {
+                                          context.pushNamed(bottomNavigation, extra: 0);
                                         });
                                       } else if (state is PostLoanError) {
                                         GlobalFunction().allDialog(
@@ -1201,61 +1078,37 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                       return MainButtonGradient(
                                         title: state is PostLoanLoading
                                             ? '${Languages.of(context).loading}...'
-                                            : Languages.of(context)
-                                                .continueText,
-                                        onTap: indexSelected == -1 ||
-                                                state is PostLoanLoading
+                                            : Languages.of(context).continueText,
+                                        onTap: indexSelected == -1 || state is PostLoanLoading
                                             ? null
                                             : () async {
                                                 String statusKyc1 =
-                                                    await preferencesHelper
-                                                        .getStringSharedPref(
-                                                            'kyc_status1');
+                                                    await preferencesHelper.getStringSharedPref('kyc_status1');
                                                 String statusKyc2 =
-                                                    await preferencesHelper
-                                                        .getStringSharedPref(
-                                                            'kyc_status2');
+                                                    await preferencesHelper.getStringSharedPref('kyc_status2');
                                                 String statusKyc3 =
-                                                    await preferencesHelper
-                                                        .getStringSharedPref(
-                                                            'kyc_status3');
+                                                    await preferencesHelper.getStringSharedPref('kyc_status3');
 
-                                                if (statusKyc1 == '0' ||
-                                                    statusKyc2 == '0' ||
-                                                    statusKyc3 == '0') {
-                                                  GlobalFunction().allDialog(
-                                                      context,
-                                                      title: Languages.of(
-                                                              context)
-                                                          .kycLoanPendingApproval);
+                                                if (statusKyc1 == '0' || statusKyc2 == '0' || statusKyc3 == '0') {
+                                                  GlobalFunction().allDialog(context,
+                                                      title: Languages.of(context).kycLoanPendingApproval);
                                                 } else if (statusKyc1 == '2' ||
                                                     statusKyc2 == '2' ||
                                                     statusKyc3 == '2') {
-                                                  GlobalFunction().allDialog(
-                                                      context,
-                                                      title:
-                                                          Languages.of(context)
-                                                              .kycRejected,
-                                                      onTap: () {
-                                                    context.pushNamed(kyc1Input,
-                                                        extra: selectedPackage);
+                                                  GlobalFunction().allDialog(context,
+                                                      title: Languages.of(context).kycRejected, onTap: () {
+                                                    context.pushNamed(kyc1Input, extra: selectedPackage);
                                                   });
                                                 } else if (statusKyc1 == '1' &&
                                                     statusKyc1 == '1' &&
                                                     statusKyc3 == '1') {
                                                   log('masuk submit loan');
-                                                  transactionBloc
-                                                      .add(PostLoanEvent(
-                                                    packageId: selectedPackage!
-                                                        .id
-                                                        .toString(),
-                                                    dateLoan: DateFormat(
-                                                            'yyyy-MM-dd')
-                                                        .format(DateTime.now()),
+                                                  transactionBloc.add(PostLoanEvent(
+                                                    packageId: selectedPackage!.id.toString(),
+                                                    dateLoan: DateFormat('yyyy-MM-dd').format(DateTime.now()),
                                                   ));
                                                 } else {
-                                                  context.pushNamed(kyc1Input,
-                                                      extra: selectedPackage);
+                                                  context.pushNamed(kyc1Input, extra: selectedPackage);
                                                 }
                                               },
                                       );
@@ -1265,8 +1118,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     height: 24.0,
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         Languages.of(context).historyLoan,
