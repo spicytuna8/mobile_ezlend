@@ -504,7 +504,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       element.status == 10 && element.statusloan == 4) {
                     setState(() {
                       dataLoan = element;
-                      isPending = false; // true, // XXX: Multi-loan
+                      isPending = false; // true, //
                       isOverdue = false;
                     });
                   } else {
@@ -873,7 +873,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                                 ],
                                               ),
                                             )
-                                          : Container(
+                                          : const SizedBox(),
+                                  /*
+                                          XXX: Multi-loan
+
+                                          
+                                           Container(
                                               width: 350,
                                               height: 60,
                                               padding: const EdgeInsets.all(12),
@@ -910,7 +915,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                                   ),
                                                 ],
                                               ),
-                                            ),
+                                            ), */
                                   const SizedBox(
                                     height: 8.0,
                                   ),
