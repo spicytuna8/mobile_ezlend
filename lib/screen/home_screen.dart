@@ -1097,33 +1097,44 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                         onTap: indexSelected == -1 || state is PostLoanLoading
                                             ? null
                                             : () async {
-                                                String statusKyc1 =
-                                                    await preferencesHelper.getStringSharedPref('kyc_status1');
-                                                String statusKyc2 =
-                                                    await preferencesHelper.getStringSharedPref('kyc_status2');
-                                                String statusKyc3 =
-                                                    await preferencesHelper.getStringSharedPref('kyc_status3');
-
-                                                if (statusKyc1 == '0' || statusKyc2 == '0' || statusKyc3 == '0') {
-                                                  GlobalFunction().allDialog(context,
-                                                      title: Languages.of(context).kycLoanPendingApproval);
-                                                } else if (statusKyc1 == '2' ||
-                                                    statusKyc2 == '2' ||
-                                                    statusKyc3 == '2') {
-                                                  GlobalFunction().allDialog(context,
-                                                      title: Languages.of(context).kycRejected, onTap: () {
-                                                    context.pushNamed(kyc1Input, extra: selectedPackage);
-                                                  });
-                                                } else if (statusKyc1 == '1' &&
-                                                    statusKyc1 == '1' &&
-                                                    statusKyc3 == '1') {
-                                                  log('masuk submit loan');
+                                                // Multi-loan: Check if user has loan history (already did KYC)
+                                                if (listLoan.isNotEmpty) {
+                                                  // User has loan history, directly submit loan
+                                                  log('User has loan history, skip KYC - direct submit loan');
                                                   transactionBloc.add(PostLoanEvent(
                                                     packageId: selectedPackage!.id.toString(),
                                                     dateLoan: DateFormat('yyyy-MM-dd').format(DateTime.now()),
                                                   ));
                                                 } else {
-                                                  context.pushNamed(kyc1Input, extra: selectedPackage);
+                                                  // First time user, check KYC status
+                                                  String statusKyc1 =
+                                                      await preferencesHelper.getStringSharedPref('kyc_status1');
+                                                  String statusKyc2 =
+                                                      await preferencesHelper.getStringSharedPref('kyc_status2');
+                                                  String statusKyc3 =
+                                                      await preferencesHelper.getStringSharedPref('kyc_status3');
+
+                                                  if (statusKyc1 == '0' || statusKyc2 == '0' || statusKyc3 == '0') {
+                                                    GlobalFunction().allDialog(context,
+                                                        title: Languages.of(context).kycLoanPendingApproval);
+                                                  } else if (statusKyc1 == '2' ||
+                                                      statusKyc2 == '2' ||
+                                                      statusKyc3 == '2') {
+                                                    GlobalFunction().allDialog(context,
+                                                        title: Languages.of(context).kycRejected, onTap: () {
+                                                      context.pushNamed(kyc1Input, extra: selectedPackage);
+                                                    });
+                                                  } else if (statusKyc1 == '1' &&
+                                                      statusKyc2 == '1' &&
+                                                      statusKyc3 == '1') {
+                                                    log('First time user KYC approved - submit loan');
+                                                    transactionBloc.add(PostLoanEvent(
+                                                      packageId: selectedPackage!.id.toString(),
+                                                      dateLoan: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                    ));
+                                                  } else {
+                                                    context.pushNamed(kyc1Input, extra: selectedPackage);
+                                                  }
                                                 }
                                               },
                                       );
