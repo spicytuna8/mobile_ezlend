@@ -7,7 +7,6 @@ const splash = 'splash';
 const register = 'register';
 const home = 'home';
 const bottomNavigation = 'bottomNavigation';
-const loanApply = 'loanApply';
 // const loanApplyInput = 'loanApplyInput';
 const sideMenu = 'sideMenu';
 const sampleKyc = 'sampleKyc';

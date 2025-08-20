@@ -8,9 +8,7 @@ import 'package:loan_project/screen/home_screen.dart';
 import 'package:loan_project/screen/loan/history_loan_detail_screen.dart';
 import 'package:loan_project/screen/loan/kyc1_input_screen.dart';
 import 'package:loan_project/screen/loan/kyc2_input_screen.dart';
-import 'package:loan_project/screen/loan/loan_apply_screen.dart';
 import 'package:loan_project/screen/loan/loan_screen.dart';
-import 'package:loan_project/screen/repayment/repayment_input_screen.dart';
 import 'package:loan_project/screen/loan/sample_kyc_screen.dart';
 import 'package:loan_project/screen/loan/sample_kyc_video_screen.dart';
 import 'package:loan_project/screen/login_screen.dart';
@@ -19,6 +17,7 @@ import 'package:loan_project/screen/onboarding/onboarding2_screen.dart';
 import 'package:loan_project/screen/onboarding/onboarding3_screen.dart';
 import 'package:loan_project/screen/onboarding/onboarding4_screen.dart';
 import 'package:loan_project/screen/register_screen.dart';
+import 'package:loan_project/screen/repayment/repayment_input_screen.dart';
 import 'package:loan_project/screen/repayment/repayment_screen.dart';
 import 'package:loan_project/screen/repayment/repayment_summary_screen.dart';
 import 'package:loan_project/spalsh_screen.dart';
@@ -109,14 +108,6 @@ final GoRouter router = GoRouter(
       name: sampleKycVideo,
       builder: (context, state) => const SampleKycVideoScreen(),
     ),
-    GoRoute(
-        path: '/loanApply',
-        name: loanApply,
-        builder: (context, state) {
-          return LoanApplyScreen(
-            data: state.extra as ItemPackageIndex,
-          );
-        }),
     GoRoute(
         path: '/kyc1Input',
         name: kyc1Input,
