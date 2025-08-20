@@ -15,7 +15,6 @@ import 'package:loan_project/helper/preference_helper.dart';
 import 'package:loan_project/helper/router_name.dart';
 import 'package:loan_project/helper/text_helper.dart';
 import 'package:loan_project/model/response_get_loan.dart';
-import 'package:loan_project/screen/repayment/repayment_input_screen.dart';
 import 'package:loan_project/widget/global_function.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -154,14 +153,10 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                     width: 80,
                     height: 32,
                     child: MainButtonGradient(
-                      title: Languages.of(context).payNow,
+                      title: "Detail",
                       onTap: () {
-                        // Navigate to loan detail/repayment input
-                        context.pushNamed(repaymentInput,
-                            extra: RepaymentInputParam(
-                                idLoan: loan.id,
-                                idLoanDetail:
-                                    loan.loanPackageDetails!.isNotEmpty ? loan.loanPackageDetails?.last.id : 0));
+                        // Navigate to loan detail screen
+                        context.pushNamed(loanDetail, extra: loan);
                       },
                     ),
                   ),

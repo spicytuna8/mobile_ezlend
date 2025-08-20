@@ -15,6 +15,7 @@ const loan = 'loan';
 const historyLoanDetail = 'historyLoanDetail';
 const paidScreen = 'paidScreen';
 const repayment = 'repayment';
+const loanDetail = 'loanDetail';
 const repaymentInput = 'repaymentInput';
 const repaymentSummary = 'repaymentSummary';
 const kyc1Input = 'kyc1Input';
