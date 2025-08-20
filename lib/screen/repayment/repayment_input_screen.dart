@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loan_project/bloc/bank/bank_bloc.dart';
-import 'package:loan_project/bloc/transaction/transaction_bloc.dart';
 import 'package:loan_project/helper/Image_picker.dart';
 import 'package:loan_project/helper/color_helper.dart';
 import 'package:loan_project/helper/languages.dart';
@@ -83,7 +82,7 @@ class _RepaymentInputScreenState extends State<RepaymentInputScreen> {
               Text(
                 Languages.of(context).transferToSpecifiedBank,
                 style: GoogleFonts.inter(
-                  color: Color(0xFF7D8998),
+                  color: const Color(0xFF7D8998),
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   height: 0,
@@ -174,10 +173,7 @@ class _RepaymentInputScreenState extends State<RepaymentInputScreen> {
                               decoration: ShapeDecoration(
                                 shape: RoundedRectangleBorder(
                                   side: BorderSide(
-                                      width: 1,
-                                      color: bankSelected == index
-                                          ? baseColor
-                                          : const Color(0xFF354150)),
+                                      width: 1, color: bankSelected == index ? baseColor : const Color(0xFF354150)),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
@@ -187,15 +183,13 @@ class _RepaymentInputScreenState extends State<RepaymentInputScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           Languages.of(context).bankName,
                                           style: greyBlack14w400,
                                         ),
-                                        SizedBox(
-                                          width: 170,
+                                        Flexible(
                                           child: Text(
                                             '${dataBank[index].name}',
                                             textAlign: TextAlign.end,
@@ -208,16 +202,13 @@ class _RepaymentInputScreenState extends State<RepaymentInputScreen> {
                                       height: 16.0,
                                     ),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          Languages.of(context)
-                                              .accountHolderName,
+                                          Languages.of(context).accountHolderName,
                                           style: greyBlack14w400,
                                         ),
-                                        SizedBox(
-                                          width: 170,
+                                        Flexible(
                                           child: Text(
                                             '${dataBank[index].accountName}',
                                             textAlign: TextAlign.end,
@@ -230,8 +221,7 @@ class _RepaymentInputScreenState extends State<RepaymentInputScreen> {
                                       height: 16.0,
                                     ),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           Languages.of(context).accountNumber,
@@ -281,7 +271,7 @@ class _RepaymentInputScreenState extends State<RepaymentInputScreen> {
               Text(
                 Languages.of(context).transferToSpecifiedBank,
                 style: GoogleFonts.inter(
-                  color: Color(0xFF7D8998),
+                  color: const Color(0xFF7D8998),
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   height: 0,
@@ -422,16 +412,13 @@ class _RepaymentInputScreenState extends State<RepaymentInputScreen> {
                   builder: (context, value, _) {
                     return MainButtonGradient(
                       title: Languages.of(context).continueText,
-                      onTap: amount.text.isEmpty ||
-                              file.isEmpty ||
-                              selectBank == null
+                      onTap: amount.text.isEmpty || file.isEmpty || selectBank == null
                           ? null
                           : () {
                               context.pushNamed(repaymentSummary,
                                   extra: RepaymentParam(
                                       idLoan: widget.data.idLoan.toString(),
-                                      idLoanDetail:
-                                          widget.data.idLoanDetail.toString(),
+                                      idLoanDetail: widget.data.idLoanDetail.toString(),
                                       file: file64,
                                       amount: int.parse(amount.text),
                                       selectedMethod: selectBank ?? {},

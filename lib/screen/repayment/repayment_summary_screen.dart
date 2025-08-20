@@ -17,8 +17,7 @@ import 'package:loan_project/widget/main_button_gradient.dart';
 
 class RepaymentSummaryScreen extends StatefulWidget {
   final RepaymentParam data;
-  const RepaymentSummaryScreen({Key? key, required this.data})
-      : super(key: key);
+  const RepaymentSummaryScreen({Key? key, required this.data}) : super(key: key);
 
   @override
   State<RepaymentSummaryScreen> createState() => _RepaymentSummaryScreenState();
@@ -107,8 +106,7 @@ class _RepaymentSummaryScreenState extends State<RepaymentSummaryScreen> {
                             Languages.of(context).bankName,
                             style: greyBlack14w400,
                           ),
-                          Container(
-                            width: 170,
+                          Flexible(
                             child: Text(
                               '${widget.data.dataBank.name}',
                               textAlign: TextAlign.end,
@@ -127,8 +125,7 @@ class _RepaymentSummaryScreenState extends State<RepaymentSummaryScreen> {
                             Languages.of(context).accountHolderName,
                             style: greyBlack14w400,
                           ),
-                          Container(
-                            width: 170,
+                          Flexible(
                             child: Text(
                               '${widget.data.dataBank.accountName}',
                               textAlign: TextAlign.end,
@@ -189,8 +186,7 @@ class _RepaymentSummaryScreenState extends State<RepaymentSummaryScreen> {
                     _transactionBloc.add(PostPaidWithFileEvent(
                         data: RequestPaidWithFile(
                             topup: Topup(
-                                loanPackageDetailId:
-                                    state.data?.data?.loanPackageDetailId,
+                                loanPackageDetailId: state.data?.data?.loanPackageDetailId,
                                 paymentId: widget.data.dataBank.id),
                             topupFile: [TopupFile(file: widget.data.file)])));
                   } else if (state is PostPaidWithFileSuccess) {
@@ -198,8 +194,7 @@ class _RepaymentSummaryScreenState extends State<RepaymentSummaryScreen> {
 
                     GlobalFunction().allDialog(context,
                         title: Languages.of(context).thankYou,
-                        subtitle: Languages.of(context)
-                            .thankYouForPaymentReview, onTap: () {
+                        subtitle: Languages.of(context).thankYouForPaymentReview, onTap: () {
                       context.pushReplacementNamed(bottomNavigation, extra: 0);
                     });
                   } else if (state is PostPaidWithFileError) {
@@ -218,14 +213,12 @@ class _RepaymentSummaryScreenState extends State<RepaymentSummaryScreen> {
                       valueListenable: amount,
                       builder: (context, value, _) {
                         return MainButtonGradient(
-                          title: state is PostPaidLoading ||
-                                  state is PostPaidWithFileLoading
+                          title: state is PostPaidLoading || state is PostPaidWithFileLoading
                               ? '${Languages.of(context).loading}...'
                               : Languages.of(context).submit,
                           onTap: () {
                             _transactionBloc.add(PostPaidEvent(
-                                loanpackageId: widget.data.idLoan.toString(),
-                                amount: widget.data.amount));
+                                loanpackageId: widget.data.idLoan.toString(), amount: widget.data.amount));
                           },
                         );
                       });

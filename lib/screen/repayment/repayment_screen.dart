@@ -201,7 +201,6 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                         return SingleChildScrollView(
                           child: Container(
                             padding: const EdgeInsets.all(16.0),
-                            height: MediaQuery.of(context).size.height,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -365,8 +364,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                                 const SizedBox(
                                                   width: 8.0,
                                                 ),
-                                                SizedBox(
-                                                  width: 290,
+                                                Expanded(
                                                   child: Text(
                                                     Languages.of(context).overdueLoanMessage,
                                                     style: const TextStyle(
