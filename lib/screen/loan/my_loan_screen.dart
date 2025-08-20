@@ -743,6 +743,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                 itemBuilder: (BuildContext context, int index) {
                                                   ItemPackageIndex data = state.data.data.items[index];
                                                   return GestureDetector(
+                                                    /* XXX: Multi-loan
                                                     onTap: dataLoan != null
                                                         ? null
                                                         : () {
@@ -751,7 +752,15 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                               selectedPackage = data;
                                                               selectedNominal = index;
                                                             });
-                                                          },
+                                                          }, */
+
+                                                    onTap: () {
+                                                      setState(() {
+                                                        indexSelected = index;
+                                                        selectedPackage = data;
+                                                        selectedNominal = index;
+                                                      });
+                                                    },
                                                     child: Container(
                                                       padding: const EdgeInsets.all(16),
                                                       decoration: BoxDecoration(
