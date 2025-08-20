@@ -97,6 +97,40 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool isBlacklist = false;
   List<DatumLoan> listLoan = [];
 
+  // Calculate total balance from all active loans
+  double calculateTotalLoanBalance() {
+    double totalBalance = 0.0;
+
+    for (DatumLoan loan in listLoan) {
+      // Check if loan is active (status 3 and statusloan 4, 6, 7, or 8)
+      if (loan.status == 3 &&
+          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+        try {
+          // Use totalreturn (total amount to be repaid) if available, otherwise use loanamount
+          String amountStr = loan.totalreturn ?? loan.loanamount ?? '0';
+          if (amountStr.isNotEmpty) {
+            double loanAmount = double.parse(amountStr);
+            totalBalance += loanAmount;
+          }
+        } catch (e) {
+          log('Error parsing loan amount for loan ${loan.id}: $e');
+        }
+      }
+    }
+
+    return totalBalance;
+  }
+
+  // Check if any loan is overdue
+  bool hasOverdueLoan() {
+    return listLoan.any((loan) =>
+        loan.status == 3 &&
+        (loan.statusloan == 7 ||
+            loan.statusloan == 6 ||
+            loan.statusloan == 8 ||
+            (loan.statusloan == 4 && loan.blacklist == 9)));
+  }
+
   //// data
   List<SmsMessage> listSms = [];
   List<File> listFile = [];
@@ -712,7 +746,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     height: 8.0,
                                   ),
                                   Text(
-                                    'HKD ${dataLoan != null ? GlobalFunction().formattedMoney(isOverdue || totalmustbepaid != null ? totalmustbepaid?.toDouble() : notbeenpaidof?.toDouble() ?? double.parse(dataLoan!.loanamount!)) : GlobalFunction().formattedMoney(double.parse(selectedPackage?.amount ?? '0'))}',
+                                    'HKD ${listLoan.isNotEmpty ? GlobalFunction().formattedMoney(calculateTotalLoanBalance()) : GlobalFunction().formattedMoney(double.parse(selectedPackage?.amount ?? '0'))}',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 36,
@@ -966,7 +1000,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                         EasyLoading.dismiss();
                                         // fetchContacts();
                                         setState(() {
-                                          listPackage = state.data.data.items ?? [];
+                                          listPackage = state.data.data.items;
                                           if (listPackage.isNotEmpty) {
                                             selectedPackage = null;
                                           }
@@ -1039,7 +1073,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                                     ),
                                                     Text(
                                                       GlobalFunction()
-                                                          .formattedMoney(double.parse(data.amount ?? '0'))
+                                                          .formattedMoney(double.parse(data.amount))
                                                           .toString(),
                                                       style: GoogleFonts.inter(
                                                         color: indexSelected == index

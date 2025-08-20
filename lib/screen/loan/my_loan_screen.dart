@@ -65,6 +65,55 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
   String phoneService = '';
   String url = "https://wa.me/?text=Hello";
 
+  // Calculate total balance from all active loans
+  double calculateTotalLoanBalance() {
+    double totalBalance = 0.0;
+
+    for (DatumLoan loan in listLoan) {
+      // Check if loan is active (status 3 and statusloan 4, 6, 7, or 8)
+      if (loan.status == 3 &&
+          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+        try {
+          // Use totalreturn (total amount to be repaid) if available, otherwise use loanamount
+          String amountStr = loan.totalreturn ?? loan.loanamount ?? '0';
+          if (amountStr.isNotEmpty) {
+            double loanAmount = double.parse(amountStr);
+            totalBalance += loanAmount;
+          }
+        } catch (e) {
+          log('Error parsing loan amount for loan ${loan.id}: $e');
+        }
+      }
+    }
+
+    return totalBalance;
+  } // Check if any loan is overdue
+
+  bool hasOverdueLoan() {
+    return listLoan.any((loan) =>
+        loan.status == 3 &&
+        (loan.statusloan == 7 ||
+            loan.statusloan == 6 ||
+            loan.statusloan == 8 ||
+            (loan.statusloan == 4 && loan.blacklist == 9)));
+  }
+
+  // Get the status text for multiple loans
+  String getMultiLoanStatus() {
+    if (listLoan.isEmpty) return Languages.of(context).noActive;
+
+    bool hasActive = listLoan.any((loan) => loan.status == 3 && loan.statusloan == 4);
+    bool hasPending =
+        listLoan.any((loan) => (loan.status == 0 || loan.status == 1 || loan.status == 10) && loan.statusloan == 4);
+    bool hasOverdue = hasOverdueLoan();
+
+    if (hasOverdue) return Languages.of(context).overdue;
+    if (hasActive) return Languages.of(context).active;
+    if (hasPending) return Languages.of(context).pending;
+
+    return Languages.of(context).noActive;
+  }
+
   void getId() async {
     id = await preferencesHelper.getStringSharedPref('id');
     paymentDueBloc.add(CheckDueDateEvent(ic: id));
@@ -333,7 +382,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                           Languages.of(context).loanBalance,
                                                           style: white12w400,
                                                         ),
-                                                        isOverdue
+                                                        hasOverdueLoan()
                                                             ? Container(
                                                                 width: 69,
                                                                 height: 22,
@@ -369,11 +418,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                                   ),
                                                                 ),
                                                                 child: Text(
-                                                                  dataLoan == null
-                                                                      ? Languages.of(context).noActive
-                                                                      : isPending
-                                                                          ? Languages.of(context).pending
-                                                                          : Languages.of(context).active,
+                                                                  getMultiLoanStatus(),
                                                                   textAlign: TextAlign.center,
                                                                   style: GoogleFonts.inter(
                                                                     color: Colors.white,
@@ -388,7 +433,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                       height: 8.0,
                                                     ),
                                                     Text(
-                                                      'HKD ${GlobalFunction().formattedMoney(isOverdue || totalmustbepaid != null ? totalmustbepaid?.toDouble() : state.data.notbeenpaidof?.toDouble() ?? double.parse(dataLoan!.loanamount!))}',
+                                                      'HKD ${GlobalFunction().formattedMoney(calculateTotalLoanBalance())}',
                                                       style: const TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 36,
@@ -401,9 +446,11 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                       height: 25.0,
                                                     ),
                                                     Text(
-                                                      dataLoan == null
+                                                      listLoan.isEmpty
                                                           ? Languages.of(context).dontHaveActiveLoan
-                                                          : dataLoan?.packageName ?? '',
+                                                          : listLoan.length == 1
+                                                              ? (listLoan.first.packageName ?? '')
+                                                              : '${listLoan.where((loan) => loan.status == 3 && (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)).length} ${Languages.of(context).active} ${Languages.of(context).loan}s',
                                                       style: white12w400,
                                                     ),
                                                     const SizedBox(
@@ -499,11 +546,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                             ),
                                                           ),
                                                           child: Text(
-                                                            dataLoan == null
-                                                                ? Languages.of(context).noActive
-                                                                : isPending
-                                                                    ? Languages.of(context).pending
-                                                                    : Languages.of(context).active,
+                                                            getMultiLoanStatus(),
                                                             textAlign: TextAlign.center,
                                                             style: GoogleFonts.inter(
                                                               color: Colors.white,
@@ -518,7 +561,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                       height: 8.0,
                                                     ),
                                                     Text(
-                                                      'HKD ${dataLoan == null ? '0' : GlobalFunction().formattedMoney(double.parse(dataLoan?.loanamount ?? '0'))}',
+                                                      'HKD ${listLoan.isEmpty ? '0' : GlobalFunction().formattedMoney(calculateTotalLoanBalance())}',
                                                       style: const TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 36,
@@ -531,9 +574,11 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                       height: 25.0,
                                                     ),
                                                     Text(
-                                                      dataLoan == null
+                                                      listLoan.isEmpty
                                                           ? Languages.of(context).dontHaveActiveLoan
-                                                          : dataLoan?.packageName ?? '',
+                                                          : listLoan.length == 1
+                                                              ? (listLoan.first.packageName ?? '')
+                                                              : '${listLoan.where((loan) => loan.status == 3 && (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)).length} ${Languages.of(context).active} ${Languages.of(context).loan}s',
                                                       style: white12w400,
                                                     ),
                                                     const SizedBox(
@@ -715,7 +760,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                         } else if (state is GetIndexPackageSuccess) {
                                           EasyLoading.dismiss();
                                           setState(() {
-                                            listPackage = state.data.data.items ?? [];
+                                            listPackage = state.data.data.items;
                                             if (listPackage.isNotEmpty) {
                                               selectedPackage = listPackage[0];
                                             }
@@ -789,7 +834,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                           ),
                                                           Text(
                                                             GlobalFunction()
-                                                                .formattedMoney(double.parse(data.amount ?? '0'))
+                                                                .formattedMoney(double.parse(data.amount))
                                                                 .toString(),
                                                             style: GoogleFonts.inter(
                                                               color: indexSelected == index
