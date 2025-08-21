@@ -13,6 +13,8 @@ import 'package:loan_project/helper/color_helper.dart';
 import 'package:loan_project/helper/languages.dart';
 import 'package:loan_project/helper/preference_helper.dart';
 import 'package:loan_project/helper/router_name.dart';
+import 'package:loan_project/helper/status_helper.dart';
+import 'package:loan_project/helper/status_loan_helper.dart';
 import 'package:loan_project/helper/text_helper.dart';
 import 'package:loan_project/model/response_get_loan.dart';
 import 'package:loan_project/screen/repayment/repayment_input_screen.dart';
@@ -42,11 +44,10 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
 
   // Check if loan is overdue
   bool get isLoanOverdue {
-    return widget.loan.status == 3 &&
-        (widget.loan.statusloan == 7 ||
-            widget.loan.statusloan == 6 ||
-            widget.loan.statusloan == 8 ||
-            (widget.loan.statusloan == 4 && widget.loan.blacklist == 9));
+    return StatusHelper.isApproved(widget.loan.status ?? 0) &&
+        (StatusLoanHelper.isOverdue(widget.loan.statusloan ?? 0) ||
+            (StatusLoanHelper.isActive(widget.loan.statusloan ?? 0) &&
+                StatusHelper.isBlacklisted(widget.loan.blacklist ?? 0)));
   }
 
   void getId() async {

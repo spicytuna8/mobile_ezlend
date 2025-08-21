@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:loan_project/bloc/repayment/repayment_bloc.dart';
 import 'package:loan_project/helper/languages.dart';
+import 'package:loan_project/helper/status_helper.dart';
 import 'package:loan_project/helper/text_helper.dart';
 import 'package:loan_project/widget/global_function.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
@@ -97,7 +98,9 @@ class _DoneRepaymentState extends State<DoneRepayment> {
                                   ? '${Languages.of(context).manualBanking} - ${GlobalFunction().getStatus(state.data.data?[index].status, context)}'
                                   : '${Languages.of(context).wireTransfer} - ${GlobalFunction().getStatus(state.data.data?[index].status, context)}',
                               style: TextStyle(
-                                color: state.data.data?[index].status == 3 ? Colors.red : const Color(0xFF67A353),
+                                color: StatusHelper.isApproved(state.data.data?[index].status ?? 0)
+                                    ? Colors.red
+                                    : const Color(0xFF67A353),
                                 fontSize: 12,
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w600,

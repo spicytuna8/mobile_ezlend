@@ -23,6 +23,8 @@ import 'package:loan_project/helper/languages.dart';
 import 'package:loan_project/helper/locale_constants.dart';
 import 'package:loan_project/helper/preference_helper.dart';
 import 'package:loan_project/helper/router_name.dart';
+import 'package:loan_project/helper/status_helper.dart';
+import 'package:loan_project/helper/status_loan_helper.dart';
 import 'package:loan_project/helper/text_helper.dart';
 import 'package:loan_project/model/request_log_data_call_log.dart';
 import 'package:loan_project/model/request_log_data_log_file.dart';
@@ -113,9 +115,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     log('HOME SCREEN - CheckLoan data map size: ${checkLoanDataMap.length}');
 
     for (DatumLoan loan in listLoan) {
-      // Include all loans with status 3 (approved) and active statusloan
-      if (loan.status == 3 &&
-          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+      // Include all loans with approved status and requires payment
+      if (StatusHelper.isApproved(loan.status ?? 0) && StatusLoanHelper.requiresPayment(loan.statusloan ?? 0)) {
         String loanId = loan.id.toString();
 
         log('HOME SCREEN - Processing loan ${loan.id}: status=${loan.status}, statusloan=${loan.statusloan}');
@@ -173,8 +174,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
     List<String> activeLoanIds = [];
     for (DatumLoan loan in listLoan) {
-      if (loan.status == 3 &&
-          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+      if (StatusHelper.isApproved(loan.status ?? 0) && StatusLoanHelper.requiresPayment(loan.statusloan ?? 0)) {
         activeLoanIds.add(loan.id.toString());
       }
     }
@@ -212,8 +212,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
     // Collect all active loan IDs that need CheckLoan data
     for (DatumLoan loan in listLoan) {
-      if (loan.status == 3 &&
-          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+      if (StatusHelper.isApproved(loan.status ?? 0) && StatusLoanHelper.requiresPayment(loan.statusloan ?? 0)) {
         String loanId = loan.id.toString();
         if (!checkLoanDataMap.containsKey(loanId)) {
           pendingCheckLoanIds.add(loanId);
@@ -240,11 +239,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   bool hasOverdueLoan() {
     return listLoan.any((loan) =>
-        loan.status == 3 &&
-        (loan.statusloan == 7 ||
-            loan.statusloan == 6 ||
-            loan.statusloan == 8 ||
-            (loan.statusloan == 4 && loan.blacklist == 9)));
+        StatusHelper.isApproved(loan.status ?? 0) &&
+        (StatusLoanHelper.isOverdue(loan.statusloan ?? 0) ||
+            (StatusLoanHelper.isActive(loan.statusloan ?? 0) && StatusHelper.isBlacklisted(loan.blacklist ?? 0))));
   }
 
   //// data
@@ -650,24 +647,24 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               });
               if (state.data.data!.isNotEmpty) {
                 state.data.data?.forEach((element) {
-                  if (element.status == 3 && element.statusloan == 4) {
+                  if (StatusHelper.isApproved(element.status ?? 0) &&
+                      StatusLoanHelper.isActive(element.statusloan ?? 0)) {
                     setState(() {
                       dataLoan = element;
                       isPending = false;
                       isOverdue = false;
                     });
-                  } else if (element.status == 3 && element.statusloan == 7 ||
-                      element.status == 3 && element.statusloan == 6 ||
-                      element.status == 3 && element.statusloan == 8 ||
-                      element.status == 3 && element.statusloan == 4 && element.blacklist == 9) {
+                  } else if (StatusHelper.isApproved(element.status ?? 0) &&
+                      (StatusLoanHelper.isOverdue(element.statusloan ?? 0) ||
+                          (StatusLoanHelper.isActive(element.statusloan ?? 0) &&
+                              StatusHelper.isBlacklisted(element.blacklist ?? 0)))) {
                     setState(() {
                       dataLoan = element;
                       isPending = false;
                       isOverdue = true;
                     });
-                  } else if (element.status == 0 && element.statusloan == 4 ||
-                      element.status == 1 && element.statusloan == 4 ||
-                      element.status == 10 && element.statusloan == 4) {
+                  } else if (StatusHelper.isPending(element.status ?? 0) &&
+                      StatusLoanHelper.isActive(element.statusloan ?? 0)) {
                     setState(() {
                       dataLoan = element;
                       isPending = false; // true, //
