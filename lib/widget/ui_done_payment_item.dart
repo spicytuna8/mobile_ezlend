@@ -21,27 +21,37 @@ class UIDonePaymentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(
-            Languages.of(context).payment,
-            style: white16w600,
-          ),
-          subtitle: Text(
-            DateFormat('dd MMMM yyyy').format(createdAt ?? DateTime.now()),
-            style: const TextStyle(
-              color: Color(0xFF7D8998),
-              fontSize: 12,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
-              height: 0,
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Left side - Payment title and date
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  Languages.of(context).payment,
+                  style: white16w600,
+                ),
+                const SizedBox(height: 4.0),
+                Text(
+                  DateFormat('dd MMMM yyyy').format(createdAt ?? DateTime.now()),
+                  style: const TextStyle(
+                    color: Color(0xFF7D8998),
+                    fontSize: 12,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w600,
+                    height: 0,
+                  ),
+                ),
+              ],
             ),
           ),
-          trailing: Column(
+          // Right side - Amount and payment method/status
+          Column(
             crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 GlobalFunction().formattedMoney(double.parse(amount ?? '0')),
@@ -61,8 +71,8 @@ class UIDonePaymentItem extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
