@@ -227,39 +227,25 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
 
                     // Payment Button
                     Container(
-                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      padding: const EdgeInsets.all(16),
                       decoration:
                           BoxDecoration(color: const Color(0xFF252422), borderRadius: BorderRadius.circular(12)),
-                      child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            Languages.of(context).payment,
-                            style: white16w600,
+                      child: Center(
+                        child: SizedBox(
+                          width: 100,
+                          child: MainButtonGradient(
+                            title: Languages.of(context).repayNow,
+                            onTap: () {
+                              context.pushNamed(repaymentInput,
+                                  extra: RepaymentInputParam(
+                                      idLoan: widget.loan.id,
+                                      idLoanDetail: widget.loan.loanPackageDetails!.isNotEmpty
+                                          ? widget.loan.loanPackageDetails?.last.id
+                                          : 0));
+                            },
                           ),
-                          subtitle: Text(
-                            Languages.of(context).timeForRepayment,
-                            style: const TextStyle(
-                              color: Color(0xFF7D8998),
-                              fontSize: 12,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                            ),
-                          ),
-                          trailing: SizedBox(
-                            width: 100,
-                            child: MainButtonGradient(
-                              title: Languages.of(context).repayNow,
-                              onTap: () {
-                                context.pushNamed(repaymentInput,
-                                    extra: RepaymentInputParam(
-                                        idLoan: widget.loan.id,
-                                        idLoanDetail: widget.loan.loanPackageDetails!.isNotEmpty
-                                            ? widget.loan.loanPackageDetails?.last.id
-                                            : 0));
-                              },
-                            ),
-                          )),
+                        ),
+                      ),
                     ),
 
                     const SizedBox(height: 24.0),
