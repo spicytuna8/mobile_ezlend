@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:loan_project/bloc/payment-due/payment_due_bloc.dart';
 import 'package:loan_project/bloc/repayment/repayment_bloc.dart';
 import 'package:loan_project/bloc/transaction/transaction_bloc.dart';
-import 'package:loan_project/helper/color_helper.dart';
 import 'package:loan_project/helper/languages.dart';
 import 'package:loan_project/helper/preference_helper.dart';
 import 'package:loan_project/helper/router_name.dart';
@@ -21,6 +20,7 @@ import 'package:loan_project/screen/repayment/repayment_input_screen.dart';
 import 'package:loan_project/screen/repayment/widgets/done_repayment.dart';
 import 'package:loan_project/widget/global_function.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
+import 'package:loan_project/widget/ui_your_balance_due.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoanDetailScreen extends StatefulWidget {
@@ -113,131 +113,74 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 20.0),
-
-                    // Loan Balance Card
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          color: secondaryColor,
-                          borderRadius:
-                              const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-                          image:
-                              const DecorationImage(image: AssetImage('assets/images/promo2.png'), fit: BoxFit.cover)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                Languages.of(context).loanBalance,
+                    // Loan Balance Card with Payment Due
+                    UIYourBalanceDue(
+                      balance: isOverdue || totalmustbepaid != null
+                          ? totalmustbepaid?.toDouble()
+                          : double.tryParse(widget.loan.totalreturn ?? widget.loan.loanamount ?? '0') ?? 0,
+                      isLoading: false,
+                      statusBadge: isOverdue
+                          ? Container(
+                              width: 69,
+                              height: 22,
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                              decoration: ShapeDecoration(
+                                color: const Color(0xFFE02424),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  Languages.of(context).overdue,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.white), borderRadius: BorderRadius.circular(16)),
+                              padding: const EdgeInsets.all(8),
+                              child: Text(
+                                Languages.of(context).active,
                                 style: white12w400,
                               ),
-                              isOverdue
-                                  ? Container(
-                                      width: 69,
-                                      height: 22,
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                                      decoration: ShapeDecoration(
-                                        color: const Color(0xFFE02424),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          Languages.of(context).overdue,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.white),
-                                          borderRadius: BorderRadius.circular(16)),
-                                      padding: const EdgeInsets.all(8),
-                                      child: Text(
-                                        Languages.of(context).active,
-                                        style: white12w400,
-                                      ),
-                                    )
-                            ],
-                          ),
-                          const SizedBox(height: 10.0),
-                          Text(
-                            'HKD ${GlobalFunction().formattedMoney(isOverdue || totalmustbepaid != null ? totalmustbepaid?.toDouble() : double.tryParse(widget.loan.totalreturn ?? widget.loan.loanamount ?? '0') ?? 0)}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 36,
-                              fontFamily: 'Gabarito',
-                              fontWeight: FontWeight.w500,
-                              height: 0,
                             ),
-                          ),
-                          const SizedBox(height: 16.0),
-                          Text(
-                            widget.loan.packageName ?? '',
-                            style: white12w400,
-                          ),
-                          const SizedBox(height: 16.0),
-                        ],
-                      ),
-                    ),
-
-                    // Payment Due Section
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF252422),
-                        borderRadius:
-                            BorderRadius.only(bottomLeft: Radius.circular(12), bottomRight: Radius.circular(12)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            Languages.of(context).paymentDue,
-                            style: white12w400,
-                          ),
-                          BlocConsumer<PaymentDueBloc, PaymentDueState>(
-                            bloc: paymentDueBloc,
-                            listener: (context, state) {
-                              // TODO: implement listener
-                            },
-                            builder: (context, state) {
-                              if (state is CheckDueDateLoading) {
-                                return const SizedBox(
-                                  height: 30,
-                                  width: 30,
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              } else if (state is CheckDueDateSuccess) {
-                                return Text(
-                                  state.data.data?.duedate != null
-                                      ? DateFormat('yyyy-MM-dd').format(state.data.data!.duedate!)
-                                      : '--/--/--',
-                                  style: white12w400,
-                                );
-                              } else {
-                                return const Text(
-                                  '--/--/--',
-                                  style: TextStyle(color: Colors.white),
-                                );
-                              }
-                            },
-                          ),
-                        ],
+                      customBalanceText:
+                          'HKD ${GlobalFunction().formattedMoney(isOverdue || totalmustbepaid != null ? totalmustbepaid?.toDouble() : double.tryParse(widget.loan.totalreturn ?? widget.loan.loanamount ?? '0') ?? 0)}',
+                      paymentDueContent: BlocConsumer<PaymentDueBloc, PaymentDueState>(
+                        bloc: paymentDueBloc,
+                        listener: (context, state) {
+                          // TODO: implement listener
+                        },
+                        builder: (context, state) {
+                          if (state is CheckDueDateLoading) {
+                            return const SizedBox(
+                              height: 30,
+                              width: 30,
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          } else if (state is CheckDueDateSuccess) {
+                            return Text(
+                              state.data.data?.duedate != null
+                                  ? DateFormat('yyyy-MM-dd').format(state.data.data!.duedate!)
+                                  : '--/--/--',
+                              style: white12w400,
+                            );
+                          } else {
+                            return Text(
+                              '--/--/--',
+                              style: white12w400,
+                            );
+                          }
+                        },
                       ),
                     ),
 
