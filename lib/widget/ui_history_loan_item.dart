@@ -102,7 +102,7 @@ class UIHistoryLoanItem extends StatelessWidget {
                         Text(
                           _getStatusText(context),
                           style: GoogleFonts.inter(
-                            color: loanData.status == 2 ? const Color(0xFFEF233C) : const Color(0xFF7D8998),
+                            color: _getStatusColor(),
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                           ),
@@ -140,6 +140,27 @@ class UIHistoryLoanItem extends StatelessWidget {
       return Languages.of(context).pending;
     } else {
       return Languages.of(context).overdue;
+    }
+  }
+
+  Color _getStatusColor() {
+    // Check if loan is overdue (similar to UIActive logic)
+    bool isOverdue = loanData.status == 3 &&
+        (loanData.statusloan == 7 ||
+            loanData.statusloan == 6 ||
+            loanData.statusloan == 8 ||
+            (loanData.statusloan == 4 && loanData.blacklist == 9));
+
+    if (isOverdue) {
+      return Colors.red; // Red for overdue
+    } else if (loanData.status == 3 && loanData.statusloan == 4) {
+      return Colors.green; // Green for active
+    } else if (loanData.status == 2) {
+      return const Color(0xFFEF233C); // Red for rejected
+    } else if (loanData.status == 3 && loanData.statusloan == 5) {
+      return Colors.grey; // Grey for closed
+    } else {
+      return const Color(0xFF7D8998); // Default grey for pending/others
     }
   }
 }
