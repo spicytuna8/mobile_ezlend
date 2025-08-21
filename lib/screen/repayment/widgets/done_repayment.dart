@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:loan_project/bloc/repayment/repayment_bloc.dart';
 import 'package:loan_project/helper/languages.dart';
-import 'package:loan_project/helper/status_helper.dart';
-import 'package:loan_project/helper/text_helper.dart';
 import 'package:loan_project/widget/global_function.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
+import 'package:loan_project/widget/ui_done_payment_item.dart';
 
 class DoneRepayment extends StatefulWidget {
   const DoneRepayment({
@@ -65,49 +63,11 @@ class _DoneRepaymentState extends State<DoneRepayment> {
                 );
               },
               itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  children: [
-                    ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          Languages.of(context).payment,
-                          style: white16w600,
-                        ),
-                        subtitle: Text(
-                          DateFormat('dd MMMM yyyy').format(state.data.data![index].createdAt ?? DateTime.now()),
-                          style: const TextStyle(
-                            color: Color(0xFF7D8998),
-                            fontSize: 12,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                            height: 0,
-                          ),
-                        ),
-                        trailing: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(GlobalFunction().formattedMoney(double.parse(state.data.data?[index].amount ?? '0')),
-                                style: white16w600),
-                            const SizedBox(
-                              height: 4.0,
-                            ),
-                            Text(
-                              state.data.data?[index].paymentType == 2
-                                  ? '${Languages.of(context).manualBanking} - ${GlobalFunction().getStatus(state.data.data?[index].status, context)}'
-                                  : '${Languages.of(context).wireTransfer} - ${GlobalFunction().getStatus(state.data.data?[index].status, context)}',
-                              style: TextStyle(
-                                color: StatusHelper.isApproved(state.data.data?[index].status ?? 0)
-                                    ? Colors.red
-                                    : const Color(0xFF67A353),
-                                fontSize: 12,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
-                          ],
-                        )),
-                  ],
+                return UIDonePaymentItem(
+                  createdAt: state.data.data![index].createdAt,
+                  amount: state.data.data?[index].amount,
+                  paymentType: state.data.data?[index].paymentType,
+                  status: state.data.data?[index].status,
                 );
               },
             ),
