@@ -48,30 +48,25 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
   List<String> pendingCheckLoanIds = []; // Track loans waiting for CheckLoan API
   int completedCheckLoanCount = 0; // Track completed CheckLoan calls
 
-  // Check if all required CheckLoan data is loaded
+  // Check if all active loans have CheckLoan data
   bool areAllCheckLoanDataLoaded() {
-    // Get all active loans that need CheckLoan data
-    List<DatumLoan> activeLoans = listLoan
-        .where((loan) =>
-            loan.status == 3 &&
-            (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8))
-        .toList();
+    if (listLoan.isEmpty) return true;
 
-    if (activeLoans.isEmpty) {
-      log('No active loans found');
-      return true; // No loans to check
+    List<String> activeLoanIds = [];
+    for (DatumLoan loan in listLoan) {
+      if (loan.status == 3 &&
+          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+        activeLoanIds.add(loan.id.toString());
+      }
     }
 
     // Check if we have CheckLoan data for all active loans
-    for (DatumLoan loan in activeLoans) {
-      String loanId = loan.id.toString();
+    for (String loanId in activeLoanIds) {
       if (!checkLoanDataMap.containsKey(loanId)) {
-        log('Missing CheckLoan data for loan $loanId');
         return false;
       }
     }
 
-    log('All CheckLoan data loaded for ${activeLoans.length} active loans');
     return true;
   }
 
@@ -79,11 +74,17 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
   double calculateTotalLoanBalance() {
     double totalBalance = 0.0;
 
+    log('REPAYMENT SCREEN - Starting balance calculation');
+    log('REPAYMENT SCREEN - Total loans in listLoan: ${listLoan.length}');
+    log('REPAYMENT SCREEN - CheckLoan data map size: ${checkLoanDataMap.length}');
+
     for (DatumLoan loan in listLoan) {
       // Include all loans with status 3 (approved) and active statusloan
       if (loan.status == 3 &&
           (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
         String loanId = loan.id.toString();
+
+        log('REPAYMENT SCREEN - Processing loan ${loan.id}: status=${loan.status}, statusloan=${loan.statusloan}');
 
         // Check if we have CheckLoan data for this loan
         if (checkLoanDataMap.containsKey(loanId)) {
@@ -97,19 +98,19 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
 
             // Add remaining balance (can be positive or negative)
             totalBalance += remainingBalance;
-            log('Loan ${loan.id}: loanamount=$loanAmount, alreadypaid=$alreadyPaid, remaining=$remainingBalance, running total: $totalBalance');
+            log('REPAYMENT SCREEN - Loan ${loan.id}: loanamount=$loanAmount, alreadypaid=$alreadyPaid, remaining=$remainingBalance, running total: $totalBalance');
           } catch (e) {
-            log('Error calculating balance for loan ${loan.id}: $e');
+            log('REPAYMENT SCREEN - Error calculating balance for loan ${loan.id}: $e');
             // Fallback to loanamount if CheckLoan data parsing fails
             try {
               String amountStr = loan.loanamount ?? '0';
               if (amountStr.isNotEmpty) {
                 double loanAmount = double.parse(amountStr);
                 totalBalance += loanAmount;
-                log('Fallback - Added loan ${loan.id}: $loanAmount, running total: $totalBalance');
+                log('REPAYMENT SCREEN - Fallback - Added loan ${loan.id}: $loanAmount, running total: $totalBalance');
               }
             } catch (e2) {
-              log('Error parsing fallback loan amount for loan ${loan.id}: $e2');
+              log('REPAYMENT SCREEN - Error parsing fallback loan amount for loan ${loan.id}: $e2');
             }
           }
         } else {
@@ -119,17 +120,34 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
             if (amountStr.isNotEmpty) {
               double loanAmount = double.parse(amountStr);
               totalBalance += loanAmount;
-              log('Waiting for CheckLoan - Added loan ${loan.id}: $loanAmount, running total: $totalBalance');
+              log('REPAYMENT SCREEN - Waiting for CheckLoan - Added loan ${loan.id}: $loanAmount, running total: $totalBalance');
             }
           } catch (e) {
-            log('Error parsing loan amount for loan ${loan.id}: $e');
+            log('REPAYMENT SCREEN - Error parsing loan amount for loan ${loan.id}: $e');
           }
         }
       }
     }
 
-    log('Final total balance: $totalBalance');
+    log('REPAYMENT SCREEN - Final total balance: $totalBalance');
     return totalBalance;
+  }
+
+  // Get the accurate total balance - only use CheckLoan data when all data is ready
+  double getDisplayBalance() {
+    if (listLoan.isEmpty) {
+      return 0.0;
+    }
+
+    // Only use calculateTotalLoanBalance if all CheckLoan data is loaded
+    if (areAllCheckLoanDataLoaded()) {
+      log('Using accurate balance from CheckLoan data: ${calculateTotalLoanBalance()}');
+      return calculateTotalLoanBalance();
+    } else {
+      // Show 0 while CheckLoan data is being fetched to avoid showing wrong balance
+      log('CheckLoan data not ready yet. Showing 0 to avoid wrong balance.');
+      return 0.0;
+    }
   }
 
   // Trigger CheckLoan API for all active loans one by one
@@ -326,10 +344,6 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                   setState(() {
                     dataLoan = element;
                     isOverdue = false;
-
-                    // if (dataLoan != null) {
-                    _transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
-                    // }
                     isHaveData = false;
                   });
                 } else if (element.status == 3 && element.statusloan == 7 ||
@@ -341,9 +355,6 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                   setState(() {
                     dataLoan = element;
                     isOverdue = true;
-                    // if (dataLoan != null) {
-                    _transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
-                    // }
                     isHaveData = false;
                   });
                 }
@@ -410,6 +421,12 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
 
                 // Load next loan's CheckLoan data
                 loadNextCheckLoanData();
+
+                // Trigger UI refresh when all CheckLoan data is loaded
+                if (completedCheckLoanCount >= pendingCheckLoanIds.length) {
+                  log('All CheckLoan data loaded. Final balance: ${calculateTotalLoanBalance()}');
+                  // setState will automatically trigger UI refresh
+                }
               }
 
               // Update totalmustbepaid for current displayed loan
@@ -498,7 +515,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                 const SizedBox(height: 8),
                                 areAllCheckLoanDataLoaded() && listLoan.isNotEmpty
                                     ? Text(
-                                        'HKD ${GlobalFunction().formattedMoney(calculateTotalLoanBalance())}',
+                                        'HKD ${GlobalFunction().formattedMoney(getDisplayBalance())}',
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 32,

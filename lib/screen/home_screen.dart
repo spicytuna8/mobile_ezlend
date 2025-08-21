@@ -108,11 +108,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   double calculateTotalLoanBalance() {
     double totalBalance = 0.0;
 
+    log('HOME SCREEN - Starting balance calculation');
+    log('HOME SCREEN - Total loans in listLoan: ${listLoan.length}');
+    log('HOME SCREEN - CheckLoan data map size: ${checkLoanDataMap.length}');
+
     for (DatumLoan loan in listLoan) {
       // Include all loans with status 3 (approved) and active statusloan
       if (loan.status == 3 &&
           (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
         String loanId = loan.id.toString();
+
+        log('HOME SCREEN - Processing loan ${loan.id}: status=${loan.status}, statusloan=${loan.statusloan}');
 
         // Check if we have CheckLoan data for this loan
         if (checkLoanDataMap.containsKey(loanId)) {
@@ -126,19 +132,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
             // Add remaining balance (can be positive or negative)
             totalBalance += remainingBalance;
-            log('Loan ${loan.id}: loanamount=$loanAmount, alreadypaid=$alreadyPaid, remaining=$remainingBalance, running total: $totalBalance');
+            log('HOME SCREEN - Loan ${loan.id}: loanamount=$loanAmount, alreadypaid=$alreadyPaid, remaining=$remainingBalance, running total: $totalBalance');
           } catch (e) {
-            log('Error calculating balance for loan ${loan.id}: $e');
+            log('HOME SCREEN - Error calculating balance for loan ${loan.id}: $e');
             // Fallback to loanamount if CheckLoan data parsing fails
             try {
               String amountStr = loan.loanamount ?? '0';
               if (amountStr.isNotEmpty) {
                 double loanAmount = double.parse(amountStr);
                 totalBalance += loanAmount;
-                log('Fallback - Added loan ${loan.id}: $loanAmount, running total: $totalBalance');
+                log('HOME SCREEN - Fallback - Added loan ${loan.id}: $loanAmount, running total: $totalBalance');
               }
             } catch (e2) {
-              log('Error parsing fallback loan amount for loan ${loan.id}: $e2');
+              log('HOME SCREEN - Error parsing fallback loan amount for loan ${loan.id}: $e2');
             }
           }
         } else {
@@ -148,16 +154,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             if (amountStr.isNotEmpty) {
               double loanAmount = double.parse(amountStr);
               totalBalance += loanAmount;
-              log('Waiting for CheckLoan - Added loan ${loan.id}: $loanAmount, running total: $totalBalance');
+              log('HOME SCREEN - Waiting for CheckLoan - Added loan ${loan.id}: $loanAmount, running total: $totalBalance');
             }
           } catch (e) {
-            log('Error parsing loan amount for loan ${loan.id}: $e');
+            log('HOME SCREEN - Error parsing loan amount for loan ${loan.id}: $e');
           }
         }
       }
     }
 
-    log('Final total balance: $totalBalance');
+    log('HOME SCREEN - Final total balance: $totalBalance');
     return totalBalance;
   }
 
