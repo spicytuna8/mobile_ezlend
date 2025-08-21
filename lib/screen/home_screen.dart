@@ -35,6 +35,7 @@ import 'package:loan_project/widget/card_blacklist.dart';
 import 'package:loan_project/widget/global_function.dart';
 import 'package:loan_project/widget/main_button.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
+import 'package:loan_project/widget/ui_package_name.dart';
 import 'package:mobile_number/mobile_number.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as p;
@@ -1246,16 +1247,26 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      data.name,
-                                                      style: GoogleFonts.inter(
-                                                        color: indexSelected == index
-                                                            ? const Color(0xFFD1D5DB)
-                                                            : const Color(0xFFD1D5DB).withOpacity(0.4),
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w600,
-                                                      ),
+                                                    Row(
+                                                      children: [
+                                                        UIPackageName(
+                                                          packageName: data.name,
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.w600,
+                                                          gradientColors: indexSelected == index
+                                                              ? [
+                                                                  const Color(0xFFFED607),
+                                                                  const Color(0xFFD1D5DB),
+                                                                ]
+                                                              : [
+                                                                  const Color(0xFFC7C7C7),
+                                                                  const Color(0xFF717171),
+                                                                ],
+                                                        ),
+                                                        const Spacer(),
+                                                      ],
                                                     ),
+                                                    const SizedBox(height: 4),
                                                     Text(
                                                       GlobalFunction()
                                                           .formattedMoney(double.parse(data.amount))

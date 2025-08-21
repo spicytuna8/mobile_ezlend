@@ -25,6 +25,7 @@ import 'package:loan_project/widget/card_blacklist.dart';
 import 'package:loan_project/widget/global_function.dart';
 import 'package:loan_project/widget/main_button.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
+import 'package:loan_project/widget/ui_package_name.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyLoanScreen extends StatefulWidget {
@@ -269,7 +270,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
               centerTitle: true,
               elevation: 0,
               bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(10.0),
+                preferredSize: const Size.fromHeight(20.0),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Text(
@@ -822,16 +823,21 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                       child: Column(
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
-                                                          Text(
-                                                            data.name,
-                                                            style: GoogleFonts.inter(
-                                                              color: indexSelected == index
-                                                                  ? const Color(0xFFD1D5DB)
-                                                                  : const Color(0xFFD1D5DB).withOpacity(0.4),
-                                                              fontSize: 12,
-                                                              fontWeight: FontWeight.w600,
-                                                            ),
+                                                          UIPackageName(
+                                                            packageName: data.name,
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w600,
+                                                            gradientColors: indexSelected == index
+                                                                ? [
+                                                                    const Color(0xFFFED607),
+                                                                    const Color(0xFFD1D5DB),
+                                                                  ]
+                                                                : [
+                                                                    const Color(0xFFC7C7C7),
+                                                                    const Color(0xFF717171),
+                                                                  ],
                                                           ),
+                                                          const SizedBox(height: 4),
                                                           Text(
                                                             GlobalFunction()
                                                                 .formattedMoney(double.parse(data.amount))
