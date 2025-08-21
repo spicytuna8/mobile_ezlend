@@ -264,20 +264,6 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: 90,
-                    height: 40,
-                    child: MainButtonGradient(
-                      title: "Detail",
-                      height: 40,
-                      noPadding: true,
-                      onTap: () {
-                        // Navigate to loan detail screen
-                        context.pushNamed(loanDetail, extra: loan);
-                      },
-                    ),
-                  ),
                 ],
               ),
             ],
@@ -299,6 +285,20 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 40,
+            child: MainButtonGradient(
+              title: "View Detail",
+              height: 40,
+              noPadding: true,
+              onTap: () {
+                // Navigate to loan detail screen
+                context.pushNamed(loanDetail, extra: loan);
+              },
+            ),
           ),
         ],
       ),
