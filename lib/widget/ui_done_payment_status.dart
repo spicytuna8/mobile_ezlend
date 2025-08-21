@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:loan_project/helper/status_helper.dart';
 import 'package:loan_project/widget/global_function.dart';
 
 class UIDonePaymentStatus extends StatelessWidget {
@@ -12,13 +11,25 @@ class UIDonePaymentStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isApproved = StatusHelper.isApproved(status ?? 0);
     final String statusText = GlobalFunction().getStatus(status, context);
+
+    // Determine color based on status
+    Color getStatusColor() {
+      switch (status) {
+        case 1: // Paid/Approved
+          return const Color(0xFF67A353); // Green
+        case 2: // Rejected
+          return const Color(0xFFE02424); // Red
+        case 0: // Pending
+        default:
+          return const Color(0xFFDFCE34); // Yellow
+      }
+    }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
       decoration: BoxDecoration(
-        color: isApproved ? const Color(0xFFE02424) : const Color(0xFF67A353),
+        color: getStatusColor(),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
