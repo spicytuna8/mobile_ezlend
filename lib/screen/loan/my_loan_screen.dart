@@ -66,29 +66,129 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
   String phoneService = '';
   String url = "https://wa.me/?text=Hello";
 
+  // CheckLoan data storage for accurate balance calculation
+  Map<String, dynamic> checkLoanDataMap = {};
+  List<String> pendingCheckLoanIds = [];
+  int completedCheckLoanCount = 0;
+
   // Calculate total balance from all active loans
   double calculateTotalLoanBalance() {
     double totalBalance = 0.0;
 
+    log('MY LOAN SCREEN - Starting balance calculation');
+    log('MY LOAN SCREEN - Total loans in listLoan: ${listLoan.length}');
+    log('MY LOAN SCREEN - CheckLoan data map size: ${checkLoanDataMap.length}');
+
     for (DatumLoan loan in listLoan) {
-      // Check if loan is active (status 3 and statusloan 4, 6, 7, or 8)
+      // Include all loans with status 3 (approved) and active statusloan
       if (loan.status == 3 &&
           (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
-        try {
-          // Use totalreturn (total amount to be repaid) if available, otherwise use loanamount
-          String amountStr = loan.totalreturn ?? loan.loanamount ?? '0';
-          if (amountStr.isNotEmpty) {
-            double loanAmount = double.parse(amountStr);
-            totalBalance += loanAmount;
+        String loanId = loan.id.toString();
+
+        log('MY LOAN SCREEN - Processing loan ${loan.id}: status=${loan.status}, statusloan=${loan.statusloan}');
+
+        // Check if we have CheckLoan data for this loan
+        if (checkLoanDataMap.containsKey(loanId)) {
+          try {
+            dynamic checkLoanData = checkLoanDataMap[loanId]!;
+
+            // Calculate remaining balance: loanamount - alreadypaid
+            double loanAmount = double.parse(checkLoanData.loanamount ?? '0');
+            double alreadyPaid = double.parse(checkLoanData.alreadypaid ?? '0');
+            double remainingBalance = loanAmount - alreadyPaid;
+
+            // Add remaining balance (can be positive or negative)
+            totalBalance += remainingBalance;
+            log('MY LOAN SCREEN - Loan ${loan.id}: loanamount=$loanAmount, alreadypaid=$alreadyPaid, remaining=$remainingBalance, running total: $totalBalance');
+          } catch (e) {
+            log('MY LOAN SCREEN - Error calculating balance for loan ${loan.id}: $e');
+            // Fallback to loanamount if CheckLoan data parsing fails
+            try {
+              String amountStr = loan.loanamount ?? '0';
+              if (amountStr.isNotEmpty) {
+                double loanAmount = double.parse(amountStr);
+                totalBalance += loanAmount;
+                log('MY LOAN SCREEN - Fallback - Added loan ${loan.id}: $loanAmount, running total: $totalBalance');
+              }
+            } catch (e2) {
+              log('MY LOAN SCREEN - Error parsing fallback loan amount for loan ${loan.id}: $e2');
+            }
           }
-        } catch (e) {
-          log('Error parsing loan amount for loan ${loan.id}: $e');
+        } else {
+          // If no CheckLoan data available yet, use loanamount as temporary value
+          try {
+            String amountStr = loan.loanamount ?? '0';
+            if (amountStr.isNotEmpty) {
+              double loanAmount = double.parse(amountStr);
+              totalBalance += loanAmount;
+              log('MY LOAN SCREEN - Waiting for CheckLoan - Added loan ${loan.id}: $loanAmount, running total: $totalBalance');
+            }
+          } catch (e) {
+            log('MY LOAN SCREEN - Error parsing loan amount for loan ${loan.id}: $e');
+          }
         }
       }
     }
 
+    log('MY LOAN SCREEN - Final total balance: $totalBalance');
     return totalBalance;
-  } // Check if any loan is overdue
+  }
+
+  /// Check if all CheckLoan data has been loaded for relevant loans
+  bool areAllCheckLoanDataLoaded() {
+    return completedCheckLoanCount >= pendingCheckLoanIds.length;
+  }
+
+  /// Get the display balance based on CheckLoan data availability
+  double getDisplayBalance() {
+    if (areAllCheckLoanDataLoaded() && checkLoanDataMap.isNotEmpty) {
+      return calculateTotalLoanBalance();
+    } else {
+      return 0.0; // Return 0.0 while loading CheckLoan data
+    }
+  }
+
+  /// Load CheckLoan data for all active loans sequentially
+  void loadCheckLoanDataForAllLoans() {
+    log('MY LOAN SCREEN - Starting to load CheckLoan data for all loans');
+
+    // Get all loan IDs that need CheckLoan data (status 3 with specific statusloan values)
+    List<String> loanIds = [];
+    for (DatumLoan loan in listLoan) {
+      if (loan.status == 3 &&
+          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+        loanIds.add(loan.id.toString());
+      }
+    }
+
+    setState(() {
+      pendingCheckLoanIds = loanIds;
+      completedCheckLoanCount = 0;
+      checkLoanDataMap.clear();
+    });
+
+    log('MY LOAN SCREEN - Found ${loanIds.length} loans that need CheckLoan data: $loanIds');
+
+    if (loanIds.isNotEmpty) {
+      // Start loading the first loan's CheckLoan data
+      loadNextCheckLoanData();
+    } else {
+      log('MY LOAN SCREEN - No loans found that need CheckLoan data');
+    }
+  }
+
+  /// Load CheckLoan data for the next loan in the queue
+  void loadNextCheckLoanData() {
+    if (completedCheckLoanCount < pendingCheckLoanIds.length) {
+      String loanId = pendingCheckLoanIds[completedCheckLoanCount];
+      log('MY LOAN SCREEN - Loading CheckLoan data for loan $loanId (${completedCheckLoanCount + 1}/${pendingCheckLoanIds.length})');
+      transactionBloc.add(CheckLoanEvent(packageId: loanId));
+    } else {
+      log('MY LOAN SCREEN - All CheckLoan data loading completed');
+    }
+  }
+
+  // Check if any loan is overdue
 
   bool hasOverdueLoan() {
     return listLoan.any((loan) =>
@@ -183,9 +283,6 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                       dataLoan = element;
                       isPending = false;
                       isOverdue = false;
-
-                      transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
-
                       isHaveData = false;
                     });
                   } else if (element.status == 3 && element.statusloan == 7 ||
@@ -196,40 +293,21 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                       dataLoan = element;
                       isPending = false;
                       isOverdue = true;
-                      transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
-
                       isHaveData = false;
                     });
-                  }
-                  // else if (element.status == 3 && element.statusloan == 8) {
-                  //   setState(() {
-                  //     dataLoan = element;
-                  //     isPending = false;
-                  //     isOverdue = false;
-                  //     isBlocked = true;
-                  //     transactionBloc.add(
-                  //         CheckLoanEvent(packageId: dataLoan!.id.toString()));
-
-                  //     isHaveData = false;
-                  //   });
-                  // }
-                  else if (element.status == 0 && element.statusloan == 4 ||
+                  } else if (element.status == 0 && element.statusloan == 4 ||
                       element.status == 1 && element.statusloan == 4 ||
                       element.status == 10 && element.statusloan == 4) {
                     setState(() {
                       dataLoan = element;
-                      // isHaveData = false;
-
                       isPending = false; // true; XXX: Multi-loan
                       isOverdue = false;
-                      transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
                     });
                   } else {
                     setState(() {
                       dataLoan = null;
                       isOverdue = false;
                       isPending = false;
-
                       isHaveData = false;
                     });
                   }
@@ -238,10 +316,57 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                 setState(() {
                   dataLoan = null;
                   isOverdue = false;
-
                   isHaveData = false;
                 });
               }
+
+              // Load CheckLoan data for all active loans to get accurate balance
+              loadCheckLoanDataForAllLoans();
+            } else if (state is CheckLoanSuccess) {
+              setState(() {
+                // Store CheckLoan data for the current loan being processed
+                if (completedCheckLoanCount < pendingCheckLoanIds.length) {
+                  String loanId = pendingCheckLoanIds[completedCheckLoanCount];
+                  checkLoanDataMap[loanId] = state.data;
+                  log('MY LOAN SCREEN - Stored CheckLoan data for loan $loanId: loanamount=${state.data.loanamount}, alreadypaid=${state.data.alreadypaid}');
+
+                  completedCheckLoanCount++;
+
+                  // Load next loan's CheckLoan data
+                  loadNextCheckLoanData();
+
+                  // Trigger UI refresh when all CheckLoan data is loaded
+                  if (completedCheckLoanCount >= pendingCheckLoanIds.length) {
+                    log('MY LOAN SCREEN - All CheckLoan data loaded. Final balance: ${calculateTotalLoanBalance()}');
+                    // setState will automatically trigger UI refresh
+                  }
+                }
+
+                if (state.data.data?.totalmustbepaid != null) {
+                  totalmustbepaid = state.data.data?.totalmustbepaid is int
+                      ? state.data.data?.totalmustbepaid.toDouble()
+                      : double.parse(state.data.data?.totalmustbepaid);
+                }
+              });
+            } else if (state is CheckLoanError) {
+              // Handle error and continue with next loan
+              setState(() {
+                if (completedCheckLoanCount < pendingCheckLoanIds.length) {
+                  String loanId = pendingCheckLoanIds[completedCheckLoanCount];
+                  log('MY LOAN SCREEN - Error loading CheckLoan data for loan $loanId: ${state.message}');
+
+                  completedCheckLoanCount++;
+
+                  // Continue with next loan even if current one failed
+                  loadNextCheckLoanData();
+
+                  // Trigger UI refresh when all loans are processed (including failed ones)
+                  if (completedCheckLoanCount >= pendingCheckLoanIds.length) {
+                    log('MY LOAN SCREEN - All CheckLoan requests completed (some may have failed). Final balance: ${calculateTotalLoanBalance()}');
+                    // setState will automatically trigger UI refresh
+                  }
+                }
+              });
             } else if (state is GetLoanError) {
               setState(() {
                 isHaveData = false;
@@ -433,16 +558,28 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                     const SizedBox(
                                                       height: 8.0,
                                                     ),
-                                                    Text(
-                                                      'HKD ${GlobalFunction().formattedMoney(calculateTotalLoanBalance())}',
-                                                      style: const TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 36,
-                                                        fontFamily: 'Gabarito',
-                                                        fontWeight: FontWeight.w500,
-                                                        height: 0,
-                                                      ),
-                                                    ),
+                                                    // Balance display with loading state
+                                                    areAllCheckLoanDataLoaded() && listLoan.isNotEmpty
+                                                        ? Text(
+                                                            'HKD ${GlobalFunction().formattedMoney(getDisplayBalance())}',
+                                                            style: const TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 36,
+                                                              fontFamily: 'Gabarito',
+                                                              fontWeight: FontWeight.w500,
+                                                              height: 0,
+                                                            ),
+                                                          )
+                                                        : const Text(
+                                                            'HKD -',
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 36,
+                                                              fontFamily: 'Gabarito',
+                                                              fontWeight: FontWeight.w500,
+                                                              height: 0,
+                                                            ),
+                                                          ),
                                                     const SizedBox(
                                                       height: 25.0,
                                                     ),
@@ -561,16 +698,28 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                     const SizedBox(
                                                       height: 8.0,
                                                     ),
-                                                    Text(
-                                                      'HKD ${listLoan.isEmpty ? '0' : GlobalFunction().formattedMoney(calculateTotalLoanBalance())}',
-                                                      style: const TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 36,
-                                                        fontFamily: 'Gabarito',
-                                                        fontWeight: FontWeight.w500,
-                                                        height: 0,
-                                                      ),
-                                                    ),
+                                                    // Balance display with loading state
+                                                    areAllCheckLoanDataLoaded() && listLoan.isNotEmpty
+                                                        ? Text(
+                                                            'HKD ${GlobalFunction().formattedMoney(getDisplayBalance())}',
+                                                            style: const TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 36,
+                                                              fontFamily: 'Gabarito',
+                                                              fontWeight: FontWeight.w500,
+                                                              height: 0,
+                                                            ),
+                                                          )
+                                                        : const Text(
+                                                            'HKD -',
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 36,
+                                                              fontFamily: 'Gabarito',
+                                                              fontWeight: FontWeight.w500,
+                                                              height: 0,
+                                                            ),
+                                                          ),
                                                     const SizedBox(
                                                       height: 25.0,
                                                     ),
