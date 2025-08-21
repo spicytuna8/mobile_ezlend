@@ -18,6 +18,7 @@ import 'package:loan_project/model/response_check_loan.dart';
 import 'package:loan_project/model/response_get_loan.dart';
 import 'package:loan_project/widget/global_function.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
+import 'package:loan_project/widget/ui_active.dart';
 import 'package:loan_project/widget/ui_package_name.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -226,8 +227,13 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    UIPackageName(
-                      packageName: loan.packageName ?? 'Loan Package',
+                    Row(
+                      children: [
+                        UIPackageName(
+                          packageName: loan.packageName ?? 'Loan Package',
+                        ),
+                        const Spacer(),
+                      ],
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -245,20 +251,10 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: isOverdue ? Colors.red : Colors.green,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      getLoanStatusText(loan),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                  UIActive(
+                    statusText: getLoanStatusText(loan),
+                    isOverdue: isOverdue,
+                    borderRadius: 12,
                   ),
                 ],
               ),
