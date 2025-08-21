@@ -47,6 +47,7 @@ class _DoneRepaymentState extends State<DoneRepayment> {
             child: CircularProgressIndicator(),
           );
         } else if (state is GetListPaymentSuccess) {
+          // Simulate 10 items for testing
           return Container(
             padding: const EdgeInsets.only(left: 12, right: 12),
             decoration: ShapeDecoration(
@@ -57,8 +58,8 @@ class _DoneRepaymentState extends State<DoneRepayment> {
             ),
             child: ListView.separated(
               shrinkWrap: true,
-              itemCount: state.data.data!.length,
-              physics: const ScrollPhysics(),
+              itemCount: 10, // Simulate 10 items
+              physics: const NeverScrollableScrollPhysics(),
               separatorBuilder: (context, index) {
                 return const Divider(
                   height: 1,
@@ -66,6 +67,34 @@ class _DoneRepaymentState extends State<DoneRepayment> {
                 );
               },
               itemBuilder: (BuildContext context, int index) {
+                // Simulate different payment amounts and dates
+                final amounts = [1500.0, 2200.0, 1800.0, 3000.0, 2500.0, 1200.0, 2800.0, 1900.0, 2100.0, 1600.0];
+                final dates = [
+                  DateTime.now().subtract(Duration(days: index * 7)),
+                  DateTime.now().subtract(Duration(days: index * 7 + 1)),
+                  DateTime.now().subtract(Duration(days: index * 7 + 2)),
+                  DateTime.now().subtract(Duration(days: index * 7 + 3)),
+                  DateTime.now().subtract(Duration(days: index * 7 + 4)),
+                  DateTime.now().subtract(Duration(days: index * 7 + 5)),
+                  DateTime.now().subtract(Duration(days: index * 7 + 6)),
+                  DateTime.now().subtract(Duration(days: index * 7 + 7)),
+                  DateTime.now().subtract(Duration(days: index * 7 + 8)),
+                  DateTime.now().subtract(Duration(days: index * 7 + 9)),
+                ];
+                final paymentTypes = [
+                  2,
+                  1,
+                  2,
+                  1,
+                  2,
+                  1,
+                  2,
+                  1,
+                  2,
+                  1
+                ]; // Alternate between manual banking and wire transfer
+                final statuses = [1, 1, 0, 1, 1, 0, 1, 1, 0, 1]; // Mix of approved and pending
+
                 return Column(
                   children: [
                     ListTile(
@@ -75,7 +104,7 @@ class _DoneRepaymentState extends State<DoneRepayment> {
                           style: white16w600,
                         ),
                         subtitle: Text(
-                          DateFormat('dd MMMM yyyy').format(state.data.data![index].createdAt ?? DateTime.now()),
+                          DateFormat('dd MMMM yyyy').format(dates[index]),
                           style: const TextStyle(
                             color: Color(0xFF7D8998),
                             fontSize: 12,
@@ -88,19 +117,16 @@ class _DoneRepaymentState extends State<DoneRepayment> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(GlobalFunction().formattedMoney(double.parse(state.data.data?[index].amount ?? '0')),
-                                style: white16w600),
+                            Text(GlobalFunction().formattedMoney(amounts[index]), style: white16w600),
                             const SizedBox(
                               height: 4.0,
                             ),
                             Text(
-                              state.data.data?[index].paymentType == 2
-                                  ? '${Languages.of(context).manualBanking} - ${GlobalFunction().getStatus(state.data.data?[index].status, context)}'
-                                  : '${Languages.of(context).wireTransfer} - ${GlobalFunction().getStatus(state.data.data?[index].status, context)}',
+                              paymentTypes[index] == 2
+                                  ? '${Languages.of(context).manualBanking} - ${GlobalFunction().getStatus(statuses[index], context)}'
+                                  : '${Languages.of(context).wireTransfer} - ${GlobalFunction().getStatus(statuses[index], context)}',
                               style: TextStyle(
-                                color: StatusHelper.isApproved(state.data.data?[index].status ?? 0)
-                                    ? Colors.red
-                                    : const Color(0xFF67A353),
+                                color: StatusHelper.isApproved(statuses[index]) ? Colors.red : const Color(0xFF67A353),
                                 fontSize: 12,
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w600,

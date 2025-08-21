@@ -101,182 +101,176 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: BlocConsumer<TransactionBloc, TransactionState>(
-                  bloc: _transactionBloc,
-                  listener: (context, state) {
-                    // Already handled above
-                  },
-                  builder: (context, state) {
-                    return Container(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Loan Balance Card with Payment Due
-                          UIYourBalanceDue(
-                            balance: isOverdue || totalmustbepaid != null
-                                ? totalmustbepaid?.toDouble()
-                                : double.tryParse(widget.loan.totalreturn ?? widget.loan.loanamount ?? '0') ?? 0,
-                            isLoading: false,
-                            statusBadge: isOverdue
-                                ? Container(
-                                    width: 69,
-                                    height: 22,
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                                    decoration: ShapeDecoration(
-                                      color: const Color(0xFFE02424),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        Languages.of(context).overdue,
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.white),
-                                        borderRadius: BorderRadius.circular(16)),
-                                    padding: const EdgeInsets.all(8),
-                                    child: Text(
-                                      Languages.of(context).active,
-                                      style: white12w400,
+        body: BlocConsumer<TransactionBloc, TransactionState>(
+          bloc: _transactionBloc,
+          listener: (context, state) {
+            // Already handled above
+          },
+          builder: (context, state) {
+            return Column(children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Loan Balance Card with Payment Due
+                      UIYourBalanceDue(
+                        balance: isOverdue || totalmustbepaid != null
+                            ? totalmustbepaid?.toDouble()
+                            : double.tryParse(widget.loan.totalreturn ?? widget.loan.loanamount ?? '0') ?? 0,
+                        isLoading: false,
+                        statusBadge: isOverdue
+                            ? Container(
+                                width: 69,
+                                height: 22,
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                decoration: ShapeDecoration(
+                                  color: const Color(0xFFE02424),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    Languages.of(context).overdue,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                            customBalanceText:
-                                'HKD ${GlobalFunction().formattedMoney(isOverdue || totalmustbepaid != null ? totalmustbepaid?.toDouble() : double.tryParse(widget.loan.totalreturn ?? widget.loan.loanamount ?? '0') ?? 0)}',
-                            paymentDueContent: BlocConsumer<PaymentDueBloc, PaymentDueState>(
-                              bloc: paymentDueBloc,
-                              listener: (context, state) {
-                                // TODO: implement listener
-                              },
-                              builder: (context, state) {
-                                if (state is CheckDueDateLoading) {
-                                  return const SizedBox(
-                                    height: 30,
-                                    width: 30,
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  );
-                                } else if (state is CheckDueDateSuccess) {
-                                  return Text(
-                                    state.data.data?.duedate != null
-                                        ? DateFormat('dd MMM yyyy').format(state.data.data!.duedate!)
-                                        : '--/--/--',
-                                    style: white12w400,
-                                  );
-                                } else {
-                                  return Text(
-                                    '--/--/--',
-                                    style: white12w400,
-                                  );
-                                }
-                              },
-                            ),
-                          ),
-
-                          const SizedBox(height: 32.0),
-
-                          // Overdue Warning
-                          if (isOverdue)
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              padding: const EdgeInsets.all(12),
-                              clipBehavior: Clip.antiAlias,
-                              decoration: ShapeDecoration(
-                                color: const Color(0xFF261616),
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(width: 1, color: Color(0xFFF46C7C)),
-                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white), borderRadius: BorderRadius.circular(16)),
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                  Languages.of(context).active,
+                                  style: white12w400,
                                 ),
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Image.asset(
-                                    'assets/icons/ic_info_danger.png',
-                                    width: 20,
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  Expanded(
-                                    child: Text(
-                                      Languages.of(context).overdueLoanMessage,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                          const SizedBox(height: 32.0),
-
-                          // Payment History Section
-                          Text(
-                            Languages.of(context).doneRepayment,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontFamily: 'Gabarito',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 8.0),
-
-                          DoneRepayment(
-                            repaymentBloc: _repaymentBloc,
-                            loanpackgeid: widget.loan.id ?? 0,
-                          ),
-
-                          const SizedBox(height: 16), // Bottom padding for scroll content
-                        ],
+                        customBalanceText:
+                            'HKD ${GlobalFunction().formattedMoney(isOverdue || totalmustbepaid != null ? totalmustbepaid?.toDouble() : double.tryParse(widget.loan.totalreturn ?? widget.loan.loanamount ?? '0') ?? 0)}',
+                        paymentDueContent: BlocConsumer<PaymentDueBloc, PaymentDueState>(
+                          bloc: paymentDueBloc,
+                          listener: (context, state) {
+                            // TODO: implement listener
+                          },
+                          builder: (context, state) {
+                            if (state is CheckDueDateLoading) {
+                              return const SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            } else if (state is CheckDueDateSuccess) {
+                              return Text(
+                                state.data.data?.duedate != null
+                                    ? DateFormat('dd MMM yyyy').format(state.data.data!.duedate!)
+                                    : '--/--/--',
+                                style: white12w400,
+                              );
+                            } else {
+                              return Text(
+                                '--/--/--',
+                                style: white12w400,
+                              );
+                            }
+                          },
+                        ),
                       ),
-                    );
-                  },
+
+                      const SizedBox(height: 24.0),
+
+                      // Overdue Warning
+                      if (isOverdue)
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.all(12),
+                          clipBehavior: Clip.antiAlias,
+                          decoration: ShapeDecoration(
+                            color: const Color(0xFF261616),
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(width: 1, color: Color(0xFFF46C7C)),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.asset(
+                                'assets/icons/ic_info_danger.png',
+                                width: 20,
+                              ),
+                              const SizedBox(width: 8.0),
+                              Expanded(
+                                child: Text(
+                                  Languages.of(context).overdueLoanMessage,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                      // Payment History Section
+                      Text(
+                        Languages.of(context).doneRepayment,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: 'Gabarito',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+
+                      Expanded(
+                        child: DoneRepayment(
+                          repaymentBloc: _repaymentBloc,
+                          loanpackgeid: widget.loan.id ?? 0,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            // Fixed Bottom Button
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: Color(0xFF252422),
-              ),
-              child: SafeArea(
-                child: MainButtonGradient(
-                  title: Languages.of(context).repayNow,
-                  onTap: () {
-                    context.pushNamed(repaymentInput,
-                        extra: RepaymentInputParam(
-                            idLoan: widget.loan.id,
-                            idLoanDetail: widget.loan.loanPackageDetails!.isNotEmpty
-                                ? widget.loan.loanPackageDetails?.last.id
-                                : 0));
-                  },
+              const SizedBox(height: 16), // Bottom padding for scroll content
+              // Fixed Bottom Button
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  color: Color(0xFF252422),
+                ),
+                child: SafeArea(
+                  child: MainButtonGradient(
+                    title: Languages.of(context).repayNow,
+                    onTap: () {
+                      context.pushNamed(repaymentInput,
+                          extra: RepaymentInputParam(
+                              idLoan: widget.loan.id,
+                              idLoanDetail: widget.loan.loanPackageDetails!.isNotEmpty
+                                  ? widget.loan.loanPackageDetails?.last.id
+                                  : 0));
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ]);
+          },
         ),
       ),
     );
