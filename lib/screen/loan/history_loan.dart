@@ -46,8 +46,7 @@ class _HistoryLoanState extends State<HistoryLoan> {
           child: Card(
             color: Colors.transparent,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: const BorderSide(width: 1, color: Color(0xFF354150))),
+                borderRadius: BorderRadius.circular(12), side: const BorderSide(width: 1, color: Color(0xFF354150))),
             child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: Colors.grey[200],
@@ -66,8 +65,7 @@ class _HistoryLoanState extends State<HistoryLoan> {
               subtitle: Text(
                 widget.data[index].dateloan == null
                     ? '-'
-                    : DateFormat('dd MMMM yyyy')
-                        .format(widget.data[index].dateloan!),
+                    : DateFormat('dd MMMM yyyy').format(widget.data[index].dateloan!),
                 style: GoogleFonts.inter(
                   color: const Color(0xFF7D8998),
                   fontSize: 12,
@@ -81,8 +79,7 @@ class _HistoryLoanState extends State<HistoryLoan> {
                     height: 8.0,
                   ),
                   Text(
-                    GlobalFunction().formattedMoney(
-                        double.parse(widget.data[index].loanamount ?? '')),
+                    GlobalFunction().formattedMoney(double.parse(widget.data[index].loanamount ?? '')),
                     style: GoogleFonts.inter(
                       color: const Color(0xFFFED607),
                       fontSize: 16,
@@ -97,9 +94,7 @@ class _HistoryLoanState extends State<HistoryLoan> {
                         ? () {
                             GlobalFunction().rejectCodeDialog(context,
                                 title: '${Languages.of(context).reason} : ',
-                                subtitle: widget
-                                        .data[index].rejectedCode?[0].content ??
-                                    '');
+                                subtitle: widget.data[index].rejectedCode?[0].content ?? '');
                             // showDialog(
                             //   context: context,
                             //   builder: (BuildContext context) {
@@ -129,25 +124,19 @@ class _HistoryLoanState extends State<HistoryLoan> {
                           Text(
                             widget.data[index].statusloan == 4
                                 ? Languages.of(context).active
-                                : widget.data[index].status == 3 &&
-                                        widget.data[index].statusloan == 5
+                                : widget.data[index].status == 3 && widget.data[index].statusloan == 5
                                     ? Languages.of(context).closed
                                     : widget.data[index].status == 2
                                         ? Languages.of(context).reject
                                         : widget.data[index].status == 10
-                                            ? Languages.of(context)
-                                                .pendingApproval
+                                            ? Languages.of(context).pendingApproval
                                             : widget.data[index].status == 0 ||
-                                                    widget.data[index].status ==
-                                                        1 ||
-                                                    widget.data[index].status ==
-                                                        10
+                                                    widget.data[index].status == 1 ||
+                                                    widget.data[index].status == 10
                                                 ? Languages.of(context).pending
                                                 : Languages.of(context).overdue,
                             style: GoogleFonts.inter(
-                              color: widget.data[index].status == 2
-                                  ? const Color(0xFFEF233C)
-                                  : const Color(0xFF7D8998),
+                              color: widget.data[index].status == 2 ? const Color(0xFFEF233C) : const Color(0xFF7D8998),
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                             ),

