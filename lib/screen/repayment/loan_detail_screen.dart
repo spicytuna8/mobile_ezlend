@@ -230,21 +230,16 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                       padding: const EdgeInsets.all(16),
                       decoration:
                           BoxDecoration(color: const Color(0xFF252422), borderRadius: BorderRadius.circular(12)),
-                      child: Center(
-                        child: SizedBox(
-                          width: 100,
-                          child: MainButtonGradient(
-                            title: Languages.of(context).repayNow,
-                            onTap: () {
-                              context.pushNamed(repaymentInput,
-                                  extra: RepaymentInputParam(
-                                      idLoan: widget.loan.id,
-                                      idLoanDetail: widget.loan.loanPackageDetails!.isNotEmpty
-                                          ? widget.loan.loanPackageDetails?.last.id
-                                          : 0));
-                            },
-                          ),
-                        ),
+                      child: MainButtonGradient(
+                        title: Languages.of(context).repayNow,
+                        onTap: () {
+                          context.pushNamed(repaymentInput,
+                              extra: RepaymentInputParam(
+                                  idLoan: widget.loan.id,
+                                  idLoanDetail: widget.loan.loanPackageDetails!.isNotEmpty
+                                      ? widget.loan.loanPackageDetails?.last.id
+                                      : 0));
+                        },
                       ),
                     ),
 
