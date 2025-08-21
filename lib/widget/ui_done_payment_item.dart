@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loan_project/helper/languages.dart';
-import 'package:loan_project/helper/status_helper.dart';
 import 'package:loan_project/widget/global_function.dart';
+import 'package:loan_project/widget/ui_done_payment_status.dart';
 
 class UIDonePaymentItem extends StatelessWidget {
   final DateTime? createdAt;
@@ -63,14 +63,8 @@ class UIDonePaymentItem extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              Text(
-                GlobalFunction().getStatus(status, context),
-                style: TextStyle(
-                  color: StatusHelper.isApproved(status ?? 0) ? Colors.red : const Color(0xFF67A353),
-                  fontSize: 12,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w600,
-                ),
+              UIDonePaymentStatus(
+                status: status,
               ),
             ],
           ),
