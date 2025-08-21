@@ -135,7 +135,16 @@ class UIHistoryLoanItem extends StatelessWidget {
   }
 
   String _getStatusText(BuildContext context) {
-    if (loanData.statusloan == 4) {
+    // Check if loan is overdue (same logic as background color)
+    bool isOverdue = loanData.status == 3 &&
+        (loanData.statusloan == 7 ||
+            loanData.statusloan == 6 ||
+            loanData.statusloan == 8 ||
+            (loanData.statusloan == 4 && loanData.blacklist == 9));
+
+    if (isOverdue) {
+      return Languages.of(context).overdue;
+    } else if (loanData.status == 3 && loanData.statusloan == 4) {
       return Languages.of(context).active;
     } else if (loanData.status == 3 && loanData.statusloan == 5) {
       return Languages.of(context).closed;
@@ -143,10 +152,10 @@ class UIHistoryLoanItem extends StatelessWidget {
       return Languages.of(context).reject;
     } else if (loanData.status == 10) {
       return Languages.of(context).pendingApproval;
-    } else if (loanData.status == 0 || loanData.status == 1 || loanData.status == 10) {
+    } else if (loanData.status == 0 || loanData.status == 1) {
       return Languages.of(context).pending;
     } else {
-      return Languages.of(context).overdue;
+      return Languages.of(context).pending; // Default to pending for other cases
     }
   }
 
