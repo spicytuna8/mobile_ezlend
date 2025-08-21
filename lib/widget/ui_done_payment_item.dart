@@ -61,14 +61,24 @@ class UIDonePaymentItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                paymentType == 2 ? Languages.of(context).manualBanking : Languages.of(context).wireTransfer,
-                style: const TextStyle(
-                  color: Color(0xFF7D8998),
-                  fontSize: 12,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w600,
-                ),
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/images/payment_type.png',
+                    width: 12,
+                    height: 12,
+                  ),
+                  const SizedBox(width: 4.0),
+                  Text(
+                    paymentType == 2 ? Languages.of(context).manualBanking : Languages.of(context).wireTransfer,
+                    style: const TextStyle(
+                      color: Color(0xFF7D8998),
+                      fontSize: 12,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
               UIDonePaymentStatus(
                 status: status,
