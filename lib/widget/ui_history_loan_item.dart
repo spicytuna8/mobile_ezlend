@@ -1,0 +1,145 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:loan_project/helper/languages.dart';
+import 'package:loan_project/helper/router_name.dart';
+import 'package:loan_project/model/response_get_loan.dart';
+import 'package:loan_project/widget/global_function.dart';
+import 'package:loan_project/widget/ui_package_name.dart';
+
+class UIHistoryLoanItem extends StatelessWidget {
+  final DatumLoan loanData;
+  final VoidCallback? onTap;
+
+  const UIHistoryLoanItem({
+    Key? key,
+    required this.loanData,
+    this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap ??
+          () {
+            context.pushNamed(historyLoanDetail, extra: loanData);
+          },
+      child: Card(
+        color: Colors.transparent,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), side: const BorderSide(width: 1, color: Color(0xFF354150))),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              // Leading - Circle Avatar
+              CircleAvatar(
+                backgroundColor: Colors.grey[200],
+                backgroundImage: const AssetImage(
+                  "assets/images/dollar.png",
+                ),
+              ),
+              const SizedBox(width: 16.0),
+
+              // Middle - Title and Subtitle
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        UIPackageName(
+                          packageName: loanData.packageName ?? '',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                          borderRadius: 6.0,
+                        ),
+                        const SizedBox(width: 12.0),
+                        Text(
+                          GlobalFunction().formattedMoney(double.parse(loanData.loanamount ?? '')),
+                          style: GoogleFonts.inter(
+                            color: const Color(0xFFFED607),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const Spacer()
+                      ],
+                    ),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      loanData.dateloan == null ? '-' : DateFormat('dd MMMM yyyy').format(loanData.dateloan!),
+                      style: GoogleFonts.inter(
+                        color: const Color(0xFF7D8998),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Trailing - Amount and Status
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 8.0),
+                  GestureDetector(
+                    onTap: loanData.status == 2
+                        ? () {
+                            GlobalFunction().rejectCodeDialog(context,
+                                title: '${Languages.of(context).reason} : ',
+                                subtitle: loanData.rejectedCode?[0].content ?? '');
+                          }
+                        : null,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _getStatusText(context),
+                          style: GoogleFonts.inter(
+                            color: loanData.status == 2 ? const Color(0xFFEF233C) : const Color(0xFF7D8998),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        if (loanData.status == 2) ...[
+                          const SizedBox(width: 4.0),
+                          Image.asset(
+                            'assets/icons/ic_info_danger.png',
+                            width: 13.6,
+                            height: 13.6,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _getStatusText(BuildContext context) {
+    if (loanData.statusloan == 4) {
+      return Languages.of(context).active;
+    } else if (loanData.status == 3 && loanData.statusloan == 5) {
+      return Languages.of(context).closed;
+    } else if (loanData.status == 2) {
+      return Languages.of(context).reject;
+    } else if (loanData.status == 10) {
+      return Languages.of(context).pendingApproval;
+    } else if (loanData.status == 0 || loanData.status == 1 || loanData.status == 10) {
+      return Languages.of(context).pending;
+    } else {
+      return Languages.of(context).overdue;
+    }
+  }
+}
