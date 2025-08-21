@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:loan_project/bloc/payment-due/payment_due_bloc.dart';
 import 'package:loan_project/bloc/repayment/repayment_bloc.dart';
 import 'package:loan_project/bloc/transaction/transaction_bloc.dart';
-import 'package:loan_project/helper/color_helper.dart';
 import 'package:loan_project/helper/languages.dart';
 import 'package:loan_project/helper/preference_helper.dart';
 import 'package:loan_project/helper/router_name.dart';
@@ -22,6 +21,7 @@ import 'package:loan_project/widget/global_function.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
 import 'package:loan_project/widget/ui_active.dart';
 import 'package:loan_project/widget/ui_package_name.dart';
+import 'package:loan_project/widget/ui_your_balance.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RepaymentScreen extends StatefulWidget {
@@ -467,58 +467,12 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                     const SizedBox(height: 20.0),
 
                     // Total Loan Balance Card
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          color: secondaryColor,
-                          borderRadius: BorderRadius.circular(16),
-                          image:
-                              const DecorationImage(image: AssetImage('assets/images/promo2.png'), fit: BoxFit.cover)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            Languages.of(context).loanBalance,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          areAllCheckLoanDataLoaded() && listLoan.isNotEmpty
-                              ? Text(
-                                  'HKD ${GlobalFunction().formattedMoney(getDisplayBalance())}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 32,
-                                    fontFamily: 'Gabarito',
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                )
-                              : const Text(
-                                  'HKD -',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 32,
-                                    fontFamily: 'Gabarito',
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                          const SizedBox(height: 8),
-                          Text(
-                            listLoan.isEmpty
-                                ? Languages.of(context).dontHaveActiveLoan
-                                : '${listLoan.where((loan) => StatusHelper.isApproved(loan.status ?? 0) && StatusLoanHelper.requiresPayment(loan.statusloan ?? 0)).length} ${Languages.of(context).active} ${Languages.of(context).loan}s',
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
+                    UIYourBalance(
+                      balance: areAllCheckLoanDataLoaded() && listLoan.isNotEmpty ? getDisplayBalance() : null,
+                      isLoading: !areAllCheckLoanDataLoaded() && listLoan.isNotEmpty,
+                      subTitle: listLoan.isEmpty
+                          ? Languages.of(context).dontHaveActiveLoan
+                          : '${listLoan.where((loan) => StatusHelper.isApproved(loan.status ?? 0) && StatusLoanHelper.requiresPayment(loan.statusloan ?? 0)).length} ${Languages.of(context).active} ${Languages.of(context).loan}s',
                     ),
 
                     const SizedBox(height: 24),

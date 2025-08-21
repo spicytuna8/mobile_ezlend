@@ -11,7 +11,6 @@ import 'package:intl/intl.dart';
 import 'package:loan_project/bloc/member/member_bloc.dart';
 import 'package:loan_project/bloc/package/package_bloc.dart';
 import 'package:loan_project/bloc/transaction/transaction_bloc.dart';
-import 'package:loan_project/helper/color_helper.dart';
 import 'package:loan_project/helper/languages.dart';
 import 'package:loan_project/helper/preference_helper.dart';
 import 'package:loan_project/helper/router_name.dart';
@@ -26,6 +25,7 @@ import 'package:loan_project/widget/main_button.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
 import 'package:loan_project/widget/ui_package_item.dart';
 import 'package:loan_project/widget/ui_see_more.dart';
+import 'package:loan_project/widget/ui_your_balance.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyLoanScreen extends StatefulWidget {
@@ -484,157 +484,31 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                           return Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Container(
-                                                padding: const EdgeInsets.all(16),
-                                                width: MediaQuery.of(context).size.width,
-                                                // height: 145,
-                                                decoration: BoxDecoration(
-                                                    color: secondaryColor,
-                                                    borderRadius: const BorderRadius.only(
-                                                        topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-                                                    image: const DecorationImage(
-                                                        image: AssetImage('assets/images/promo2.png'),
-                                                        fit: BoxFit.cover)),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          Languages.of(context).loanBalance,
-                                                          style: white12w400,
-                                                        ),
-                                                        hasOverdueLoan()
-                                                            ? Container(
-                                                                width: 69,
-                                                                height: 22,
-                                                                padding: const EdgeInsets.symmetric(
-                                                                    horizontal: 10, vertical: 2),
-                                                                decoration: ShapeDecoration(
-                                                                  color: const Color(0xFFE02424),
-                                                                  shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(20),
-                                                                  ),
-                                                                ),
-                                                                child: Center(
-                                                                  child: Text(
-                                                                    Languages.of(context).overdue,
-                                                                    textAlign: TextAlign.center,
-                                                                    style: GoogleFonts.inter(
-                                                                      color: Colors.white,
-                                                                      fontSize: 12,
-                                                                      fontWeight: FontWeight.w500,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            : Container(
-                                                                height: 22,
-                                                                padding: const EdgeInsets.symmetric(
-                                                                    horizontal: 10, vertical: 2),
-                                                                decoration: ShapeDecoration(
-                                                                  shape: RoundedRectangleBorder(
-                                                                    side:
-                                                                        const BorderSide(width: 1, color: Colors.white),
-                                                                    borderRadius: BorderRadius.circular(20),
-                                                                  ),
-                                                                ),
-                                                                child: Text(
-                                                                  getMultiLoanStatus(),
-                                                                  textAlign: TextAlign.center,
-                                                                  style: GoogleFonts.inter(
-                                                                    color: Colors.white,
-                                                                    fontSize: 12,
-                                                                    fontWeight: FontWeight.w500,
-                                                                  ),
-                                                                ),
-                                                              )
-                                                      ],
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 8.0,
-                                                    ),
-                                                    // Balance display with loading state
-                                                    areAllCheckLoanDataLoaded() && listLoan.isNotEmpty
-                                                        ? Text(
-                                                            'HKD ${GlobalFunction().formattedMoney(getDisplayBalance())}',
-                                                            style: const TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 36,
-                                                              fontFamily: 'Gabarito',
-                                                              fontWeight: FontWeight.w500,
-                                                              height: 0,
-                                                            ),
-                                                          )
-                                                        : const Text(
-                                                            'HKD -',
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 36,
-                                                              fontFamily: 'Gabarito',
-                                                              fontWeight: FontWeight.w500,
-                                                              height: 0,
-                                                            ),
+                                              UIYourBalance(
+                                                balance: areAllCheckLoanDataLoaded() && listLoan.isNotEmpty
+                                                    ? getDisplayBalance()
+                                                    : null,
+                                                isLoading: !areAllCheckLoanDataLoaded() && listLoan.isNotEmpty,
+                                                subTitle: listLoan.isEmpty
+                                                    ? Languages.of(context).dontHaveActiveLoan
+                                                    : listLoan.length == 1
+                                                        ? (listLoan.first.packageName ?? '')
+                                                        : '${listLoan.where((loan) => loan.status == 3 && (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)).length} ${Languages.of(context).active} ${Languages.of(context).loan}s',
+                                                statusBadge: hasOverdueLoan()
+                                                    ? Container(
+                                                        width: 69,
+                                                        height: 22,
+                                                        padding:
+                                                            const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                                        decoration: ShapeDecoration(
+                                                          color: const Color(0xFFE02424),
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(20),
                                                           ),
-                                                    const SizedBox(
-                                                      height: 25.0,
-                                                    ),
-                                                    Text(
-                                                      listLoan.isEmpty
-                                                          ? Languages.of(context).dontHaveActiveLoan
-                                                          : listLoan.length == 1
-                                                              ? (listLoan.first.packageName ?? '')
-                                                              : '${listLoan.where((loan) => loan.status == 3 && (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)).length} ${Languages.of(context).active} ${Languages.of(context).loan}s',
-                                                      style: white12w400,
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 16.0,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        } else {
-                                          return Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                padding: const EdgeInsets.all(16),
-                                                width: MediaQuery.of(context).size.width,
-                                                // height: 145,
-                                                decoration: BoxDecoration(
-                                                    color: secondaryColor,
-                                                    borderRadius: const BorderRadius.only(
-                                                        topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-                                                    image: const DecorationImage(
-                                                        image: AssetImage('assets/images/promo2.png'),
-                                                        fit: BoxFit.cover)),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          Languages.of(context).loanBalance,
-                                                          style: white12w400,
                                                         ),
-                                                        Container(
-                                                          height: 22,
-                                                          padding:
-                                                              const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                                                          decoration: ShapeDecoration(
-                                                            shape: RoundedRectangleBorder(
-                                                              side: const BorderSide(width: 1, color: Colors.white),
-                                                              borderRadius: BorderRadius.circular(20),
-                                                            ),
-                                                          ),
+                                                        child: Center(
                                                           child: Text(
-                                                            getMultiLoanStatus(),
+                                                            Languages.of(context).overdue,
                                                             textAlign: TextAlign.center,
                                                             style: GoogleFonts.inter(
                                                               color: Colors.white,
@@ -642,49 +516,63 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                               fontWeight: FontWeight.w500,
                                                             ),
                                                           ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 8.0,
-                                                    ),
-                                                    // Balance display with loading state
-                                                    areAllCheckLoanDataLoaded() && listLoan.isNotEmpty
-                                                        ? Text(
-                                                            'HKD ${GlobalFunction().formattedMoney(getDisplayBalance())}',
-                                                            style: const TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 36,
-                                                              fontFamily: 'Gabarito',
-                                                              fontWeight: FontWeight.w500,
-                                                              height: 0,
-                                                            ),
-                                                          )
-                                                        : const Text(
-                                                            'HKD -',
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 36,
-                                                              fontFamily: 'Gabarito',
-                                                              fontWeight: FontWeight.w500,
-                                                              height: 0,
-                                                            ),
+                                                        ),
+                                                      )
+                                                    : Container(
+                                                        height: 22,
+                                                        padding:
+                                                            const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                                        decoration: ShapeDecoration(
+                                                          shape: RoundedRectangleBorder(
+                                                            side: const BorderSide(width: 1, color: Colors.white),
+                                                            borderRadius: BorderRadius.circular(20),
                                                           ),
-                                                    const SizedBox(
-                                                      height: 25.0,
+                                                        ),
+                                                        child: Text(
+                                                          getMultiLoanStatus(),
+                                                          textAlign: TextAlign.center,
+                                                          style: GoogleFonts.inter(
+                                                            color: Colors.white,
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ),
+                                              ),
+                                            ],
+                                          );
+                                        } else {
+                                          return Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              UIYourBalance(
+                                                balance: areAllCheckLoanDataLoaded() && listLoan.isNotEmpty
+                                                    ? getDisplayBalance()
+                                                    : null,
+                                                isLoading: !areAllCheckLoanDataLoaded() && listLoan.isNotEmpty,
+                                                subTitle: listLoan.isEmpty
+                                                    ? Languages.of(context).dontHaveActiveLoan
+                                                    : listLoan.length == 1
+                                                        ? (listLoan.first.packageName ?? '')
+                                                        : '${listLoan.where((loan) => loan.status == 3 && (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)).length} ${Languages.of(context).active} ${Languages.of(context).loan}s',
+                                                statusBadge: Container(
+                                                  height: 22,
+                                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                                  decoration: ShapeDecoration(
+                                                    shape: RoundedRectangleBorder(
+                                                      side: const BorderSide(width: 1, color: Colors.white),
+                                                      borderRadius: BorderRadius.circular(20),
                                                     ),
-                                                    Text(
-                                                      listLoan.isEmpty
-                                                          ? Languages.of(context).dontHaveActiveLoan
-                                                          : listLoan.length == 1
-                                                              ? (listLoan.first.packageName ?? '')
-                                                              : '${listLoan.where((loan) => loan.status == 3 && (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)).length} ${Languages.of(context).active} ${Languages.of(context).loan}s',
-                                                      style: white12w400,
+                                                  ),
+                                                  child: Text(
+                                                    getMultiLoanStatus(),
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts.inter(
+                                                      color: Colors.white,
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w500,
                                                     ),
-                                                    const SizedBox(
-                                                      height: 16.0,
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
                                             ],
