@@ -12,7 +12,7 @@ class UIActive extends StatelessWidget {
     required this.statusText,
     required this.isOverdue,
     this.fontSize = 10.0,
-    this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    this.padding = const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
     this.borderRadius = 8.0,
   }) : super(key: key);
 

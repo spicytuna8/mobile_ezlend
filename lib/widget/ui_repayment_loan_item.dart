@@ -26,6 +26,14 @@ class UIRepaymentLoanItem extends StatelessWidget {
             (StatusLoanHelper.isActive(loan.statusloan ?? 0) && StatusHelper.isBlacklisted(loan.blacklist ?? 0)));
   }
 
+  // Calculate due date from loan date + return days
+  DateTime? _calculateDueDate(DatumLoan loan) {
+    if (loan.dateloan != null && loan.returnday != null) {
+      return loan.dateloan!.add(Duration(days: loan.returnday!));
+    }
+    return null;
+  }
+
   // Get status text for a loan
   String _getLoanStatusText(DatumLoan loan, BuildContext context) {
     if (_isLoanOverdue(loan)) {
@@ -104,12 +112,13 @@ class UIRepaymentLoanItem extends StatelessWidget {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Icon(
-                      Icons.calendar_today,
+                    Image.asset(
+                      'assets/images/apply_date.png',
+                      width: 14,
+                      height: 14,
                       color: Colors.white.withOpacity(0.6),
-                      size: 14,
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: 6.0),
                     Text(
                       loan.dateloan != null ? DateFormat('dd MMM yyyy').format(loan.dateloan!) : 'N/A',
                       style: TextStyle(
@@ -117,9 +126,31 @@ class UIRepaymentLoanItem extends StatelessWidget {
                         fontSize: 12,
                       ),
                     ),
+                    const SizedBox(width: 6.0),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.schedule,
+                          color: Colors.white.withOpacity(0.6),
+                          size: 14,
+                        ),
+                        const SizedBox(width: 6.0),
+                        Text(
+                          _calculateDueDate(loan) != null
+                              ? DateFormat('dd MMM yyyy').format(_calculateDueDate(loan)!)
+                              : 'N/A',
+                          style: TextStyle(
+                            color: isOverdue ? Colors.red.withOpacity(0.9) : Colors.white.withOpacity(0.7),
+                            fontSize: 12,
+                            fontWeight: isOverdue ? FontWeight.w600 : FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 SizedBox(
                   width: double.infinity,
                   height: 40,
