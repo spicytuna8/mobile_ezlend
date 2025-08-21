@@ -272,6 +272,10 @@ class LanguageMl extends Languages {
   String get payNow => 'Bayar sekarang';
 
   @override
+  // TODO: implement repayNow
+  String get repayNow => 'Bayar balik sekarang';
+
+  @override
   // TODO: implement payment
   String get payment => 'Bayaran';
 

@@ -86,6 +86,7 @@ abstract class Languages {
   String get passwordLengthRequirement;
   String get submit;
   String get payNow;
+  String get repayNow;
   String get repaymentForm;
   String get bankInfo;
   String get transferToSpecifiedBank;

@@ -249,6 +249,9 @@ class LanguageEn extends Languages {
   String get payNow => "Pay Now";
 
   @override
+  String get repayNow => "Repay Now";
+
+  @override
   String get repaymentForm => "Repayment Form";
 
   @override

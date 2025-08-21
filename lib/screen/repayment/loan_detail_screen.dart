@@ -249,7 +249,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                           trailing: SizedBox(
                             width: 100,
                             child: MainButtonGradient(
-                              title: Languages.of(context).payNow,
+                              title: Languages.of(context).repayNow,
                               onTap: () {
                                 context.pushNamed(repaymentInput,
                                     extra: RepaymentInputParam(

@@ -283,6 +283,9 @@ class LanguageYue extends Languages {
   String get payNow => '立即付款';
 
   @override
+  String get repayNow => '立即還款';
+
+  @override
   String get payment => '付款';
 
   @override

@@ -266,6 +266,10 @@ class LanguageHans extends Languages {
   String get payNow => '立即支付';
 
   @override
+  // TODO: implement repayNow
+  String get repayNow => '立即还款';
+
+  @override
   // TODO: implement payment
   String get payment => '付款';
 

@@ -243,6 +243,9 @@ class LanguageHant extends Languages {
   String get payNow => "立即支付";
 
   @override
+  String get repayNow => "立即還款";
+
+  @override
   String get repaymentForm => "还款表单";
 
   @override

@@ -271,6 +271,10 @@ class LanguageJp extends Languages {
   String get payNow => '今すぐ支払う';
 
   @override
+  // TODO: implement repayNow
+  String get repayNow => '今すぐ返済する';
+
+  @override
   // TODO: implement payment
   String get payment => '支払い';
 

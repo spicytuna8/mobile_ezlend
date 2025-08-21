@@ -203,6 +203,9 @@ class LanguageTW extends Languages {
   String get payNow => '立即支付';
 
   @override
+  String get repayNow => '立即還款';
+
+  @override
   String get payment => '付款';
 
   @override
