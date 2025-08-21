@@ -64,7 +64,7 @@ class UIDonePaymentItem extends StatelessWidget {
               Row(
                 children: [
                   Image.asset(
-                    'assets/images/payment_type.png',
+                    'assets/images/payment_method.png',
                     width: 12,
                     height: 12,
                   ),
