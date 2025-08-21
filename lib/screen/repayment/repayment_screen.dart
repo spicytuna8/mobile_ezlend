@@ -464,8 +464,6 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 20.0),
-
                     // Total Loan Balance Card
                     UIYourBalance(
                       balance: areAllCheckLoanDataLoaded() && listLoan.isNotEmpty ? getDisplayBalance() : null,

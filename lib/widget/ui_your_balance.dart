@@ -27,9 +27,8 @@ class UIYourBalance extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: secondaryColor,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(12),
         ),
         image: const DecorationImage(
           image: AssetImage('assets/images/promo2.png'),
