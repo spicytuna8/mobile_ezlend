@@ -66,13 +66,24 @@ class UIHistoryLoanItem extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 8.0),
-                    Text(
-                      loanData.dateloan == null ? '-' : DateFormat('dd MMMM yyyy').format(loanData.dateloan!),
-                      style: GoogleFonts.inter(
-                        color: const Color(0xFF7D8998),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/images/apply_date.png',
+                          width: 18,
+                          height: 18,
+                          fit: BoxFit.contain,
+                        ),
+                        const SizedBox(width: 4.0),
+                        Text(
+                          loanData.dateloan == null ? '-' : DateFormat('dd MMMM yyyy').format(loanData.dateloan!),
+                          style: GoogleFonts.inter(
+                            color: const Color(0xFF7D8998),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -166,7 +177,7 @@ class UIHistoryLoanItem extends StatelessWidget {
     if (isOverdue) {
       return Colors.red; // Red background for overdue
     } else if (loanData.status == 3 && loanData.statusloan == 4) {
-      return Colors.green; // Green background for active
+      return const Color(0xFF569235); // Green background for active
     } else if (loanData.status == 2) {
       return const Color(0xFFEF233C); // Red background for rejected
     } else if (loanData.status == 3 && loanData.statusloan == 5) {

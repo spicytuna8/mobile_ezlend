@@ -21,7 +21,7 @@ class UIActive extends StatelessWidget {
     return Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: isOverdue ? Colors.red : Colors.green,
+        color: isOverdue ? Colors.red : const Color(0xFF569235),
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: Text(
