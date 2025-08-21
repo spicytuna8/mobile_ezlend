@@ -139,8 +139,7 @@ class LanguageHans extends Languages {
 
   @override
   // TODO: implement followingWord
-  String get followingWord =>
-      'Please record yourself saying the following "Name", will borrow money from EZ Lend';
+  String get followingWord => 'Please record yourself saying the following "Name", will borrow money from EZ Lend';
 
   @override
   // TODO: implement getFundsQuickly
@@ -566,4 +565,65 @@ class LanguageHans extends Languages {
 
   @override
   String get children => '子女'; // Zǐnǚ
+
+  // New translations for untranslated strings
+  @override
+  String get paymentDueDate => '还款到期日';
+
+  @override
+  String get loanDetail => '贷款详情';
+
+  @override
+  String get allow => '允许';
+
+  @override
+  String get female => '女性';
+
+  @override
+  String get male => '男性';
+
+  @override
+  String get child => '子女';
+
+  @override
+  String get parent => '父母';
+
+  @override
+  String get sibling => '兄弟姐妹';
+
+  @override
+  String get identityVerification => '身份验证';
+
+  @override
+  String get currencyHKD => 'HKD';
+
+  @override
+  String get ok => '确定';
+
+  @override
+  String get contact => '联系人';
+
+  @override
+  String get callLog => '通话记录';
+
+  @override
+  String get enterYourPassword => '请输入您的密码';
+
+  @override
+  String get liteProPlus => 'Lite Pro+';
+
+  @override
+  String get days7 => '7天';
+
+  @override
+  String get days10 => '10天';
+
+  @override
+  String get days14 => '14天';
+
+  @override
+  String get viewDetail => '查看详情';
+
+  @override
+  String get yourLoans => '您的贷款';
 }

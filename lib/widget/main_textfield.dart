@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loan_project/helper/color_helper.dart';
 import 'package:loan_project/helper/languages.dart';
-import 'package:loan_project/helper/text_helper.dart';
 
 class MainTextFormField extends StatelessWidget {
   const MainTextFormField(
@@ -91,9 +90,8 @@ class MainTextFormField extends StatelessWidget {
         // prefixStyle: const TextStyle(color: Colors.white),
         prefixIconConstraints: const BoxConstraints(),
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        contentPadding: EdgeInsets.symmetric(
-            horizontal: contentPaddingHorizontal ?? 16,
-            vertical: contentPaddingVertical ?? 16),
+        contentPadding:
+            EdgeInsets.symmetric(horizontal: contentPaddingHorizontal ?? 16, vertical: contentPaddingVertical ?? 16),
         isDense: true,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -119,7 +117,7 @@ class MainTextFormField extends StatelessWidget {
             color: Color(0xFF354150),
           ),
         ),
-        hintText: hintText ?? "Masukkan password kamu",
+        hintText: hintText ?? Languages.of(context).enterYourPassword,
         hintStyle: GoogleFonts.poppins(
           color: greyBlackColor,
           fontSize: 14,

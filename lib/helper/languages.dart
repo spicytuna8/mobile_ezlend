@@ -150,4 +150,26 @@ abstract class Languages {
   String get parents;
   String get spouse;
   String get children;
+
+  // New translations for untranslated strings
+  String get paymentDueDate;
+  String get loanDetail;
+  String get allow;
+  String get female;
+  String get male;
+  String get child;
+  String get parent;
+  String get sibling;
+  String get identityVerification;
+  String get currencyHKD;
+  String get ok;
+  String get contact;
+  String get callLog;
+  String get enterYourPassword;
+  String get liteProPlus;
+  String get days7;
+  String get days10;
+  String get days14;
+  String get viewDetail;
+  String get yourLoans;
 }

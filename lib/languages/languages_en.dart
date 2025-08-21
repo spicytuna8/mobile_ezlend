@@ -23,8 +23,7 @@ class LanguageEn extends Languages {
   String get login => "Login";
 
   @override
-  String get joinPlatform =>
-      "Join our platform and experience a stress-free loan process that's both fast and simple";
+  String get joinPlatform => "Join our platform and experience a stress-free loan process that's both fast and simple";
 
   @override
   String get speedyLoans => "Experience the ease of speedy loans";
@@ -111,8 +110,7 @@ class LanguageEn extends Languages {
   String get paymentDue => "Payment due";
 
   @override
-  String get clearLoanBeforeApplying =>
-      "Please clear your loan before applying for another loan";
+  String get clearLoanBeforeApplying => "Please clear your loan before applying for another loan";
 
   @override
   String get notification => "Notification";
@@ -184,8 +182,7 @@ class LanguageEn extends Languages {
   String get emergencyContact => "Emergency Contact";
 
   @override
-  String get relativesContactExplanation =>
-      "Family or relatives who can be contacted if we cannot contact you.";
+  String get relativesContactExplanation => "Family or relatives who can be contacted if we cannot contact you.";
 
   @override
   String get relationship => "Relationship";
@@ -240,8 +237,7 @@ class LanguageEn extends Languages {
   String get congratulations => "Congratulations!";
 
   @override
-  String get accountCreationSuccess =>
-      "You have successfully created an account, please enjoy our services.";
+  String get accountCreationSuccess => "You have successfully created an account, please enjoy our services.";
 
   @override
   String get passwordLengthRequirement => "Must be at least 8 digits";
@@ -259,8 +255,7 @@ class LanguageEn extends Languages {
   String get bankInfo => "Bank Info";
 
   @override
-  String get transferToSpecifiedBank =>
-      "Transfer to the specified bank account.";
+  String get transferToSpecifiedBank => "Transfer to the specified bank account.";
 
   @override
   String get selectMethod => "Select Method";
@@ -296,43 +291,37 @@ class LanguageEn extends Languages {
   String get accountNumber => "Account Number";
 
   @override
-  String get thankYouForPaymentReview =>
-      "Thank you for the payment! Admin will review the transaction soon.";
+  String get thankYouForPaymentReview => "Thank you for the payment! Admin will review the transaction soon.";
 
   @override
   String get thankYou => "Thank You!";
 
   @override
-  String get repaymentTransactionDetails =>
-      "Below are the details of your repayment transaction.";
+  String get repaymentTransactionDetails => "Below are the details of your repayment transaction.";
 
   @override
   String get efficiency => "Efficiency";
 
   @override
-  String get streamlineLoanApplication =>
-      "Streamline the loan application process for faster results.";
+  String get streamlineLoanApplication => "Streamline the loan application process for faster results.";
 
   @override
   String get transparency => "Transparency";
 
   @override
-  String get understandLoanTerms =>
-      "Clearly understand the terms and conditions of your loans.";
+  String get understandLoanTerms => "Clearly understand the terms and conditions of your loans.";
 
   @override
   String get superFast => "Super Fast";
 
   @override
-  String get getFundsQuickly =>
-      "Get the funds you need quickly and easily without any hassle.";
+  String get getFundsQuickly => "Get the funds you need quickly and easily without any hassle.";
 
   @override
   String get safeAndSecure => "Safe and Secure";
 
   @override
-  String get trustInSafeAndReliableApplication =>
-      "Trust in a safe, secure, and reliable mobile loan application.";
+  String get trustInSafeAndReliableApplication => "Trust in a safe, secure, and reliable mobile loan application.";
 
   @override
   String get rejected => "Rejected";
@@ -362,8 +351,7 @@ class LanguageEn extends Languages {
   String get noActivites => "There's no activites";
 
   @override
-  String get followingWord =>
-      'Please record yourself saying the following "Name", will borrow money from EZ Lend';
+  String get followingWord => 'Please record yourself saying the following "Name", will borrow money from EZ Lend';
 
   @override
   String get eg => '(Eg. A1234567)';
@@ -375,8 +363,7 @@ class LanguageEn extends Languages {
   String get permissionRequired => 'Permission Required';
 
   @override
-  String get thisAppRequires =>
-      'This app requires access to contact, call log, phone, gallery and photos.';
+  String get thisAppRequires => 'This app requires access to contact, call log, phone, gallery and photos.';
 
   @override
   // TODO: implement myLoan
@@ -384,8 +371,7 @@ class LanguageEn extends Languages {
 
   @override
   // TODO: implement pleaseUpdateToContinue
-  String get pleaseUpdateToContinue =>
-      'Please update to continue using the app. We have launched new and faster app';
+  String get pleaseUpdateToContinue => 'Please update to continue using the app. We have launched new and faster app';
 
   @override
   // TODO: implement updateAppRequired
@@ -447,13 +433,11 @@ class LanguageEn extends Languages {
 
   @override
   // TODO: implement icFormatCannotBe
-  String get icFormatCannotBe =>
-      ' IC format cannot be “ space “ or any punctuation mark';
+  String get icFormatCannotBe => ' IC format cannot be “ space “ or any punctuation mark';
 
   @override
   // TODO: implement pleaseUploadAllRequiredDocuments
-  String get pleaseUploadAllRequiredDocuments =>
-      'Please upload all required documents';
+  String get pleaseUploadAllRequiredDocuments => 'Please upload all required documents';
   @override
   String get parents => 'Parents';
 
@@ -462,4 +446,65 @@ class LanguageEn extends Languages {
 
   @override
   String get children => 'Children';
+
+  // New translations for untranslated strings
+  @override
+  String get paymentDueDate => 'Payment Due Date';
+
+  @override
+  String get loanDetail => 'Loan Detail';
+
+  @override
+  String get allow => 'Allow';
+
+  @override
+  String get female => 'Female';
+
+  @override
+  String get male => 'Male';
+
+  @override
+  String get child => 'Child';
+
+  @override
+  String get parent => 'Parent';
+
+  @override
+  String get sibling => 'Sibling';
+
+  @override
+  String get identityVerification => 'Identity Verification';
+
+  @override
+  String get currencyHKD => 'HKD';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get contact => 'Contact';
+
+  @override
+  String get callLog => 'Call Log';
+
+  @override
+  String get enterYourPassword => 'Enter your password';
+
+  @override
+  String get liteProPlus => 'Lite Pro+';
+
+  @override
+  String get days7 => '7 days';
+
+  @override
+  String get days10 => '10 days';
+
+  @override
+  String get days14 => '14 days';
+
+  @override
+  String get viewDetail => 'View Detail';
+
+  @override
+  String get yourLoans => 'Your Loans';
 }

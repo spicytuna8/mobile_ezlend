@@ -83,7 +83,7 @@ class UIYourBalanceDue extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Payment Due Date',
+                Languages.of(context).paymentDueDate,
                 style: white12w400,
               ),
               paymentDueContent ??

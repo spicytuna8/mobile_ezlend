@@ -175,8 +175,7 @@ class LanguageJp extends Languages {
 
   @override
   // TODO: implement joinPlatform
-  String get joinPlatform =>
-      '当社のプラットフォームに参加して、迅速かつシンプルなストレスのない融資プロセスを体験してください。';
+  String get joinPlatform => '当社のプラットフォームに参加して、迅速かつシンプルなストレスのない融資プロセスを体験してください。';
 
   @override
   // TODO: implement kycLoanPendingApproval
@@ -257,8 +256,7 @@ class LanguageJp extends Languages {
 
   @override
   // TODO: implement overdueLoanMessage
-  String get overdueLoanMessage =>
-      'あなたには延滞したローンがあります。ブラックリスト入りを避けるために、未払いの残高を清算してください。';
+  String get overdueLoanMessage => 'あなたには延滞したローンがあります。ブラックリスト入りを避けるために、未払いの残高を清算してください。';
 
   @override
   // TODO: implement paid
@@ -330,8 +328,7 @@ class LanguageJp extends Languages {
 
   @override
   // TODO: implement relativesContactExplanation
-  String get relativesContactExplanation =>
-      '私たちがあなたに連絡できない場合は、連絡できる家族や親戚の名前と連絡先を提供してください。';
+  String get relativesContactExplanation => '私たちがあなたに連絡できない場合は、連絡できる家族や親戚の名前と連絡先を提供してください。';
 
   @override
   // TODO: implement remainingBalance
@@ -451,8 +448,7 @@ class LanguageJp extends Languages {
 
   @override
   // TODO: implement trustInSafeAndReliableApplication
-  String get trustInSafeAndReliableApplication =>
-      '安全で安心、信頼性の高いモバイルローンアプリにお任せください。';
+  String get trustInSafeAndReliableApplication => '安全で安心、信頼性の高いモバイルローンアプリにお任せください。';
 
   @override
   // TODO: implement tryAgain
@@ -472,8 +468,7 @@ class LanguageJp extends Languages {
 
   @override
   // TODO: implement uploadInstructions
-  String get uploadInstructions =>
-      '身分証明書のコピーとセルフィー動画をアップロードしてください。両方とも顔写真がはっきりと表示されている必要があります。';
+  String get uploadInstructions => '身分証明書のコピーとセルフィー動画をアップロードしてください。両方とも顔写真がはっきりと表示されている必要があります。';
 
   @override
   // TODO: implement uploadSelfie
@@ -493,8 +488,7 @@ class LanguageJp extends Languages {
 
   @override
   // TODO: implement pleaseUpdateToContinue
-  String get pleaseUpdateToContinue =>
-      'アプリを引き続き使用するには更新してください。新しい高速アプリをリリースしました';
+  String get pleaseUpdateToContinue => 'アプリを引き続き使用するには更新してください。新しい高速アプリをリリースしました';
 
   @override
   // TODO: implement updateAppRequired
@@ -571,4 +565,65 @@ class LanguageJp extends Languages {
 
   @override
   String get children => '子供'; // Kodomo
+
+  // New translations for untranslated strings
+  @override
+  String get paymentDueDate => '支払期日';
+
+  @override
+  String get loanDetail => 'ローン詳細';
+
+  @override
+  String get allow => '許可';
+
+  @override
+  String get female => '女性';
+
+  @override
+  String get male => '男性';
+
+  @override
+  String get child => '子供';
+
+  @override
+  String get parent => '親';
+
+  @override
+  String get sibling => '兄弟姉妹';
+
+  @override
+  String get identityVerification => '本人確認';
+
+  @override
+  String get currencyHKD => 'HKD';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get contact => '連絡先';
+
+  @override
+  String get callLog => '通話履歴';
+
+  @override
+  String get enterYourPassword => 'パスワードを入力してください';
+
+  @override
+  String get liteProPlus => 'Lite Pro+';
+
+  @override
+  String get days7 => '7日';
+
+  @override
+  String get days10 => '10日';
+
+  @override
+  String get days14 => '14日';
+
+  @override
+  String get viewDetail => '詳細を見る';
+
+  @override
+  String get yourLoans => 'あなたのローン';
 }

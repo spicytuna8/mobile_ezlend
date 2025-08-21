@@ -92,7 +92,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
         appBar: AppBar(
           centerTitle: true,
           title: Text(
-            'Loan Detail',
+            Languages.of(context).loanDetail,
             style: white18w800,
           ),
           elevation: 0,

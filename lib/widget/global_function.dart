@@ -9,9 +9,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:loan_project/helper/languages.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class GlobalFunction {
   void restartApp() {
@@ -36,15 +36,15 @@ class GlobalFunction {
             content: Text(Languages.of(context).thisAppRequires),
             actions: <Widget>[
               TextButton(
-                child: const Text('Allow'),
+                child: Text(Languages.of(context).allow),
                 onPressed: () async {
                   // Open app settings
 
                   PermissionStatus status;
-                  if (title == 'contact') {
+                  if (title == Languages.of(context).contact) {
                     status = await Permission.contacts.status;
                     log("Contact permission status: $status");
-                  } else if (title == 'call log') {
+                  } else if (title == Languages.of(context).callLog) {
                     status = await Permission.phone.status;
                     log("Call log permission status: $status");
                   } else {
@@ -58,23 +58,19 @@ class GlobalFunction {
                     // Navigator.of(context).pop();
                     Restart.restartApp();
                   } else if (status.isDenied) {
-                    if (title == 'contact') {
+                    if (title == Languages.of(context).contact) {
                       await Permission.contacts.request();
                       log("Contact permission status: $status");
-                    } else if (title == 'call log') {
+                    } else if (title == Languages.of(context).callLog) {
                       await Permission.phone.request();
                       log("Call log permission status: $status");
                     } else {
                       if (status.isDenied) {
                         await openAppSettings();
-                        PermissionStatus statusPhone =
-                            await Permission.phone.status;
-                        PermissionStatus statusPhotos =
-                            await Permission.photos.status;
-                        PermissionStatus statusGallery =
-                            await Permission.manageExternalStorage.status;
-                        PermissionStatus statusContact =
-                            await Permission.contacts.status;
+                        PermissionStatus statusPhone = await Permission.phone.status;
+                        PermissionStatus statusPhotos = await Permission.photos.status;
+                        PermissionStatus statusGallery = await Permission.manageExternalStorage.status;
+                        PermissionStatus statusContact = await Permission.contacts.status;
                         if (!statusPhone.isGranted ||
                             !statusPhotos.isGranted ||
                             !statusGallery.isGranted ||
@@ -91,7 +87,7 @@ class GlobalFunction {
                     if (title == 'contact') {
                       status = await Permission.contacts.status;
                       log("Contact permission status: $status");
-                    } else if (title == 'call log') {
+                    } else if (title == Languages.of(context).callLog) {
                       status = await Permission.phone.status;
                       log("Call log permission status: $status");
                     } else {
@@ -128,8 +124,7 @@ class GlobalFunction {
       builder: (context) {
         return AlertDialog(
           backgroundColor: const Color(0xFF252422),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           title: Container(
             padding: const EdgeInsets.all(10),
             color: const Color(0xFF252422),
@@ -141,7 +136,7 @@ class GlobalFunction {
                   height: 20.0,
                 ),
                 isError
-                    ? Icon(
+                    ? const Icon(
                         Icons.error,
                         color: Colors.red,
                         size: 30,
@@ -222,8 +217,7 @@ class GlobalFunction {
       builder: (context) {
         return AlertDialog(
           backgroundColor: const Color(0xFF252422),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           title: Container(
             padding: const EdgeInsets.all(10),
             color: const Color(0xFF252422),
@@ -302,8 +296,7 @@ class GlobalFunction {
       builder: (context) {
         return AlertDialog(
           backgroundColor: const Color(0xFF252422),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           title: Container(
             color: const Color(0xFF252422),
             child: Column(
@@ -549,8 +542,7 @@ class GlobalFunction {
     }
   }
 
-  void showToast(message,
-      {bgColor, txtColor, ToastGravity gravity = ToastGravity.BOTTOM}) {
+  void showToast(message, {bgColor, txtColor, ToastGravity gravity = ToastGravity.BOTTOM}) {
     Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,

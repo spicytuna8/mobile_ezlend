@@ -281,7 +281,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
             width: double.infinity,
             height: 40,
             child: MainButtonGradient(
-              title: "View Detail",
+              title: Languages.of(context).viewDetail,
               height: 40,
               noPadding: true,
               onTap: () {
@@ -477,9 +477,9 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
 
                     // Loan List Section
                     if (listLoan.isNotEmpty) ...[
-                      const Text(
-                        "Your Loans", // Using literal text since yourLoans doesn't exist
-                        style: TextStyle(
+                      Text(
+                        Languages.of(context).yourLoans,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontFamily: 'Gabarito',

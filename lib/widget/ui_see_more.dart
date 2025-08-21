@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loan_project/helper/languages.dart';
 
 class UISeeMore extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -13,7 +14,7 @@ class UISeeMore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final text = customText ?? 'See more';
+    final text = customText ?? Languages.of(context).seeMore;
 
     if (onPressed != null) {
       // Clickable version (TextButton)

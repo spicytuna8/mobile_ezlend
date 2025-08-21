@@ -426,4 +426,65 @@ class LanguageYue extends Languages {
 
   @override
   String get children => '子女';
+
+  // New translations for untranslated strings
+  @override
+  String get paymentDueDate => '還款到期日';
+
+  @override
+  String get loanDetail => '貸款詳情';
+
+  @override
+  String get allow => '允許';
+
+  @override
+  String get female => '女性';
+
+  @override
+  String get male => '男性';
+
+  @override
+  String get child => '子女';
+
+  @override
+  String get parent => '父母';
+
+  @override
+  String get sibling => '兄弟姐妹';
+
+  @override
+  String get identityVerification => '身份驗證';
+
+  @override
+  String get currencyHKD => 'HKD';
+
+  @override
+  String get ok => '確定';
+
+  @override
+  String get contact => '聯絡人';
+
+  @override
+  String get callLog => '通話記錄';
+
+  @override
+  String get enterYourPassword => '請輸入您的密碼';
+
+  @override
+  String get liteProPlus => 'Lite Pro+';
+
+  @override
+  String get days7 => '7天';
+
+  @override
+  String get days10 => '10天';
+
+  @override
+  String get days14 => '14天';
+
+  @override
+  String get viewDetail => '查看詳情';
+
+  @override
+  String get yourLoans => '您的貸款';
 }

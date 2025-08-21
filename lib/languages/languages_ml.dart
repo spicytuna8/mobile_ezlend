@@ -3,8 +3,7 @@ import 'package:loan_project/helper/languages.dart';
 class LanguageMl extends Languages {
   @override
   // TODO: implement accountCreationSuccess
-  String get accountCreationSuccess =>
-      'Anda telah berjaya membuat akaun, sila nikmati perkhidmatan kami.';
+  String get accountCreationSuccess => 'Anda telah berjaya membuat akaun, sila nikmati perkhidmatan kami.';
 
   @override
   // TODO: implement accountHolderName
@@ -68,8 +67,7 @@ class LanguageMl extends Languages {
 
   @override
   // TODO: implement clearLoanBeforeApplying
-  String get clearLoanBeforeApplying =>
-      'Sila jelaskan pinjaman anda sebelum memohon pinjaman lain';
+  String get clearLoanBeforeApplying => 'Sila jelaskan pinjaman anda sebelum memohon pinjaman lain';
 
   @override
   // TODO: implement closed
@@ -117,8 +115,7 @@ class LanguageMl extends Languages {
 
   @override
   // TODO: implement dontHaveActiveLoan
-  String get dontHaveActiveLoan =>
-      'Anda tidak mempunyai sebarang pinjaman aktif';
+  String get dontHaveActiveLoan => 'Anda tidak mempunyai sebarang pinjaman aktif';
 
   @override
   // TODO: implement efficiency
@@ -146,13 +143,11 @@ class LanguageMl extends Languages {
 
   @override
   // TODO: implement followingWord
-  String get followingWord =>
-      'Sila rekod diri anda menyebut "Nama" berikut, akan meminjam wang daripada EZ Lend';
+  String get followingWord => 'Sila rekod diri anda menyebut "Nama" berikut, akan meminjam wang daripada EZ Lend';
 
   @override
   // TODO: implement getFundsQuickly
-  String get getFundsQuickly =>
-      'Dapatkan dana yang anda perlukan dengan cepat dan mudah tanpa sebarang kerumitan.';
+  String get getFundsQuickly => 'Dapatkan dana yang anda perlukan dengan cepat dan mudah tanpa sebarang kerumitan.';
 
   @override
   // TODO: implement hello
@@ -180,8 +175,7 @@ class LanguageMl extends Languages {
 
   @override
   // TODO: implement joinPlatform
-  String get joinPlatform =>
-      'Sertai platform kami dan mengalami proses pinjaman tanpa tekanan yang cepat dan mudah';
+  String get joinPlatform => 'Sertai platform kami dan mengalami proses pinjaman tanpa tekanan yang cepat dan mudah';
 
   @override
   // TODO: implement kycLoanPendingApproval
@@ -352,8 +346,7 @@ class LanguageMl extends Languages {
 
   @override
   // TODO: implement repaymentTransactionDetails
-  String get repaymentTransactionDetails =>
-      'Di bawah ialah butiran transaksi pembayaran balik anda.';
+  String get repaymentTransactionDetails => 'Di bawah ialah butiran transaksi pembayaran balik anda.';
 
   @override
   // TODO: implement returnDay
@@ -397,8 +390,7 @@ class LanguageMl extends Languages {
 
   @override
   // TODO: implement streamlineLoanApplication
-  String get streamlineLoanApplication =>
-      'Memperkemaskan proses permohonan pinjaman untuk hasil yang lebih cepat.';
+  String get streamlineLoanApplication => 'Memperkemaskan proses permohonan pinjaman untuk hasil yang lebih cepat.';
 
   @override
   // TODO: implement submit
@@ -406,8 +398,7 @@ class LanguageMl extends Languages {
 
   @override
   // TODO: implement successSubmitKycAndApplyLoan
-  String get successSubmitKycAndApplyLoan =>
-      'Berjaya Hantar Kyc & Mohon Pinjaman';
+  String get successSubmitKycAndApplyLoan => 'Berjaya Hantar Kyc & Mohon Pinjaman';
 
   @override
   // TODO: implement successSubmitLoanRequest
@@ -431,8 +422,7 @@ class LanguageMl extends Languages {
 
   @override
   // TODO: implement thankYouForPaymentReview
-  String get thankYouForPaymentReview =>
-      'Terima kasih atas pembayaran! Admin akan menyemak transaksi tidak lama lagi.';
+  String get thankYouForPaymentReview => 'Terima kasih atas pembayaran! Admin akan menyemak transaksi tidak lama lagi.';
 
   @override
   // TODO: implement thisAppRequires
@@ -441,8 +431,7 @@ class LanguageMl extends Languages {
 
   @override
   // TODO: implement timeForRepayment
-  String get timeForRepayment =>
-      'Sudah tiba masanya untuk anda membuat pembayaran balik';
+  String get timeForRepayment => 'Sudah tiba masanya untuk anda membuat pembayaran balik';
 
   @override
   // TODO: implement transactionReceipt
@@ -454,8 +443,7 @@ class LanguageMl extends Languages {
 
   @override
   // TODO: implement transferToSpecifiedBank
-  String get transferToSpecifiedBank =>
-      'Pindahkan ke akaun bank yang ditentukan.';
+  String get transferToSpecifiedBank => 'Pindahkan ke akaun bank yang ditentukan.';
 
   @override
   // TODO: implement transparency
@@ -472,13 +460,11 @@ class LanguageMl extends Languages {
 
   @override
   // TODO: implement tryGetLoan
-  String get tryGetLoan =>
-      'Cuba dapatkan pinjaman untuk proses yang cepat dan mudah';
+  String get tryGetLoan => 'Cuba dapatkan pinjaman untuk proses yang cepat dan mudah';
 
   @override
   // TODO: implement understandLoanTerms
-  String get understandLoanTerms =>
-      'Fahami dengan jelas terma dan syarat pinjaman anda.';
+  String get understandLoanTerms => 'Fahami dengan jelas terma dan syarat pinjaman anda.';
 
   @override
   // TODO: implement unpaid
@@ -572,13 +558,11 @@ class LanguageMl extends Languages {
 
   @override
   // TODO: implement icFormatCannotBe
-  String get icFormatCannotBe =>
-      'Format Kad Pengenalan tidak boleh “ruang” atau sebarang tanda baca';
+  String get icFormatCannotBe => 'Format Kad Pengenalan tidak boleh “ruang” atau sebarang tanda baca';
 
   @override
   // TODO: implement pleaseUploadAllRequiredDocuments
-  String get pleaseUploadAllRequiredDocuments =>
-      'Sila muat naik semua dokumen yang diperlukan';
+  String get pleaseUploadAllRequiredDocuments => 'Sila muat naik semua dokumen yang diperlukan';
 
   @override
   String get parents => 'Ibu Bapa';
@@ -588,4 +572,65 @@ class LanguageMl extends Languages {
 
   @override
   String get children => 'Anak-anak';
+
+  // New translations for untranslated strings
+  @override
+  String get paymentDueDate => 'Tarikh Bayaran Perlu Dibayar';
+
+  @override
+  String get loanDetail => 'Butiran Pinjaman';
+
+  @override
+  String get allow => 'Benarkan';
+
+  @override
+  String get female => 'Perempuan';
+
+  @override
+  String get male => 'Lelaki';
+
+  @override
+  String get child => 'Anak';
+
+  @override
+  String get parent => 'Ibu Bapa';
+
+  @override
+  String get sibling => 'Adik Beradik';
+
+  @override
+  String get identityVerification => 'Pengesahan Identiti';
+
+  @override
+  String get currencyHKD => 'HKD';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get contact => 'Kenalan';
+
+  @override
+  String get callLog => 'Log Panggilan';
+
+  @override
+  String get enterYourPassword => 'Masukkan kata laluan anda';
+
+  @override
+  String get liteProPlus => 'Lite Pro+';
+
+  @override
+  String get days7 => '7 hari';
+
+  @override
+  String get days10 => '10 hari';
+
+  @override
+  String get days14 => '14 hari';
+
+  @override
+  String get viewDetail => 'Lihat Butiran';
+
+  @override
+  String get yourLoans => 'Pinjaman Anda';
 }
