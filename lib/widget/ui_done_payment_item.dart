@@ -44,15 +44,25 @@ class UIDonePaymentItem extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              Text(
-                DateFormat('dd MMM yyyy').format(createdAt ?? DateTime.now()),
-                style: const TextStyle(
-                  color: Color(0xFF7D8998),
-                  fontSize: 12,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w600,
-                  height: 0,
-                ),
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/images/payment_time.png',
+                    width: 12,
+                    height: 12,
+                  ),
+                  const SizedBox(width: 4.0),
+                  Text(
+                    DateFormat('dd MMM yyyy').format(createdAt ?? DateTime.now()),
+                    style: const TextStyle(
+                      color: Color(0xFF7D8998),
+                      fontSize: 12,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                      height: 0,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
