@@ -25,8 +25,12 @@ class UIPackageItem extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            width: 1,
-            color: isSelected ? const Color(0xFFFED607) : const Color(0xFF252422).withOpacity(0.4),
+            width: isSelected ? 2 : 1,
+            color: isSelected ? const Color(0xFF7C7C7C) : const Color(0xFF252422).withOpacity(0.4),
+          ),
+          image: const DecorationImage(
+            image: AssetImage('assets/images/package_bg.png'),
+            fit: BoxFit.cover,
           ),
           color: isSelected ? Colors.amber.withOpacity(0.4) : const Color(0xFF252422).withOpacity(0.9),
         ),
