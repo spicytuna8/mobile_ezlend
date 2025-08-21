@@ -38,7 +38,7 @@ class UIDonePaymentItem extends StatelessWidget {
                 ),
               ),
               Text(
-                DateFormat('dd MMMM yyyy').format(createdAt ?? DateTime.now()),
+                DateFormat('dd MMM yyyy').format(createdAt ?? DateTime.now()),
                 style: const TextStyle(
                   color: Color(0xFF7D8998),
                   fontSize: 12,
