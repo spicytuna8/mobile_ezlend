@@ -22,7 +22,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           centerTitle: true,
           actions: const [],
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(10.0),
+            preferredSize: const Size.fromHeight(20.0),
             child: Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: Text(

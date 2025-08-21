@@ -468,7 +468,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
             appBar: AppBar(
               centerTitle: true,
               bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(10.0),
+                preferredSize: const Size.fromHeight(20.0),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Text(

@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -531,7 +530,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     getLanguage();
     getId();
     fetchData();
-    EasyLoading.show(maskType: EasyLoadingMaskType.black);
     _packageBloc.add(const GetIndexPackageEvent(page: 1, perPage: 10));
     _memberBloc.add(GetMemberEvent());
     transactionBloc.add(const GetLoanEvent());
@@ -644,7 +642,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               stateTransaction = state;
             });
             if (state is GetLoanError) {
-              EasyLoading.dismiss();
+              // Handle error silently without loading indicator
             } else if (state is GetLoanSuccess) {
               setState(() {
                 listLoan = state.data.data ?? [];
@@ -694,8 +692,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
               // Load CheckLoan data for all active loans to get accurate balance
               loadCheckLoanDataForAllLoans();
-
-              EasyLoading.dismiss();
             } else if (state is CheckLoanSuccess) {
               setState(() {
                 // Store CheckLoan data for the current loan being processed
@@ -749,8 +745,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       ],
       child: RefreshIndicator(
         onRefresh: () async {
-          EasyLoading.show(maskType: EasyLoadingMaskType.black);
-
           // Clear CheckLoan data cache on refresh
           checkLoanDataMap.clear();
           pendingCheckLoanIds.clear();
@@ -1187,9 +1181,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     listener: (context, state) {
                                       if (state is GetIndexPackageError) {
                                         log('test ${state.message}');
-                                        EasyLoading.dismiss();
+                                        // Handle error silently without loading indicator
                                       } else if (state is GetIndexPackageSuccess) {
-                                        EasyLoading.dismiss();
                                         // fetchContacts();
                                         setState(() {
                                           listPackage = state.data.data.items;
