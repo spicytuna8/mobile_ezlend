@@ -99,12 +99,19 @@ class UIHistoryLoanItem extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          _getStatusText(context),
-                          style: GoogleFonts.inter(
-                            color: _getStatusColor(),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: _getStatusBackgroundColor(),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            _getStatusText(context),
+                            style: GoogleFonts.inter(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                         if (loanData.status == 2) ...[
@@ -143,7 +150,7 @@ class UIHistoryLoanItem extends StatelessWidget {
     }
   }
 
-  Color _getStatusColor() {
+  Color _getStatusBackgroundColor() {
     // Check if loan is overdue (similar to UIActive logic)
     bool isOverdue = loanData.status == 3 &&
         (loanData.statusloan == 7 ||
@@ -152,15 +159,15 @@ class UIHistoryLoanItem extends StatelessWidget {
             (loanData.statusloan == 4 && loanData.blacklist == 9));
 
     if (isOverdue) {
-      return Colors.red; // Red for overdue
+      return Colors.red; // Red background for overdue
     } else if (loanData.status == 3 && loanData.statusloan == 4) {
-      return Colors.green; // Green for active
+      return Colors.green; // Green background for active
     } else if (loanData.status == 2) {
-      return const Color(0xFFEF233C); // Red for rejected
+      return const Color(0xFFEF233C); // Red background for rejected
     } else if (loanData.status == 3 && loanData.statusloan == 5) {
-      return Colors.grey; // Grey for closed
+      return Colors.grey; // Grey background for closed
     } else {
-      return const Color(0xFF7D8998); // Default grey for pending/others
+      return const Color(0xFF7D8998); // Default grey background for pending/others
     }
   }
 }
