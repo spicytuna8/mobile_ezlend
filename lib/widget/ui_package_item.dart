@@ -50,22 +50,40 @@ class UIPackageItem extends StatelessWidget {
                         ],
                 ),
                 const Spacer(),
+              ],
+            ),
+            const SizedBox(height: 16.0),
+            Row(
+              children: [
                 Image.asset(
                   isSelected ? 'assets/images/moneybag_active.png' : 'assets/images/moneybag_inactive.png',
                   width: 38,
                   height: 38,
                   fit: BoxFit.contain,
                 ),
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'HKD',
+                      style: GoogleFonts.inter(
+                        color: isSelected ? Colors.white : const Color(0xFFD1D5DB).withOpacity(0.4),
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      GlobalFunction().formattedMoney(double.parse(package.amount)).toString(),
+                      style: GoogleFonts.inter(
+                        color: isSelected ? Colors.white : const Color(0xFFD1D5DB).withOpacity(0.4),
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              GlobalFunction().formattedMoney(double.parse(package.amount)).toString(),
-              style: GoogleFonts.inter(
-                color: isSelected ? Colors.white : const Color(0xFFD1D5DB).withOpacity(0.4),
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-              ),
             ),
           ],
         ),

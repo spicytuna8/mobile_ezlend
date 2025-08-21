@@ -1199,7 +1199,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                         return GridView.builder(
                                           padding: EdgeInsets.zero,
                                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                            childAspectRatio: 1.5,
+                                            childAspectRatio: 1.44,
                                             crossAxisCount: 2,
                                             mainAxisSpacing: 16,
                                             crossAxisSpacing: 16,
