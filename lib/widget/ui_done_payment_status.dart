@@ -16,7 +16,7 @@ class UIDonePaymentStatus extends StatelessWidget {
     final String statusText = GlobalFunction().getStatus(status, context);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
       decoration: BoxDecoration(
         color: isApproved ? const Color(0xFFE02424) : const Color(0xFF67A353),
         borderRadius: BorderRadius.circular(12),
