@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:loan_project/helper/languages.dart';
 
 class MainButtonGradient extends StatelessWidget {
-  const MainButtonGradient(
-      {super.key, this.title, this.onTap, this.width, this.height});
+  const MainButtonGradient({super.key, this.title, this.onTap, this.width, this.height, this.fontSize});
   final String? title;
   final double? width;
   final double? height;
+  final double? fontSize;
   final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,9 @@ class MainButtonGradient extends StatelessWidget {
         child: Container(
           width: width ?? 350,
           height: height ?? 48,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: EdgeInsets.symmetric(
+              horizontal: (width != null && width! < 100) ? 8 : 16,
+              vertical: (height != null && height! < 40) ? 6 : 12),
           clipBehavior: Clip.antiAlias,
           decoration: onTap == null
               ? BoxDecoration(
@@ -28,7 +30,7 @@ class MainButtonGradient extends StatelessWidget {
                   gradient: const LinearGradient(
                     begin: Alignment(0.00, 1.00),
                     end: Alignment(2, 1),
-                    colors: [Color(0xFFFED607), Color(0xFFF77F00)],
+                    colors: [Color(0xFFFEA307), Color(0xFFFE7D08)],
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -38,9 +40,9 @@ class MainButtonGradient extends StatelessWidget {
             child: Text(
               title ?? Languages.of(context).continueText,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 14,
+                fontSize: fontSize ?? ((width != null && width! < 100) ? 12 : 14),
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w600,
               ),

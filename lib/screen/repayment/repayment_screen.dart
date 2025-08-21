@@ -271,6 +271,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                     height: 32,
                     child: MainButtonGradient(
                       title: "Detail",
+                      fontSize: 12,
                       onTap: () {
                         // Navigate to loan detail screen
                         context.pushNamed(loanDetail, extra: loan);
