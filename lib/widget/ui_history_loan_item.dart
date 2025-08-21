@@ -52,10 +52,6 @@ class UIHistoryLoanItem extends StatelessWidget {
                       children: [
                         UIPackageName(
                           packageName: loanData.packageName ?? '',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                          borderRadius: 6.0,
                         ),
                         const SizedBox(width: 12.0),
                         Text(

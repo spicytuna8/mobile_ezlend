@@ -41,17 +41,6 @@ class UIPackageItem extends StatelessWidget {
               children: [
                 UIPackageName(
                   packageName: package.name,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  gradientColors: isSelected
-                      ? [
-                          const Color(0xFFFED607),
-                          const Color(0xFFD1D5DB),
-                        ]
-                      : [
-                          const Color(0xFFC7C7C7),
-                          const Color(0xFF717171),
-                        ],
                 ),
                 const Spacer(),
               ],
