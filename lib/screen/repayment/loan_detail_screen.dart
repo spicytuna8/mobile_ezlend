@@ -92,7 +92,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
         appBar: AppBar(
           centerTitle: true,
           title: Text(
-            Languages.of(context).loanDetail,
+            Languages.of(context).repayment,
             style: white18w800,
           ),
           elevation: 0,
@@ -226,7 +226,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
 
                       // Payment History Section
                       Text(
-                        Languages.of(context).doneRepayment,
+                        Languages.of(context).repayment,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.white,
