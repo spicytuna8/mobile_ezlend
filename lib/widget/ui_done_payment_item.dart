@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loan_project/helper/languages.dart';
 import 'package:loan_project/helper/status_helper.dart';
-import 'package:loan_project/helper/text_helper.dart';
 import 'package:loan_project/widget/global_function.dart';
 
 class UIDonePaymentItem extends StatelessWidget {
@@ -31,7 +30,12 @@ class UIDonePaymentItem extends StatelessWidget {
             children: [
               Text(
                 'HKD ${GlobalFunction().formattedMoney(double.parse(amount ?? '0'))}',
-                style: white16w600,
+                style: const TextStyle(
+                  color: Color(0xFFDFCE34),
+                  fontSize: 16,
+                  fontFamily: 'Gabarito',
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               Text(
                 DateFormat('dd MMMM yyyy').format(createdAt ?? DateTime.now()),
