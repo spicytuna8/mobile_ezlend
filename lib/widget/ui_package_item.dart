@@ -50,6 +50,12 @@ class UIPackageItem extends StatelessWidget {
                         ],
                 ),
                 const Spacer(),
+                Image.asset(
+                  isSelected ? 'assets/images/moneybag_active.png' : 'assets/images/moneybag_inactive.png',
+                  width: 38,
+                  height: 38,
+                  fit: BoxFit.contain,
+                ),
               ],
             ),
             const SizedBox(height: 4),
