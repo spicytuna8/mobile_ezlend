@@ -38,6 +38,7 @@ import 'package:loan_project/widget/global_function.dart';
 import 'package:loan_project/widget/main_button.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
 import 'package:loan_project/widget/ui_package_item.dart';
+import 'package:loan_project/widget/ui_see_more.dart';
 import 'package:mobile_number/mobile_number.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as p;
@@ -1144,30 +1145,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                         Languages.of(context).ourPackages,
                                         style: white16w600,
                                       ),
-                                      TextButton(
+                                      UISeeMore(
+                                        customText: Languages.of(context).seeMore,
                                         onPressed: () {
                                           setState(() {
                                             // Menampilkan semua item saat tombol "See More" diklik
                                             _visibleItemCount = listPackage.length;
                                           });
                                         },
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              Languages.of(context).seeMore,
-                                              textAlign: TextAlign.center,
-                                              style: GoogleFonts.inter(
-                                                color: const Color(0xFF7D8998),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            const Icon(
-                                              Icons.keyboard_arrow_right,
-                                              color: Color(0xFF7D8998),
-                                            )
-                                          ],
-                                        ),
                                       )
                                     ],
                                   ),
@@ -1316,14 +1301,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                         Languages.of(context).historyLoan,
                                         style: white16w600,
                                       ),
-                                      Text(
-                                        Languages.of(context).seeMore,
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.inter(
-                                          color: const Color(0xFF7D8998),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                        ),
+                                      UISeeMore(
+                                        customText: Languages.of(context).seeMore,
                                       )
                                     ],
                                   ),
