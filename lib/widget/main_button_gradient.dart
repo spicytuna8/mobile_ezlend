@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:loan_project/helper/languages.dart';
 
 class MainButtonGradient extends StatelessWidget {
-  const MainButtonGradient({super.key, this.title, this.onTap, this.width, this.height, this.fontSize});
+  const MainButtonGradient(
+      {super.key, this.title, this.onTap, this.width, this.height, this.fontSize, this.noPadding = false});
   final String? title;
   final double? width;
   final double? height;
   final double? fontSize;
+  final bool noPadding;
   final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
@@ -17,9 +19,11 @@ class MainButtonGradient extends StatelessWidget {
         child: Container(
           width: width ?? 350,
           height: height ?? 48,
-          padding: EdgeInsets.symmetric(
-              horizontal: (width != null && width! < 100) ? 8 : 16,
-              vertical: (height != null && height! < 40) ? 6 : 12),
+          padding: noPadding
+              ? EdgeInsets.zero
+              : EdgeInsets.symmetric(
+                  horizontal: (width != null && width! < 100) ? 0 : 16,
+                  vertical: (height != null && height! < 40) ? 0 : 12),
           clipBehavior: Clip.antiAlias,
           decoration: onTap == null
               ? BoxDecoration(
@@ -42,7 +46,7 @@ class MainButtonGradient extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: fontSize ?? ((width != null && width! < 100) ? 12 : 14),
+                fontSize: fontSize ?? ((width != null && width! < 100) ? 11 : 14),
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w600,
               ),

@@ -36,7 +36,6 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
   DatumLoan? dataLoan;
   ResponseGetLoan? dataHistory;
   List<DatumLoan> listLoan = [];
-  bool isHaveData = true;
   double? totalmustbepaid;
   int? idloan;
   bool isOverdue = false;
@@ -267,11 +266,12 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                   ),
                   const SizedBox(height: 8),
                   SizedBox(
-                    width: 80,
-                    height: 32,
+                    width: 90,
+                    height: 40,
                     child: MainButtonGradient(
                       title: "Detail",
-                      fontSize: 12,
+                      height: 40,
+                      noPadding: true,
                       onTap: () {
                         // Navigate to loan detail screen
                         context.pushNamed(loanDetail, extra: loan);
@@ -345,7 +345,6 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                   setState(() {
                     dataLoan = element;
                     isOverdue = false;
-                    isHaveData = false;
                   });
                 } else if (element.status == 3 && element.statusloan == 7 ||
                     element.status == 3 && element.statusloan == 6 ||
@@ -356,7 +355,6 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                   setState(() {
                     dataLoan = element;
                     isOverdue = true;
-                    isHaveData = false;
                   });
                 }
                 // else if (element.status == 3 && element.statusloan == 8) {
@@ -379,7 +377,6 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                     element.status == 10 && element.statusloan == 4) {
                   setState(() {
                     dataLoan = element;
-                    isHaveData = false;
                     // isPending = false;
                     isOverdue = false;
                     // _transactionBloc
@@ -390,8 +387,6 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                   setState(() {
                     dataLoan = null;
                     isOverdue = false;
-
-                    isHaveData = false;
                   });
                 }
               });
@@ -401,15 +396,10 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
               setState(() {
                 dataLoan = null;
                 isOverdue = false;
-
-                isHaveData = false;
               });
             }
           } else if (state is GetLoanError) {
             log('${state.message} err');
-            setState(() {
-              isHaveData = false;
-            });
           } else if (state is CheckLoanSuccess) {
             setState(() {
               // Store CheckLoan data for the current loan being processed
@@ -481,150 +471,146 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
               // title: Text(Languages.of(context).repayment),
               elevation: 0,
             ),
-            body: isHaveData
-                ? const Center(
-                    child: RefreshProgressIndicator(),
-                  )
-                : SingleChildScrollView(
-                    child: Container(
-                      padding: const EdgeInsets.all(16.0),
+            body: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20.0),
+
+                    // Total Loan Balance Card
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          color: secondaryColor,
+                          borderRadius: BorderRadius.circular(16),
+                          image:
+                              const DecorationImage(image: AssetImage('assets/images/promo2.png'), fit: BoxFit.cover)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 20.0),
-
-                          // Total Loan Balance Card
-                          Container(
-                            padding: const EdgeInsets.all(20),
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                                color: secondaryColor,
-                                borderRadius: BorderRadius.circular(16),
-                                image: const DecorationImage(
-                                    image: AssetImage('assets/images/promo2.png'), fit: BoxFit.cover)),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  Languages.of(context).loanBalance,
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                areAllCheckLoanDataLoaded() && listLoan.isNotEmpty
-                                    ? Text(
-                                        'HKD ${GlobalFunction().formattedMoney(getDisplayBalance())}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 32,
-                                          fontFamily: 'Gabarito',
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      )
-                                    : const Text(
-                                        'HKD -',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 32,
-                                          fontFamily: 'Gabarito',
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  listLoan.isEmpty
-                                      ? Languages.of(context).dontHaveActiveLoan
-                                      : '${listLoan.where((loan) => loan.status == 3 && (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)).length} ${Languages.of(context).active} ${Languages.of(context).loan}s',
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
+                          Text(
+                            Languages.of(context).loanBalance,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
-
-                          const SizedBox(height: 24),
-
-                          // Loan List Section
-                          if (listLoan.isNotEmpty) ...[
-                            const Text(
-                              "Your Loans", // Using literal text since yourLoans doesn't exist
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontFamily: 'Gabarito',
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-
-                            // Loan Items List
-                            ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: listLoan
-                                  .where((loan) =>
-                                      loan.status == 3 &&
-                                      (loan.statusloan == 4 ||
-                                          loan.statusloan == 6 ||
-                                          loan.statusloan == 7 ||
-                                          loan.statusloan == 8))
-                                  .length,
-                              separatorBuilder: (context, index) => const SizedBox(height: 12),
-                              itemBuilder: (context, index) {
-                                final activeLoan = listLoan
-                                    .where((loan) =>
-                                        loan.status == 3 &&
-                                        (loan.statusloan == 4 ||
-                                            loan.statusloan == 6 ||
-                                            loan.statusloan == 7 ||
-                                            loan.statusloan == 8))
-                                    .toList()[index];
-
-                                return _buildLoanItem(activeLoan);
-                              },
-                            ),
-                          ] else ...[
-                            // No loans state
-                            Container(
-                              padding: const EdgeInsets.all(24),
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF252422),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Column(
-                                children: [
-                                  Icon(
-                                    Icons.receipt_long_outlined,
-                                    color: Colors.white.withOpacity(0.5),
-                                    size: 48,
+                          const SizedBox(height: 8),
+                          areAllCheckLoanDataLoaded() && listLoan.isNotEmpty
+                              ? Text(
+                                  'HKD ${GlobalFunction().formattedMoney(getDisplayBalance())}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 32,
+                                    fontFamily: 'Gabarito',
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    Languages.of(context).dontHaveActiveLoan,
-                                    style: const TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    textAlign: TextAlign.center,
+                                )
+                              : const Text(
+                                  'HKD -',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 32,
+                                    fontFamily: 'Gabarito',
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                ],
-                              ),
+                                ),
+                          const SizedBox(height: 8),
+                          Text(
+                            listLoan.isEmpty
+                                ? Languages.of(context).dontHaveActiveLoan
+                                : '${listLoan.where((loan) => loan.status == 3 && (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)).length} ${Languages.of(context).active} ${Languages.of(context).loan}s',
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
                             ),
-                          ],
-
-                          const SizedBox(height: 100), // Bottom padding
+                          ),
                         ],
                       ),
                     ),
-                  ),
+
+                    const SizedBox(height: 24),
+
+                    // Loan List Section
+                    if (listLoan.isNotEmpty) ...[
+                      const Text(
+                        "Your Loans", // Using literal text since yourLoans doesn't exist
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontFamily: 'Gabarito',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Loan Items List
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: listLoan
+                            .where((loan) =>
+                                loan.status == 3 &&
+                                (loan.statusloan == 4 ||
+                                    loan.statusloan == 6 ||
+                                    loan.statusloan == 7 ||
+                                    loan.statusloan == 8))
+                            .length,
+                        separatorBuilder: (context, index) => const SizedBox(height: 12),
+                        itemBuilder: (context, index) {
+                          final activeLoan = listLoan
+                              .where((loan) =>
+                                  loan.status == 3 &&
+                                  (loan.statusloan == 4 ||
+                                      loan.statusloan == 6 ||
+                                      loan.statusloan == 7 ||
+                                      loan.statusloan == 8))
+                              .toList()[index];
+
+                          return _buildLoanItem(activeLoan);
+                        },
+                      ),
+                    ] else ...[
+                      // No loans state
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF252422),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.receipt_long_outlined,
+                              color: Colors.white.withOpacity(0.5),
+                              size: 48,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              Languages.of(context).dontHaveActiveLoan,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 100), // Bottom padding
+                  ],
+                ),
+              ),
+            ),
           ), // RefreshIndicator closing
         )); // BlocListener closing
   } // build method closing
