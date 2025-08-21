@@ -25,7 +25,7 @@ import 'package:loan_project/widget/card_blacklist.dart';
 import 'package:loan_project/widget/global_function.dart';
 import 'package:loan_project/widget/main_button.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
-import 'package:loan_project/widget/ui_package_name.dart';
+import 'package:loan_project/widget/ui_package_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyLoanScreen extends StatefulWidget {
@@ -937,18 +937,9 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                 physics: const ScrollPhysics(),
                                                 itemBuilder: (BuildContext context, int index) {
                                                   ItemPackageIndex data = state.data.data.items[index];
-                                                  return GestureDetector(
-                                                    /* XXX: Multi-loan
-                                                    onTap: dataLoan != null
-                                                        ? null
-                                                        : () {
-                                                            setState(() {
-                                                              indexSelected = index;
-                                                              selectedPackage = data;
-                                                              selectedNominal = index;
-                                                            });
-                                                          }, */
-
+                                                  return UIPackageItem(
+                                                    package: data,
+                                                    isSelected: indexSelected == index,
                                                     onTap: () {
                                                       setState(() {
                                                         indexSelected = index;
@@ -956,67 +947,6 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                         selectedNominal = index;
                                                       });
                                                     },
-                                                    child: Container(
-                                                      padding: const EdgeInsets.all(16),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(12),
-                                                        border: Border.all(
-                                                            width: 1,
-                                                            color: indexSelected == index
-                                                                ? const Color(0xFFFED607)
-                                                                : const Color(0xFF252422).withOpacity(0.4)),
-                                                        color: indexSelected == index
-                                                            ? Colors.amber.withOpacity(0.4)
-                                                            : const Color(0xFF252422).withOpacity(0.9),
-                                                      ),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              UIPackageName(
-                                                                packageName: data.name,
-                                                              ),
-                                                              const Spacer(),
-                                                            ],
-                                                          ),
-                                                          const SizedBox(height: 4),
-                                                          Text(
-                                                            GlobalFunction()
-                                                                .formattedMoney(double.parse(data.amount))
-                                                                .toString(),
-                                                            style: GoogleFonts.inter(
-                                                              color: indexSelected == index
-                                                                  ? Colors.white
-                                                                  : const Color(0xFFD1D5DB).withOpacity(0.4),
-                                                              fontSize: 24,
-                                                              fontWeight: FontWeight.w700,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 25.0,
-                                                          ),
-                                                          // Text(
-                                                          //   '${Languages.of(context).returnDay} ${data.returnDay}',
-                                                          //   style: GoogleFonts
-                                                          //       .inter(
-                                                          //     color: indexSelected ==
-                                                          //             index
-                                                          //         ? const Color(
-                                                          //             0xFF7D8998)
-                                                          //         : const Color(
-                                                          //                 0xFFD1D5DB)
-                                                          //             .withOpacity(
-                                                          //                 0.4),
-                                                          //     fontSize: 12,
-                                                          //     fontWeight:
-                                                          //         FontWeight
-                                                          //             .w600,
-                                                          //   ),
-                                                          // ),
-                                                        ],
-                                                      ),
-                                                    ),
                                                   );
                                                 },
                                               ),
