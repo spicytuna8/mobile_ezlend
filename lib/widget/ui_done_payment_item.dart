@@ -23,45 +23,44 @@ class UIDonePaymentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Column(
         children: [
-          // Left side - Payment title and date
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  Languages.of(context).payment,
-                  style: white16w600,
-                ),
-                const SizedBox(height: 4.0),
-                Text(
-                  DateFormat('dd MMMM yyyy').format(createdAt ?? DateTime.now()),
-                  style: const TextStyle(
-                    color: Color(0xFF7D8998),
-                    fontSize: 12,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w600,
-                    height: 0,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Right side - Amount and payment method/status
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+          // Top row - Amount and Date
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                GlobalFunction().formattedMoney(double.parse(amount ?? '0')),
+                'HKD ${GlobalFunction().formattedMoney(double.parse(amount ?? '0'))}',
                 style: white16w600,
               ),
-              const SizedBox(height: 4.0),
               Text(
-                paymentType == 2
-                    ? '${Languages.of(context).manualBanking} - ${GlobalFunction().getStatus(status, context)}'
-                    : '${Languages.of(context).wireTransfer} - ${GlobalFunction().getStatus(status, context)}',
+                DateFormat('dd MMMM yyyy').format(createdAt ?? DateTime.now()),
+                style: const TextStyle(
+                  color: Color(0xFF7D8998),
+                  fontSize: 12,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                  height: 0,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4.0),
+          // Bottom row - Payment method and Status
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                paymentType == 2 ? Languages.of(context).manualBanking : Languages.of(context).wireTransfer,
+                style: const TextStyle(
+                  color: Color(0xFF7D8998),
+                  fontSize: 12,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                GlobalFunction().getStatus(status, context),
                 style: TextStyle(
                   color: StatusHelper.isApproved(status ?? 0) ? Colors.red : const Color(0xFF67A353),
                   fontSize: 12,
