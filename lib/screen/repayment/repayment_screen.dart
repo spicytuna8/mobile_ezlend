@@ -4,23 +4,17 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:loan_project/bloc/payment-due/payment_due_bloc.dart';
 import 'package:loan_project/bloc/repayment/repayment_bloc.dart';
 import 'package:loan_project/bloc/transaction/transaction_bloc.dart';
 import 'package:loan_project/helper/languages.dart';
 import 'package:loan_project/helper/preference_helper.dart';
-import 'package:loan_project/helper/router_name.dart';
 import 'package:loan_project/helper/status_helper.dart';
 import 'package:loan_project/helper/status_loan_helper.dart';
 import 'package:loan_project/helper/text_helper.dart';
 import 'package:loan_project/model/response_check_loan.dart';
 import 'package:loan_project/model/response_get_loan.dart';
-import 'package:loan_project/widget/global_function.dart';
-import 'package:loan_project/widget/main_button_gradient.dart';
-import 'package:loan_project/widget/ui_active.dart';
-import 'package:loan_project/widget/ui_package_name.dart';
+import 'package:loan_project/widget/ui_repayment_loan_item.dart';
 import 'package:loan_project/widget/ui_your_balance.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -201,98 +195,6 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
       return Languages.of(context).pending;
     }
     return Languages.of(context).noActive;
-  }
-
-  // Build individual loan item widget
-  Widget _buildLoanItem(DatumLoan loan) {
-    bool isOverdue = isLoanOverdue(loan);
-    String loanAmount = loan.totalreturn ?? loan.loanamount ?? '0';
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF252422),
-        borderRadius: BorderRadius.circular(12),
-        border: isOverdue ? Border.all(color: Colors.red.withOpacity(0.3)) : null,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        UIPackageName(
-                          packageName: loan.packageName ?? 'Loan Package',
-                        ),
-                        const Spacer(),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'HKD ${GlobalFunction().formattedMoney(double.tryParse(loanAmount) ?? 0)}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontFamily: 'Gabarito',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  UIActive(
-                    statusText: getLoanStatusText(loan),
-                    isOverdue: isOverdue,
-                    borderRadius: 12,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Icon(
-                Icons.calendar_today,
-                color: Colors.white.withOpacity(0.6),
-                size: 14,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                'Loan Date: ${loan.dateloan != null ? DateFormat('dd MMM yyyy').format(loan.dateloan!) : 'N/A'}',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            height: 40,
-            child: MainButtonGradient(
-              title: Languages.of(context).viewDetail,
-              height: 40,
-              noPadding: true,
-              onTap: () {
-                // Navigate to loan detail screen
-                context.pushNamed(loanDetail, extra: loan);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   void getId() async {
@@ -505,7 +407,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                                   StatusLoanHelper.requiresPayment(loan.statusloan ?? 0))
                               .toList()[index];
 
-                          return _buildLoanItem(activeLoan);
+                          return UIRepaymentLoanItem(loan: activeLoan);
                         },
                       ),
                     ] else ...[
