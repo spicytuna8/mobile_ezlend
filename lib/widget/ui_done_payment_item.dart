@@ -21,7 +21,14 @@ class UIDonePaymentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: const Color(0xFF343434),
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
       child: Column(
         children: [
           // Top row - Amount and Date

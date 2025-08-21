@@ -45,32 +45,23 @@ class _DoneRepaymentState extends State<DoneRepayment> {
             child: CircularProgressIndicator(),
           );
         } else if (state is GetListPaymentSuccess) {
-          return Container(
-            padding: const EdgeInsets.only(left: 12, right: 12),
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(width: 1, color: Color(0xFF354150)),
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: ListView.separated(
-              itemCount: state.data.data!.length,
-              physics: const ScrollPhysics(),
-              separatorBuilder: (context, index) {
-                return const Divider(
-                  height: 1,
-                  color: Colors.grey,
-                );
-              },
-              itemBuilder: (BuildContext context, int index) {
-                return UIDonePaymentItem(
-                  createdAt: state.data.data![index].createdAt,
-                  amount: state.data.data?[index].amount,
-                  paymentType: state.data.data?[index].paymentType,
-                  status: state.data.data?[index].status,
-                );
-              },
-            ),
+          return ListView.separated(
+            itemCount: state.data.data!.length,
+            physics: const ScrollPhysics(),
+            separatorBuilder: (context, index) {
+              return const Divider(
+                height: 1,
+                color: Colors.grey,
+              );
+            },
+            itemBuilder: (BuildContext context, int index) {
+              return UIDonePaymentItem(
+                createdAt: state.data.data![index].createdAt,
+                amount: state.data.data?[index].amount,
+                paymentType: state.data.data?[index].paymentType,
+                status: state.data.data?[index].status,
+              );
+            },
           );
         } else {
           return MainButtonGradient(
