@@ -13,6 +13,8 @@ import 'package:loan_project/helper/color_helper.dart';
 import 'package:loan_project/helper/languages.dart';
 import 'package:loan_project/helper/preference_helper.dart';
 import 'package:loan_project/helper/router_name.dart';
+import 'package:loan_project/helper/status_helper.dart';
+import 'package:loan_project/helper/status_loan_helper.dart';
 import 'package:loan_project/helper/text_helper.dart';
 import 'package:loan_project/model/response_check_loan.dart';
 import 'package:loan_project/model/response_get_loan.dart';
@@ -55,8 +57,8 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
 
     List<String> activeLoanIds = [];
     for (DatumLoan loan in listLoan) {
-      if (loan.status == 3 &&
-          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+      // Use helper classes for cleaner status checking
+      if (StatusHelper.isApproved(loan.status ?? 0) && StatusLoanHelper.requiresPayment(loan.statusloan ?? 0)) {
         activeLoanIds.add(loan.id.toString());
       }
     }
@@ -80,9 +82,8 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
     log('REPAYMENT SCREEN - CheckLoan data map size: ${checkLoanDataMap.length}');
 
     for (DatumLoan loan in listLoan) {
-      // Include all loans with status 3 (approved) and active statusloan
-      if (loan.status == 3 &&
-          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+      // Include all loans with approved status and requires payment
+      if (StatusHelper.isApproved(loan.status ?? 0) && StatusLoanHelper.requiresPayment(loan.statusloan ?? 0)) {
         String loanId = loan.id.toString();
 
         log('REPAYMENT SCREEN - Processing loan ${loan.id}: status=${loan.status}, statusloan=${loan.statusloan}');
@@ -158,8 +159,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
 
     // Collect all active loan IDs that need CheckLoan data
     for (DatumLoan loan in listLoan) {
-      if (loan.status == 3 &&
-          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+      if (StatusHelper.isApproved(loan.status ?? 0) && StatusLoanHelper.requiresPayment(loan.statusloan ?? 0)) {
         String loanId = loan.id.toString();
         if (!checkLoanDataMap.containsKey(loanId)) {
           pendingCheckLoanIds.add(loanId);
@@ -186,20 +186,18 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
 
   // Check if a specific loan is overdue
   bool isLoanOverdue(DatumLoan loan) {
-    return loan.status == 3 &&
-        (loan.statusloan == 7 ||
-            loan.statusloan == 6 ||
-            loan.statusloan == 8 ||
-            (loan.statusloan == 4 && loan.blacklist == 9));
+    return StatusHelper.isApproved(loan.status ?? 0) &&
+        (StatusLoanHelper.isOverdue(loan.statusloan ?? 0) ||
+            (StatusLoanHelper.isActive(loan.statusloan ?? 0) && StatusHelper.isBlacklisted(loan.blacklist ?? 0)));
   }
 
   // Get status text for a loan
   String getLoanStatusText(DatumLoan loan) {
     if (isLoanOverdue(loan)) {
       return Languages.of(context).overdue;
-    } else if (loan.status == 3 && loan.statusloan == 4) {
+    } else if (StatusHelper.isApproved(loan.status ?? 0) && StatusLoanHelper.isActive(loan.statusloan ?? 0)) {
       return Languages.of(context).active;
-    } else if ((loan.status == 0 || loan.status == 1 || loan.status == 10) && loan.statusloan == 4) {
+    } else if (StatusHelper.isPending(loan.status ?? 0) && StatusLoanHelper.isActive(loan.statusloan ?? 0)) {
       return Languages.of(context).pending;
     }
     return Languages.of(context).noActive;
@@ -327,22 +325,20 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
 
             if (state.data.data!.isNotEmpty) {
               state.data.data?.forEach((element) {
-                if (element.status == 3 && element.statusloan == 4) {
+                if (StatusHelper.isApproved(element.status ?? 0) &&
+                    StatusLoanHelper.isActive(element.statusloan ?? 0)) {
                   setState(() {
                     idloan = element.id;
                   });
-                  log('test 3-4 id loan $idloan');
+                  log('test approved-active id loan $idloan');
 
                   _repaymentBloc.add(GetListPaymentEvent(loanpackageid: idloan.toString()));
                   setState(() {
                     dataLoan = element;
                     isOverdue = false;
                   });
-                } else if (element.status == 3 && element.statusloan == 7 ||
-                    element.status == 3 && element.statusloan == 6 ||
-                    element.status == 3 && element.statusloan == 8 ||
-                    element.status == 3 && element.statusloan == 4 && element.blacklist == 9) {
-                  log('test 3-7');
+                } else if (isLoanOverdue(element)) {
+                  log('test overdue loan');
                   _repaymentBloc.add(GetListPaymentEvent(loanpackageid: element.id.toString()));
                   setState(() {
                     dataLoan = element;
@@ -364,9 +360,8 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                 //     isHaveData = false;
                 //   });
                 // }
-                else if (element.status == 0 && element.statusloan == 4 ||
-                    element.status == 1 && element.statusloan == 4 ||
-                    element.status == 10 && element.statusloan == 4) {
+                else if (StatusHelper.isPending(element.status ?? 0) &&
+                    StatusLoanHelper.isActive(element.statusloan ?? 0)) {
                   setState(() {
                     dataLoan = element;
                     // isPending = false;
@@ -515,7 +510,7 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                           Text(
                             listLoan.isEmpty
                                 ? Languages.of(context).dontHaveActiveLoan
-                                : '${listLoan.where((loan) => loan.status == 3 && (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)).length} ${Languages.of(context).active} ${Languages.of(context).loan}s',
+                                : '${listLoan.where((loan) => StatusHelper.isApproved(loan.status ?? 0) && StatusLoanHelper.requiresPayment(loan.statusloan ?? 0)).length} ${Languages.of(context).active} ${Languages.of(context).loan}s',
                             style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
@@ -547,21 +542,15 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: listLoan
                             .where((loan) =>
-                                loan.status == 3 &&
-                                (loan.statusloan == 4 ||
-                                    loan.statusloan == 6 ||
-                                    loan.statusloan == 7 ||
-                                    loan.statusloan == 8))
+                                StatusHelper.isApproved(loan.status ?? 0) &&
+                                StatusLoanHelper.requiresPayment(loan.statusloan ?? 0))
                             .length,
                         separatorBuilder: (context, index) => const SizedBox(height: 12),
                         itemBuilder: (context, index) {
                           final activeLoan = listLoan
                               .where((loan) =>
-                                  loan.status == 3 &&
-                                  (loan.statusloan == 4 ||
-                                      loan.statusloan == 6 ||
-                                      loan.statusloan == 7 ||
-                                      loan.statusloan == 8))
+                                  StatusHelper.isApproved(loan.status ?? 0) &&
+                                  StatusLoanHelper.requiresPayment(loan.statusloan ?? 0))
                               .toList()[index];
 
                           return _buildLoanItem(activeLoan);
