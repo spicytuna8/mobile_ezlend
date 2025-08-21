@@ -823,19 +823,24 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                       child: Column(
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
-                                                          UIPackageName(
-                                                            packageName: data.name,
-                                                            fontSize: 12,
-                                                            fontWeight: FontWeight.w600,
-                                                            gradientColors: indexSelected == index
-                                                                ? [
-                                                                    const Color(0xFFFED607),
-                                                                    const Color(0xFFD1D5DB),
-                                                                  ]
-                                                                : [
-                                                                    const Color(0xFFC7C7C7),
-                                                                    const Color(0xFF717171),
-                                                                  ],
+                                                          Row(
+                                                            children: [
+                                                              UIPackageName(
+                                                                packageName: data.name,
+                                                                fontSize: 12,
+                                                                fontWeight: FontWeight.w600,
+                                                                gradientColors: indexSelected == index
+                                                                    ? [
+                                                                        const Color(0xFFFED607),
+                                                                        const Color(0xFFD1D5DB),
+                                                                      ]
+                                                                    : [
+                                                                        const Color(0xFFC7C7C7),
+                                                                        const Color(0xFF717171),
+                                                                      ],
+                                                              ),
+                                                              const Spacer(),
+                                                            ],
                                                           ),
                                                           const SizedBox(height: 4),
                                                           Text(
