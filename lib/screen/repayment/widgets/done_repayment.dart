@@ -47,9 +47,6 @@ class _DoneRepaymentState extends State<DoneRepayment> {
           );
         } else if (state is GetListPaymentSuccess) {
           return Container(
-            height: state.data.data!.isEmpty
-                ? 0
-                : MediaQuery.of(context).size.height * 0.53,
             padding: const EdgeInsets.only(left: 12, right: 12),
             decoration: ShapeDecoration(
               shape: RoundedRectangleBorder(
@@ -77,9 +74,7 @@ class _DoneRepaymentState extends State<DoneRepayment> {
                           style: white16w600,
                         ),
                         subtitle: Text(
-                          DateFormat('dd MMMM yyyy').format(
-                              state.data.data![index].createdAt ??
-                                  DateTime.now()),
+                          DateFormat('dd MMMM yyyy').format(state.data.data![index].createdAt ?? DateTime.now()),
                           style: const TextStyle(
                             color: Color(0xFF7D8998),
                             fontSize: 12,
@@ -92,9 +87,7 @@ class _DoneRepaymentState extends State<DoneRepayment> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                                GlobalFunction().formattedMoney(double.parse(
-                                    state.data.data?[index].amount ?? '0')),
+                            Text(GlobalFunction().formattedMoney(double.parse(state.data.data?[index].amount ?? '0')),
                                 style: white16w600),
                             const SizedBox(
                               height: 4.0,
@@ -104,9 +97,7 @@ class _DoneRepaymentState extends State<DoneRepayment> {
                                   ? '${Languages.of(context).manualBanking} - ${GlobalFunction().getStatus(state.data.data?[index].status, context)}'
                                   : '${Languages.of(context).wireTransfer} - ${GlobalFunction().getStatus(state.data.data?[index].status, context)}',
                               style: TextStyle(
-                                color: state.data.data?[index].status == 3
-                                    ? Colors.red
-                                    : const Color(0xFF67A353),
+                                color: state.data.data?[index].status == 3 ? Colors.red : const Color(0xFF67A353),
                                 fontSize: 12,
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w600,
@@ -123,8 +114,7 @@ class _DoneRepaymentState extends State<DoneRepayment> {
           return MainButtonGradient(
             title: Languages.of(context).tryAgain,
             onTap: () {
-              widget._repaymentBloc.add(GetListPaymentEvent(
-                  loanpackageid: widget.loanpackgeid.toString()));
+              widget._repaymentBloc.add(GetListPaymentEvent(loanpackageid: widget.loanpackgeid.toString()));
             },
           );
         }

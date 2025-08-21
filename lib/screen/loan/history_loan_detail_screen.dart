@@ -59,8 +59,7 @@ class _HistoryLoanDetailState extends State<HistoryLoanDetail> {
               ),
               Center(
                 child: Text(
-                  GlobalFunction().formattedMoney(
-                      double.parse(widget.data.loanamount ?? '0')),
+                  GlobalFunction().formattedMoney(double.parse(widget.data.loanamount ?? '0')),
                   style: GoogleFonts.inter(
                     color: Colors.white,
                     fontSize: 36,
@@ -105,7 +104,7 @@ class _HistoryLoanDetailState extends State<HistoryLoanDetail> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  trailing: Container(
+                  trailing: SizedBox(
                     width: 100.0,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -133,21 +132,12 @@ class _HistoryLoanDetailState extends State<HistoryLoanDetail> {
                               );
                             } else if (state is CheckLoanSuccess) {
                               return Text(
-                                state.data.statusbalance == "Balance" ||
-                                        state.data.data?.statusbalance ==
-                                            'Balance'
+                                state.data.statusbalance == "Balance" || state.data.data?.statusbalance == 'Balance'
                                     ? 0.toString()
-                                    : GlobalFunction().formattedMoney(
-                                        (state.data.notbeenpaidof?.toDouble() ??
-                                            double.parse(state.data.data
-                                                    ?.totalmustbepaid is int
-                                                ? state
-                                                    .data.data?.totalmustbepaid
-                                                    .toString()
-                                                : state.data.data
-                                                        ?.totalmustbepaid ??
-                                                    widget.data.loanamount
-                                                        .toString()))),
+                                    : GlobalFunction().formattedMoney((state.data.notbeenpaidof?.toDouble() ??
+                                        double.parse(state.data.data?.totalmustbepaid is int
+                                            ? state.data.data?.totalmustbepaid.toString()
+                                            : state.data.data?.totalmustbepaid ?? widget.data.loanamount.toString()))),
                                 style: GoogleFonts.inter(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -200,14 +190,13 @@ class _HistoryLoanDetailState extends State<HistoryLoanDetail> {
               ListView.builder(
                 itemCount: widget.data.loanPackageDetails?.length,
                 shrinkWrap: true,
-                physics: const ScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
                   return Card(
                     color: Colors.transparent,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
-                        side: const BorderSide(
-                            width: 1, color: Color(0xFF354150))),
+                        side: const BorderSide(width: 1, color: Color(0xFF354150))),
                     child: ListTile(
                       title: Text(
                         Languages.of(context).payment,
@@ -218,8 +207,7 @@ class _HistoryLoanDetailState extends State<HistoryLoanDetail> {
                         ),
                       ),
                       subtitle: Text(
-                        DateFormat('dd MMMM yyyy').format(
-                            widget.data.loanPackageDetails![index].createdAt!),
+                        DateFormat('dd MMMM yyyy').format(widget.data.loanPackageDetails![index].createdAt!),
                         style: GoogleFonts.inter(
                           color: const Color(0xFF7D8998),
                           fontSize: 12,
@@ -233,9 +221,8 @@ class _HistoryLoanDetailState extends State<HistoryLoanDetail> {
                             height: 8.0,
                           ),
                           Text(
-                            GlobalFunction().formattedMoney(double.parse(
-                                widget.data.loanPackageDetails?[index].amount ??
-                                    '0')),
+                            GlobalFunction()
+                                .formattedMoney(double.parse(widget.data.loanPackageDetails?[index].amount ?? '0')),
                             style: GoogleFonts.inter(
                               color: Colors.white,
                               fontSize: 16,
@@ -248,9 +235,7 @@ class _HistoryLoanDetailState extends State<HistoryLoanDetail> {
                           Text(
                             '${GlobalFunction().getBankInfo(widget.data.loanPackageDetails?[index].bankinfo, context)} - ${GlobalFunction().getStatusDetail(widget.data.loanPackageDetails?[index].status, context)}',
                             style: GoogleFonts.inter(
-                              color: widget.data.loanPackageDetails?[index]
-                                          .status ==
-                                      3
+                              color: widget.data.loanPackageDetails?[index].status == 3
                                   ? Colors.red
                                   : const Color(0xFF67A353),
                               fontSize: 12,
