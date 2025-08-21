@@ -161,7 +161,45 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return totalBalance;
   }
 
-  // Trigger CheckLoan API for all active loans one by one
+  // Check if all active loans have CheckLoan data
+  bool areAllCheckLoanDataLoaded() {
+    if (listLoan.isEmpty) return true;
+
+    List<String> activeLoanIds = [];
+    for (DatumLoan loan in listLoan) {
+      if (loan.status == 3 &&
+          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+        activeLoanIds.add(loan.id.toString());
+      }
+    }
+
+    // Check if we have CheckLoan data for all active loans
+    for (String loanId in activeLoanIds) {
+      if (!checkLoanDataMap.containsKey(loanId)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Get the accurate total balance - only use CheckLoan data when all data is ready
+  double getDisplayBalance() {
+    if (listLoan.isEmpty) {
+      return double.parse(selectedPackage?.amount ?? '0');
+    }
+
+    // Only use calculateTotalLoanBalance if all CheckLoan data is loaded
+    if (areAllCheckLoanDataLoaded()) {
+      log('Using accurate balance from CheckLoan data: ${calculateTotalLoanBalance()}');
+      return calculateTotalLoanBalance();
+    } else {
+      // Show 0 while CheckLoan data is being fetched to avoid showing wrong balance
+      log('CheckLoan data not ready yet. Showing 0 to avoid wrong balance.');
+      return 0.0;
+    }
+  } // Trigger CheckLoan API for all active loans one by one
+
   void loadCheckLoanDataForAllLoans() {
     pendingCheckLoanIds.clear();
     completedCheckLoanCount = 0;
@@ -664,6 +702,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
                   // Load next loan's CheckLoan data
                   loadNextCheckLoanData();
+
+                  // Trigger UI refresh when all CheckLoan data is loaded
+                  if (completedCheckLoanCount >= pendingCheckLoanIds.length) {
+                    log('All CheckLoan data loaded. Final balance: ${calculateTotalLoanBalance()}');
+                    // setState will automatically trigger UI refresh
+                  }
                 }
 
                 if (state.data.data?.totalmustbepaid != null) {
@@ -684,6 +728,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
                   // Continue with next loan even if current one failed
                   loadNextCheckLoanData();
+
+                  // Trigger UI refresh when all loans are processed (including failed ones)
+                  if (completedCheckLoanCount >= pendingCheckLoanIds.length) {
+                    log('All CheckLoan requests completed (some may have failed). Final balance: ${calculateTotalLoanBalance()}');
+                    // setState will automatically trigger UI refresh
+                  }
                 }
               });
             }
@@ -869,16 +919,28 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                   const SizedBox(
                                     height: 8.0,
                                   ),
-                                  Text(
-                                    'HKD ${listLoan.isNotEmpty ? GlobalFunction().formattedMoney(calculateTotalLoanBalance()) : GlobalFunction().formattedMoney(double.parse(selectedPackage?.amount ?? '0'))}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 36,
-                                      fontFamily: 'Gabarito',
-                                      fontWeight: FontWeight.w500,
-                                      height: 0,
-                                    ),
-                                  ),
+                                  // Balance display with loading state
+                                  areAllCheckLoanDataLoaded() && listLoan.isNotEmpty
+                                      ? Text(
+                                          'HKD ${GlobalFunction().formattedMoney(getDisplayBalance())}',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 36,
+                                            fontFamily: 'Gabarito',
+                                            fontWeight: FontWeight.w500,
+                                            height: 0,
+                                          ),
+                                        )
+                                      : const Text(
+                                          'HKD -',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 36,
+                                            fontFamily: 'Gabarito',
+                                            fontWeight: FontWeight.w500,
+                                            height: 0,
+                                          ),
+                                        ),
                                   const SizedBox(
                                     height: 30.0,
                                   ),
