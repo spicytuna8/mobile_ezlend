@@ -27,6 +27,7 @@ import 'package:loan_project/helper/router_name.dart';
 import 'package:loan_project/helper/text_helper.dart';
 import 'package:loan_project/model/request_log_data_call_log.dart';
 import 'package:loan_project/model/request_log_data_log_file.dart';
+import 'package:loan_project/model/response_check_loan.dart';
 import 'package:loan_project/model/response_get_loan.dart';
 import 'package:loan_project/model/response_package_index.dart';
 import 'package:loan_project/model/response_package_rate.dart';
@@ -98,24 +99,60 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool isBlacklist = false;
   List<DatumLoan> listLoan = [];
 
-  // Calculate total balance from all active loans
+  // Store CheckLoan data for each loan
+  Map<String, ResponseCheckLoan> checkLoanDataMap = {};
+  List<String> pendingCheckLoanIds = []; // Track loans waiting for CheckLoan API
+  int completedCheckLoanCount = 0; // Track completed CheckLoan calls
+
+  // Calculate total balance from CheckLoan API data (loanamount - alreadypaid)
   double calculateTotalLoanBalance() {
     double totalBalance = 0.0;
 
     for (DatumLoan loan in listLoan) {
-      // Include all loans with status 3 (approved) regardless of statusloan
-      // Also include pending loans (status 0, 1, 10)
-      if ((loan.status == 3) || (loan.status == 0 || loan.status == 1 || loan.status == 10)) {
-        try {
-          // Use loanamount (principal amount) for balance calculation
-          String amountStr = loan.loanamount ?? '0';
-          if (amountStr.isNotEmpty) {
-            double loanAmount = double.parse(amountStr);
-            totalBalance += loanAmount;
-            log('Added loan ${loan.id}: status=${loan.status}, statusloan=${loan.statusloan}, amount=$loanAmount, running total: $totalBalance');
+      // Include all loans with status 3 (approved) and active statusloan
+      if (loan.status == 3 &&
+          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+        String loanId = loan.id.toString();
+
+        // Check if we have CheckLoan data for this loan
+        if (checkLoanDataMap.containsKey(loanId)) {
+          try {
+            ResponseCheckLoan checkLoanData = checkLoanDataMap[loanId]!;
+
+            // Calculate remaining balance: loanamount - alreadypaid
+            double loanAmount = double.parse(checkLoanData.loanamount ?? '0');
+            double alreadyPaid = double.parse(checkLoanData.alreadypaid ?? '0');
+            double remainingBalance = loanAmount - alreadyPaid;
+
+            // Add remaining balance (can be positive or negative)
+            totalBalance += remainingBalance;
+            log('Loan ${loan.id}: loanamount=$loanAmount, alreadypaid=$alreadyPaid, remaining=$remainingBalance, running total: $totalBalance');
+          } catch (e) {
+            log('Error calculating balance for loan ${loan.id}: $e');
+            // Fallback to loanamount if CheckLoan data parsing fails
+            try {
+              String amountStr = loan.loanamount ?? '0';
+              if (amountStr.isNotEmpty) {
+                double loanAmount = double.parse(amountStr);
+                totalBalance += loanAmount;
+                log('Fallback - Added loan ${loan.id}: $loanAmount, running total: $totalBalance');
+              }
+            } catch (e2) {
+              log('Error parsing fallback loan amount for loan ${loan.id}: $e2');
+            }
           }
-        } catch (e) {
-          log('Error parsing loan amount for loan ${loan.id}: $e');
+        } else {
+          // Fallback to loanamount while waiting for CheckLoan data
+          try {
+            String amountStr = loan.loanamount ?? '0';
+            if (amountStr.isNotEmpty) {
+              double loanAmount = double.parse(amountStr);
+              totalBalance += loanAmount;
+              log('Waiting for CheckLoan - Added loan ${loan.id}: $loanAmount, running total: $totalBalance');
+            }
+          } catch (e) {
+            log('Error parsing loan amount for loan ${loan.id}: $e');
+          }
         }
       }
     }
@@ -124,7 +161,39 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return totalBalance;
   }
 
-  // Check if any loan is overdue
+  // Trigger CheckLoan API for all active loans one by one
+  void loadCheckLoanDataForAllLoans() {
+    pendingCheckLoanIds.clear();
+    completedCheckLoanCount = 0;
+
+    // Collect all active loan IDs that need CheckLoan data
+    for (DatumLoan loan in listLoan) {
+      if (loan.status == 3 &&
+          (loan.statusloan == 4 || loan.statusloan == 6 || loan.statusloan == 7 || loan.statusloan == 8)) {
+        String loanId = loan.id.toString();
+        if (!checkLoanDataMap.containsKey(loanId)) {
+          pendingCheckLoanIds.add(loanId);
+        }
+      }
+    }
+
+    log('Found ${pendingCheckLoanIds.length} loans that need CheckLoan data');
+
+    // Start loading CheckLoan data for the first loan
+    if (pendingCheckLoanIds.isNotEmpty) {
+      loadNextCheckLoanData();
+    }
+  }
+
+  // Load CheckLoan data for the next loan in queue
+  void loadNextCheckLoanData() {
+    if (completedCheckLoanCount < pendingCheckLoanIds.length) {
+      String loanId = pendingCheckLoanIds[completedCheckLoanCount];
+      log('Loading CheckLoan data for loan $loanId (${completedCheckLoanCount + 1}/${pendingCheckLoanIds.length})');
+      transactionBloc.add(CheckLoanEvent(packageId: loanId));
+    }
+  } // Check if any loan is overdue
+
   bool hasOverdueLoan() {
     return listLoan.any((loan) =>
         loan.status == 3 &&
@@ -543,8 +612,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       dataLoan = element;
                       isPending = false;
                       isOverdue = false;
-
-                      transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
                     });
                   } else if (element.status == 3 && element.statusloan == 7 ||
                       element.status == 3 && element.statusloan == 6 ||
@@ -554,7 +621,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       dataLoan = element;
                       isPending = false;
                       isOverdue = true;
-                      transactionBloc.add(CheckLoanEvent(packageId: dataLoan!.id.toString()));
                     });
                   } else if (element.status == 0 && element.statusloan == 4 ||
                       element.status == 1 && element.statusloan == 4 ||
@@ -581,9 +647,25 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   dataLoan = null;
                 });
               }
+
+              // Load CheckLoan data for all active loans to get accurate balance
+              loadCheckLoanDataForAllLoans();
+
               EasyLoading.dismiss();
             } else if (state is CheckLoanSuccess) {
               setState(() {
+                // Store CheckLoan data for the current loan being processed
+                if (completedCheckLoanCount < pendingCheckLoanIds.length) {
+                  String loanId = pendingCheckLoanIds[completedCheckLoanCount];
+                  checkLoanDataMap[loanId] = state.data;
+                  log('Stored CheckLoan data for loan $loanId: loanamount=${state.data.loanamount}, alreadypaid=${state.data.alreadypaid}');
+
+                  completedCheckLoanCount++;
+
+                  // Load next loan's CheckLoan data
+                  loadNextCheckLoanData();
+                }
+
                 if (state.data.data?.totalmustbepaid != null) {
                   totalmustbepaid = state.data.data?.totalmustbepaid is int
                       ? state.data.data?.totalmustbepaid.toDouble()
@@ -591,7 +673,20 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 }
                 notbeenpaidof = state.data.notbeenpaidof;
               });
-            } else if (state is CheckLoanError) {}
+            } else if (state is CheckLoanError) {
+              // Handle error and continue with next loan
+              setState(() {
+                if (completedCheckLoanCount < pendingCheckLoanIds.length) {
+                  String loanId = pendingCheckLoanIds[completedCheckLoanCount];
+                  log('Error loading CheckLoan data for loan $loanId: ${state.message}');
+
+                  completedCheckLoanCount++;
+
+                  // Continue with next loan even if current one failed
+                  loadNextCheckLoanData();
+                }
+              });
+            }
             // TODO: implement listener
           },
         )
@@ -599,6 +694,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       child: RefreshIndicator(
         onRefresh: () async {
           EasyLoading.show(maskType: EasyLoadingMaskType.black);
+
+          // Clear CheckLoan data cache on refresh
+          checkLoanDataMap.clear();
+          pendingCheckLoanIds.clear();
+          completedCheckLoanCount = 0;
+
           _packageBloc.add(const GetIndexPackageEvent(page: 1, perPage: 10));
           _memberBloc.add(GetMemberEvent());
           transactionBloc.add(const GetLoanEvent());
