@@ -170,7 +170,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                           } else if (state is CheckDueDateSuccess) {
                             return Text(
                               state.data.data?.duedate != null
-                                  ? DateFormat('yyyy-MM-dd').format(state.data.data!.duedate!)
+                                  ? DateFormat('dd MMM yyyy').format(state.data.data!.duedate!)
                                   : '--/--/--',
                               style: white12w400,
                             );
