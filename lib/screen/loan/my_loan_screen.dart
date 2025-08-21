@@ -10,7 +10,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:loan_project/bloc/member/member_bloc.dart';
 import 'package:loan_project/bloc/package/package_bloc.dart';
-import 'package:loan_project/bloc/payment-due/payment_due_bloc.dart';
 import 'package:loan_project/bloc/transaction/transaction_bloc.dart';
 import 'package:loan_project/helper/color_helper.dart';
 import 'package:loan_project/helper/languages.dart';
@@ -41,7 +40,6 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
   final PackageBloc _packageBloc = PackageBloc();
   final MemberBloc _memberBloc = MemberBloc();
   final TransactionBloc transactionBloc = TransactionBloc();
-  final PaymentDueBloc paymentDueBloc = PaymentDueBloc();
   DatumLoan? dataLoan;
   bool isHaveData = true;
   bool isPending = false;
@@ -217,7 +215,6 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
 
   void getId() async {
     id = await preferencesHelper.getStringSharedPref('id');
-    paymentDueBloc.add(CheckDueDateEvent(ic: id));
     phoneService = await preferencesHelper.getStringSharedPref('phone_service');
     url = "https://wa.me/$phoneService?text=";
 
@@ -597,54 +594,6 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                   ],
                                                 ),
                                               ),
-                                              Container(
-                                                padding: const EdgeInsets.all(16),
-                                                width: MediaQuery.of(context).size.width,
-                                                decoration: const BoxDecoration(
-                                                  color: Color(0xFF252422),
-                                                  borderRadius: BorderRadius.only(
-                                                      bottomLeft: Radius.circular(12),
-                                                      bottomRight: Radius.circular(12)),
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      //// TODO: minta payment due
-                                                      '${Languages.of(context).paymentDue} ',
-                                                      style: white12w400,
-                                                    ),
-                                                    BlocConsumer<PaymentDueBloc, PaymentDueState>(
-                                                      bloc: paymentDueBloc,
-                                                      listener: (context, state) {
-                                                        // TODO: implement listener
-                                                      },
-                                                      builder: (context, state) {
-                                                        if (state is CheckDueDateLoading) {
-                                                          return const SizedBox(
-                                                            height: 30,
-                                                            width: 30,
-                                                            child: Center(
-                                                              child: CircularProgressIndicator(),
-                                                            ),
-                                                          );
-                                                        } else if (state is CheckDueDateSuccess) {
-                                                          return Text(
-                                                            //// TODO: minta payment due
-                                                            dataLoan == null
-                                                                ? '--/--/--'
-                                                                : DateFormat('yyyy-MM-dd')
-                                                                    .format(state.data.data!.duedate!),
-                                                            style: white12w400,
-                                                          );
-                                                        } else {
-                                                          return Container();
-                                                        }
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
                                             ],
                                           );
                                         } else {
@@ -733,54 +682,6 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                                                     ),
                                                     const SizedBox(
                                                       height: 16.0,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: const EdgeInsets.all(16),
-                                                width: MediaQuery.of(context).size.width,
-                                                decoration: const BoxDecoration(
-                                                  color: Color(0xFF252422),
-                                                  borderRadius: BorderRadius.only(
-                                                      bottomLeft: Radius.circular(12),
-                                                      bottomRight: Radius.circular(12)),
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      //// TODO: minta payment due
-                                                      Languages.of(context).paymentDue,
-                                                      style: white12w400,
-                                                    ),
-                                                    BlocConsumer<PaymentDueBloc, PaymentDueState>(
-                                                      bloc: paymentDueBloc,
-                                                      listener: (context, state) {
-                                                        // TODO: implement listener
-                                                      },
-                                                      builder: (context, state) {
-                                                        if (state is CheckDueDateLoading) {
-                                                          return const SizedBox(
-                                                            height: 30,
-                                                            width: 30,
-                                                            child: Center(
-                                                              child: CircularProgressIndicator(),
-                                                            ),
-                                                          );
-                                                        } else if (state is CheckDueDateSuccess) {
-                                                          return Text(
-                                                            //// TODO: minta payment due
-                                                            dataLoan == null
-                                                                ? '--/--/--'
-                                                                : DateFormat('yyyy-MM-dd')
-                                                                    .format(state.data.data!.duedate!),
-                                                            style: white12w400,
-                                                          );
-                                                        } else {
-                                                          return Container();
-                                                        }
-                                                      },
                                                     ),
                                                   ],
                                                 ),
