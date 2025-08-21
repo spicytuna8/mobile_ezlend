@@ -18,6 +18,7 @@ import 'package:loan_project/model/response_check_loan.dart';
 import 'package:loan_project/model/response_get_loan.dart';
 import 'package:loan_project/widget/global_function.dart';
 import 'package:loan_project/widget/main_button_gradient.dart';
+import 'package:loan_project/widget/ui_package_name.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RepaymentScreen extends StatefulWidget {
@@ -225,13 +226,8 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      loan.packageName ?? 'Loan Package',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    UIPackageName(
+                      packageName: loan.packageName ?? 'Loan Package',
                     ),
                     const SizedBox(height: 4),
                     Text(
