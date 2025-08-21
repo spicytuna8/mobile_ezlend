@@ -902,9 +902,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                 // mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  const SizedBox(
-                                    height: 30.0,
-                                  ),
                                   Text(
                                     Languages.of(context).loanBalance,
                                     style: const TextStyle(
