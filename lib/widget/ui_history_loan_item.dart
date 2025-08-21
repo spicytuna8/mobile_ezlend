@@ -18,6 +18,23 @@ class UIHistoryLoanItem extends StatelessWidget {
     this.onTap,
   }) : super(key: key);
 
+  // Calculate due date from loan date + return days
+  DateTime? _calculateDueDate() {
+    if (loanData.dateloan != null && loanData.returnday != null) {
+      return loanData.dateloan!.add(Duration(days: loanData.returnday!));
+    }
+    return null;
+  }
+
+  // Check if should show due date (not for pending status)
+  bool _shouldShowDueDate() {
+    // Don't show due date for pending status (status 0, 1, or 10)
+    if (loanData.status == 0 || loanData.status == 1 || loanData.status == 10) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -54,15 +71,61 @@ class UIHistoryLoanItem extends StatelessWidget {
                           packageName: loanData.packageName ?? '',
                         ),
                         const SizedBox(width: 12.0),
-                        Text(
-                          GlobalFunction().formattedMoney(double.parse(loanData.loanamount ?? '')),
-                          style: GoogleFonts.inter(
-                            color: const Color(0xFFFED607),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
+                        Expanded(
+                          child: Text(
+                            GlobalFunction().formattedMoney(double.parse(loanData.loanamount ?? '')),
+                            style: GoogleFonts.inter(
+                              color: const Color(0xFFFED607),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
-                        const Spacer()
+                        const SizedBox(width: 12.0),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(height: 8.0),
+                            GestureDetector(
+                              onTap: loanData.status == 2
+                                  ? () {
+                                      GlobalFunction().rejectCodeDialog(context,
+                                          title: '${Languages.of(context).reason} : ',
+                                          subtitle: loanData.rejectedCode?[0].content ?? '');
+                                    }
+                                  : null,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: _getStatusBackgroundColor(),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      _getStatusText(context),
+                                      style: GoogleFonts.inter(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  if (loanData.status == 2) ...[
+                                    const SizedBox(width: 4.0),
+                                    Image.asset(
+                                      'assets/icons/ic_info_danger.png',
+                                      width: 13.6,
+                                      height: 13.6,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8.0),
@@ -70,8 +133,8 @@ class UIHistoryLoanItem extends StatelessWidget {
                       children: [
                         Image.asset(
                           'assets/images/apply_date.png',
-                          width: 18,
-                          height: 18,
+                          width: 12,
+                          height: 12,
                           fit: BoxFit.contain,
                         ),
                         const SizedBox(width: 4.0),
@@ -83,6 +146,31 @@ class UIHistoryLoanItem extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
+                        const Spacer(),
+                        const SizedBox(height: 4.0),
+                        if (_shouldShowDueDate()) ...[
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/due_date.png',
+                                width: 12,
+                                height: 12,
+                                fit: BoxFit.contain,
+                              ),
+                              const SizedBox(width: 4.0),
+                              Text(
+                                _calculateDueDate() == null
+                                    ? '-'
+                                    : DateFormat('dd MMMM yyyy').format(_calculateDueDate()!),
+                                style: GoogleFonts.inter(
+                                  color: const Color(0xFF7D8998),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ],
                     ),
                   ],
@@ -90,50 +178,6 @@ class UIHistoryLoanItem extends StatelessWidget {
               ),
 
               // Trailing - Amount and Status
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 8.0),
-                  GestureDetector(
-                    onTap: loanData.status == 2
-                        ? () {
-                            GlobalFunction().rejectCodeDialog(context,
-                                title: '${Languages.of(context).reason} : ',
-                                subtitle: loanData.rejectedCode?[0].content ?? '');
-                          }
-                        : null,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: _getStatusBackgroundColor(),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            _getStatusText(context),
-                            style: GoogleFonts.inter(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        if (loanData.status == 2) ...[
-                          const SizedBox(width: 4.0),
-                          Image.asset(
-                            'assets/icons/ic_info_danger.png',
-                            width: 13.6,
-                            height: 13.6,
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

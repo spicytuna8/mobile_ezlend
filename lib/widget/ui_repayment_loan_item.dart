@@ -88,9 +88,9 @@ class UIRepaymentLoanItem extends StatelessWidget {
                               const SizedBox(width: 8.0),
                               Expanded(
                                 child: Text(
-                                  'HKD ${GlobalFunction().formattedMoney(double.tryParse(loanAmount) ?? 0)}',
+                                  GlobalFunction().formattedMoney(double.tryParse(loanAmount) ?? 0),
                                   style: const TextStyle(
-                                    color: Colors.white,
+                                    color: Color(0xffDFCE34),
                                     fontSize: 18,
                                     fontFamily: 'Gabarito',
                                     fontWeight: FontWeight.w500,

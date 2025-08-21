@@ -27,7 +27,7 @@ class UIPackageName extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          'Lite Pro+', // packageName.isNotEmpty ? packageName : 'Loan Package',
+          packageName.isNotEmpty ? packageName : 'Loan Package',
           style: GoogleFonts.inter(
             color: const Color(0xFF292929),
             fontSize: 12,
