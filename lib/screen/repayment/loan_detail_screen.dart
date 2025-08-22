@@ -224,6 +224,8 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                           ),
                         ),
 
+                      const SizedBox(height: 8.0),
+
                       // Payment History Section
                       Text(
                         Languages.of(context).repayment,

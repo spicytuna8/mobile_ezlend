@@ -50,8 +50,8 @@ class _DoneRepaymentState extends State<DoneRepayment> {
             physics: const ScrollPhysics(),
             separatorBuilder: (context, index) {
               return const Divider(
-                height: 1,
-                color: Colors.grey,
+                height: 8,
+                color: Colors.transparent,
               );
             },
             itemBuilder: (BuildContext context, int index) {
