@@ -49,7 +49,8 @@ class UIRepaymentLoanItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isOverdue = _isLoanOverdue(loan);
-    String loanAmount = loan.totalreturn ?? loan.loanamount ?? '0';
+//    String loanAmount = loan.totalreturn ?? loan.loanamount ?? '0';
+    String loanAmount = loan.loanamount ?? '0';
 
     return Container(
         padding: const EdgeInsets.all(16),
